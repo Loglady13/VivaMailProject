@@ -34,23 +34,9 @@ const Login = () =>{
                 <div id="carouselExample" className="carousel slide">
                     <div className="carousel-inner">
                         <div className="carousel-item active">
-                            <img src={Uno} alt="" className='tamaño-img'/>
-                        </div>
-                        <div class="carousel-item">
-                            <img src={Dos} alt="" className='tamaño-img'/>
-                        </div>
-                        <div class="carousel-item">
-                            <img src={Tres} alt="" className='tamaño-img' />
+                            <img src={'https://res.cloudinary.com/dgm059qwp/image/upload/v1722462386/adomoclnmg5kigfnbigl.png'} alt="" className='tamaño-img'/>
                         </div>
                     </div>
-                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Previous</span>
-                    </button>
-                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Next</span>
-                    </button>
                 </div>
             </div>
             {/* en esta sección será el formulario */}
