@@ -4,6 +4,7 @@ import Dos from '../images/2.png';
 import Tres from '../images/3.png';
 import appFirebase from '../credenciales';
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import '../Styles/Login.css'
 
 const auth = getAuth(appFirebase)
 
@@ -29,41 +30,44 @@ const Login = () =>{
 
 
     return (
-        <div className='row container p-4'>
-            <div className='col-md-8'>
-                <div id="carouselExample" className="carousel slide">
-                    <div className="carousel-inner">
-                        <div className="carousel-item active">
-                            <img src={'https://res.cloudinary.com/dgm059qwp/image/upload/v1722462386/adomoclnmg5kigfnbigl.png'} alt="" className='tamaño-img'/>
+        <div className='login'>
+            <div className='left'>
+                <div id="logo">
+                    <div className="logo">
+                        <div className="img">
+                            <img src={'https://res.cloudinary.com/dgm059qwp/image/upload/v1722462386/adomoclnmg5kigfnbigl.png'} alt=""/>
                         </div>
                     </div>
                 </div>
             </div>
             {/* en esta sección será el formulario */}
-            <div className='col-md-4'>
-                <div className='mt-5 ms-5'>
+            <div className='right'>
+                <div className='form2'>
                     <h1>{registro ? 'Sign up': 'Log in'}</h1>
                     <form onSubmit={handlerSubmit}>
-                        <div className='mb-3'>
+                        <div className='register2'>
                             <label className='form-label'>Email Address:</label>
+                            <br/>
+                            <br/>
                             <input type='email' className='form-control' placeholder='example@gmail.com' id='email' required/>
                         </div>
-                        <div className='mb-3'>
+                        <div className='register2'>
+                            <br/>
                             <label className='form-label'>Password</label>
+                            <br/>
+                            <br/>
                             <input type='password' className='form-control' placeholder='Password' id='password' required/>
                         </div>
 
-                        <button className='btn btn-primary' type='submit'>
+                        <div className='register2'>
+                        <button type='submit' className='register'>
                         {registro ? 'Sign in' : 'Log in'}
-                        </button>
+                        </button></div>
+                        
 
                     </form>
 
-                    <div className='form-group' onClick={()=> setRegistro(!registro)}>
-                        <button className='btn btn-secondary mt-4 from-control'>
-                            {registro ? 'Do you already have an account? Log in': 'You don´t have an account? Sign in'}
-                        </button>
-                    </div>
+                    
 
                     
                 </div>

@@ -1,0 +1,89 @@
+body {
+    background-color: #151718;
+}
+
+.login {
+    background-color: #151718;
+}
+
+.img img {
+    width: 70%;
+    height: 70%;
+}
+
+.left {
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+.right {
+    width: 40%;
+    height: 100%;
+    float: left;
+}
+
+.logo {
+    margin-top: 40%;
+    margin-left: 50%;
+}
+
+.form2 {
+    margin-top: 30%;
+    margin-left: 10%;
+}
+
+.form2 h1 {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form2 .form-label {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    
+    
+}
+
+.form2 .register,
+.form2 .register3,
+.form2 .form-control {
+    width: 80%; /* Hace que todos los elementos tengan el mismo ancho */
+    max-width: 400px; /* Un ancho máximo para controlar el tamaño en pantallas grandes */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+.form2 .register,
+.form2 .register3 {
+    background-color: #2d56bf;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.form2 .form-control {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    
+}
+
+.register2 {
+    flex-direction: column;
+    width: 80%;
+    max-width: 400px;
+   
+}
+
+.form2 .register3 {
+    background-color: #2d56bf;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 15px;
+}
