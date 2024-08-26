@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+
+*{
+    font-family: "Inter", sans-serif;
+    
+}
+
+.nav-principal{
+    background-color: #151718;
+    height: 70px;
+    
+
+}
+
+.nav-principal .element-2{
+    margin-top: 30px;
+    margin-left: 500px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.vivamail{
+    background-image:linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/dz22jvwbm/image/upload/v1724461721/envio-de-correos-masivos-detalle_w26uus.jpg);
+    background-size: cover;
+    
+    
+}
+
+.vivamail .content{
+    margin-left: 10px;
+}
+
+.vivamail h3{
+    color: white;
+    padding-top: 30px;
+    margin-left: 600px;
+}
+
+.vivamail button{
+    margin-top: 30px;
+    margin-left: 660px;
+    background-color: #7839CD;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 40px 10px 40px;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    margin-bottom: 120px;
+}
+
+.vivamail button a{
+    text-decoration: none;
+    color: white;
+}
+
+.vivamail .logo-principal{
+    margin-left: 400px;
+    margin-top: 200px;
+    
+}
+.nav-principal ul li{
+    display: flex;
+    flex-direction: column;
+    float: left;
+    color: white;
+    padding-left: 10px;
+    margin-top: 20px;
+   
+    
+}   
+.object{
+   margin-bottom: 10px;
+   margin-top: 0px;
+}
+.nav-principal ul{
+    padding-bottom: 10px;
+}
+
+.nav-principal img{
+    height: 20%;
+    width: 20%;
+    margin-left: 30px;
+    padding-bottom: 10px;
+}
+
+.nav-principal .element{
+    margin-left: 50px;
+}
+
+.nav-principal button{
+    padding: 10px 40px 10px 40px;
+    background-color: #7839CD;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+
+}
+
+.nav-principal .element-2 a{
+    text-decoration: none;
+    color: white;
+}
+
+@media (max-width: 768px) {
+
+    .Principal{
+        width: 235%;
+    }
+    .nav-principal img{
+        width: 40%;
+        padding-left: 10px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+
+
+    
+    .nav-principal{
+    background-color: #151718;
+    height: 120px;
+    }
+
+    
+.nav-principal .element-2{
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.vivamail{
+    background-image:linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://res.cloudinary.com/dz22jvwbm/image/upload/v1724461721/envio-de-correos-masivos-detalle_w26uus.jpg);
+    background-position: center; 
+    height: 1500px;
+}
+
+.vivamail .content{
+    margin-left: 10px;
+}
+
+.vivamail h3{
+    color: white;
+    padding-top: 30px;
+    margin-left: 160px;
+    font-size: 30px;
+}
+
+.vivamail button{
+    margin-top: 30px;
+    margin-left: 250px;
+    background-color: #7839CD;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 40px 10px 40px;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    margin-bottom: 120px;
+    font-size: 30px;
+}
+
+.vivamail button a{
+    text-decoration: none;
+    color: white;
+}
+
+.vivamail .logo-principal{
+    margin-left: 100px;
+    margin-top: 450px;
+    width: 80%;
+    
+}
+
+.vivamail .description{
+    margin-left: 145px;
+}
+.nav-principal ul li{
+    display: flex;
+    flex-direction: column;
+    float: left;
+    color: white;
+    padding-left: 5px;
+    margin-top: 40px;
+   
+    
+}   
+
+.nav-principal .element-img{
+    width: 50%;
+    
+}
+.object{
+   margin-bottom: 10px;
+   margin-top: 0px;
+}
+.nav-principal ul{
+    padding-bottom: 10px;
+}
+
+
+.nav-principal button{
+    padding: 10px 40px 10px 40px;
+    background-color: #7839CD;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 30px;
+
+}
+
+.nav-principal .element-2 a{
+    text-decoration: none;
+    color: white;
+    margin-top: 20px;
+    margin-left: 100px;
+    font-size: 30px;
+}
+    
+}
