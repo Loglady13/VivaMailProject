@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import Uno from '../images/1.jpg';
 import Dos from '../images/2.png';
 import Tres from '../images/3.png';
-import appFirebase from '../credenciales';
+import appFirebase from '../services/credenciales';
 import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
 import '../Styles/Login.css'
 
 const auth = getAuth(appFirebase)
 
 
-const Login = () =>{
+const ViewLogin = () =>{
 
     const [registro, setRegistro] = useState(false)
 
@@ -78,4 +78,4 @@ const Login = () =>{
     )
 }
 
-export default Login
+export default ViewLogin
