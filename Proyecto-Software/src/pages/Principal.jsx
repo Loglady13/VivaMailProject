@@ -1,34 +1,55 @@
 import React from 'react';
-import '../Styles/Principal.css';
+import logo from '../images/logo.png';
 
-const Principal = () =>{
-
-
-    return(
-        <div className='Principal'>
-        <section className='nav-principal'>
-            <div className='object'>
-            <ul>
-                <li className='element-img'><img src={'https://res.cloudinary.com/dgm059qwp/image/upload/v1722462386/adomoclnmg5kigfnbigl.png'} alt=""/></li>
-                <li className='element-2'><a href="/Login">Log in</a></li>
-                <li className='element-3'><button>Plans</button></li>
-            </ul>
+const Principal = () => {
+    return (
+        <div>
+            <nav className="navbar" style={{backgroundColor: '#151718'}}>
+                <div className="container-fluid">
+                    <img src={logo} width="100" alt="logo" />
+                    <form className="d-flex" role="search">
+                        <a className="navbar-brand" style={{color: 'white'}} href='/Login'>Log In</a>
+                        <button className="btn" type="submit" style={{backgroundColor: '#7839CD', color: 'white'}}>Plans</button>
+                    </form>
+                </div>
+            </nav>
+            <div className='bg-image' style={{
+                position: 'relative',
+                backgroundImage: 'url(https://res.cloudinary.com/dz22jvwbm/image/upload/v1724461721/envio-de-correos-masivos-detalle_w26uus.jpg)',
+                minHeight: '93vh',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                zIndex: 1,
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 2,
+                }}></div>
+                <div style={{ position: 'relative', zIndex: 3 }}>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <img src={logo} alt="main logo" className='img-fluid rounded mx-auto d-block'/>
+                    <br />
+                    <h1 style={{color: 'white', fontSize: '30px'}} className='text-center'>EMAIL SENDING AUTOMATION</h1>
+                    <br />
+                    <h1 style={{color: 'white', fontSize: '30px'}} className='text-center'>Plans start from $**** per month</h1>
+                    <br />
+                    <div className="d-flex justify-content-center">
+                        <button className="btn btn-lg" type="submit" style={{backgroundColor: '#7839CD', color: 'white'}}>Plans</button>
+                    </div>
+                </div>
             </div>
-        </section>
-        <section className='vivamail'>
-        <div className='content'>
-        <img className='logo-principal' src={'https://res.cloudinary.com/dgm059qwp/image/upload/v1722462386/adomoclnmg5kigfnbigl.png'} alt=""/>
-        <h3>EMAIL SENDING AUTOMATION</h3>
-        <h3 className='description'>Plans start from $*** per month</h3>
-        <button><a href="#">View Plans</a></button>
         </div>
-        
-        </section>
-    </div>
     );
-
-
-
 }
 
 export default Principal;
