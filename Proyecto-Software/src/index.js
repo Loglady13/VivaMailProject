@@ -5,10 +5,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import App from './App';
 import ViewLogin from './pages/ViewLogin';
-import Home from './pages/Home-page_master';
-import Nav from './shared-components/Nav';
+import Home from './pages/Home-page-master';
 import Principal from './pages/Principal';
 import Login from './pages/Login';
+import SidebarMaster from './shared-components/Sidebar-master';
 
 const router = createBrowserRouter([
   {
@@ -30,8 +30,8 @@ const router = createBrowserRouter([
     element: <Home/>,
   },
   {
-    path: "Nav",
-    element: <Nav/>
+    path: "SidebarMaster",
+    element: <SidebarMaster/>
   },
   {
     path: "/",

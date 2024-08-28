@@ -28,7 +28,6 @@ const ViewLogin = () =>{
     }
 
 
-
     return (
         <div className='login'>
             <div className='left'>

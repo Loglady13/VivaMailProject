@@ -1,6 +1,6 @@
 import React from 'react';
 import '../Styles/Home.css';
-import Sidebar from '../shared-components/Nav';
+import SidebarMaster from '../shared-components/Sidebar-master';
 
 
 
@@ -9,7 +9,7 @@ const Home = () => {
 
   return (
     <div className='Home'>
-      <Sidebar/>
+      <SidebarMaster/>
       
     </div>
   );
