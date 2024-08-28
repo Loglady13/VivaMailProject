@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import App from './App';
 import ViewLogin from './pages/ViewLogin';
-import Home from './pages/Home-page_master';
+import Home from './pages/Home-page-master';
 import Nav from './shared-components/Nav';
 import Principal from './pages/Principal';
 import Login from './pages/Login';

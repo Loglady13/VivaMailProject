@@ -1,6 +1,6 @@
 import appFirebase from '../services/credenciales';
 import {getAuth,onAuthStateChanged} from 'firebase/auth';
-import Home from '../pages/Home-page_master';
+import Home from '../pages/Home-page-master';
 import ViewLogin from '../pages/ViewLogin';
 import React, {useState} from 'react';
 
