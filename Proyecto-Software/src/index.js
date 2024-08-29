@@ -5,13 +5,40 @@ import { BrowserRouter } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import App from './App';
 import ViewLogin from './pages/ViewLogin';
-import Home from './pages/Home-page-master';
-import Principal from './pages/Principal';
+import HomeMaster from './pages/Home-page-master';
+import Home from './pages/Principal';
 import Login from './pages/Login';
-import SidebarMaster from './shared-components/Sidebar-master';
-import SidebarAdmin from './shared-components/Sidebar-admin';
+import HomeAdmin from './pages/Home-page-admin';
+import CreateAdministrator from './pages/Create-administrator';
+import CreateCampaign from './pages/Create-campaign';
+import CreateEmail from './pages/Create-email';
+import CreateMailGroup from './pages/Create-mail-group';
+import CreatePlan from './pages/Create-plan';
+import TableCampaign from './pages/Table-campaign';
+import TableClientMail from './pages/Table-client-mail';
+import TableCompanie from './pages/Table-companie';
+import TableMailGroup from './pages/Table-mail-group';
+import TableSubscriber from './pages/Table-subscriber';
+import MailList from './pages/Mail-list';
+import AdministratorReport from './pages/Administrator-report';
+import MasterReport from './pages/Master-report';
+import MasterConfiguration from './pages/Master-configuration';
+import PlanManagement from './pages/Plan-management';
+import ViewPlan from './pages/View-plan';
+import CreateClientMail from './pages/Create-client-mail';
+import TableAdministrator from './pages/Table-administrator'
 
 const router = createBrowserRouter([
+  {
+    path: "App", 
+    element: (
+      <App/>
+  ),
+  },
+  {
+    path: "/",
+    element: <Home/>
+  },
   {
     path: "ViewLogin",
     element: <ViewLogin/>,
@@ -21,27 +48,86 @@ const router = createBrowserRouter([
     element: <Login/>
   },
   {
-    path: "App", 
-    element: (
-      <App/>
-  ),
+    path: "HomeMaster",
+    element: <HomeMaster/>,
   },
   {
-    path: "Home",
-    element: <Home/>,
+    path:"HomeAdmin",
+    element:<HomeAdmin/>
   },
   {
-    path: "SidebarMaster",
-    element: <SidebarMaster/>
+    path: "CreateAdministrator",
+    element: <CreateAdministrator/>
   },
   {
-    path: "/",
-    element: <Principal/>
+    path: "CreateCampaign",
+    element: <CreateCampaign/>
   },
   {
-    path: "SidebarAdmin",
-    element: <SidebarAdmin/>
+    path:"CreateEmail",
+    element:<CreateEmail/>
+  },
+  {
+    path:"CreateMailGroup",
+    element:<CreateMailGroup/>
+  },
+  {
+    path:"CreatePlan",
+    element:<CreatePlan/>
+  },
+  {
+    path:"CreateClientMail",
+    element:<CreateClientMail/>
+  },
+  {
+    path:"TableCampaign",
+    element:<TableCampaign/>
+  },
+  {
+    path:"TableClientMail",
+    element:<TableClientMail/>
+  },
+  {
+    path:"TableCompanie",
+    element:<TableCompanie/>
+  },
+  {
+    path:"TableMailGroup",
+    element:<TableMailGroup/>
+  },
+  {
+    path:"TableSubscriber",
+    element:<TableSubscriber/>
+  },
+  {
+    path:"TableAdministrator",
+    element:<TableAdministrator/>
+  },
+  {
+    path:"MailList",
+    element:<MailList/>
+  },
+  {
+    path:"AdministratorReport",
+    element:<AdministratorReport/>
+  },
+  {
+    path:"MasterReport",
+    element:<MasterReport/>
+  },
+  {
+    path:"MasterConfiguration",
+    element:<MasterConfiguration/>
+  },
+  {
+    path:"PlanManagement",
+    element:<PlanManagement/>
+  },
+  {
+    path:"ViewPlan",
+    element:<ViewPlan/>
   }
+  
 
 ]);
 
