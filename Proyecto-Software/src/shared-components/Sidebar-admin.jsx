@@ -2,9 +2,11 @@ import { getAuth, signOut } from 'firebase/auth';
 import '../Styles/Sidebar.css';
 import React, { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useNavigate } from 'react-router-dom';
 
 
 const SidebarAdmin = () => {
+    const navigate = useNavigate();
     const auth = getAuth();
 
     const handleLogout = () => {
@@ -71,12 +73,14 @@ const SidebarAdmin = () => {
                     <div className={`collapse ${openMenuId === 'collapseCompany' ? 'show' : ''}`} id="collapseCompany">
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/NewCompany')}>
                             Add new company
                         </div>
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/ViewCompany')}>
                             View companies
                         </div>
                     </div>
