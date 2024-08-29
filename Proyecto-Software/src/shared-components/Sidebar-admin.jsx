@@ -99,12 +99,14 @@ const SidebarAdmin = () => {
                     <div className={`collapse ${openMenuId === 'collapseEmails' ? 'show' : ''}`} id="collapseEmails">
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/CreateEmail')}>
                             New mail
                         </div>
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/MailList')}>
                             Mails sent
                         </div>
                     </div>
@@ -123,12 +125,14 @@ const SidebarAdmin = () => {
                     <div className={`collapse ${openMenuId === 'collapseCampaigns' ? 'show' : ''}`} id="collapseCampaigns">
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/CreateCampaign')}>
                             Add campaigns
                         </div>
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/TableCampaign')}>
                             View campaigns
                         </div>
                     </div>
@@ -147,12 +151,14 @@ const SidebarAdmin = () => {
                     <div className={`collapse ${openMenuId === 'collapseClients' ? 'show' : ''}`} id="collapseClients">
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/CreateClientMail')}>
                             New client email
                         </div>
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/TableClientMail')}>
                             Clients mails
                         </div>
                     </div>
@@ -171,12 +177,14 @@ const SidebarAdmin = () => {
                     <div className={`collapse ${openMenuId === 'collapseMailingGroups' ? 'show' : ''}`} id="collapseMailingGroups">
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/CreateMailGroup')}>
                             New mailing group
                         </div>
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/TableMailGroup')}>
                             View mailing groups
                         </div>
                     </div>
@@ -195,7 +203,8 @@ const SidebarAdmin = () => {
                     <div className={`collapse ${openMenuId === 'collapseReports' ? 'show' : ''}`} id="collapseReports">
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}>
+                            onMouseLeave={handleMouseLeave}
+                            onClick={() => navigate('/AdministratorReport')}>
                             New report
                         </div>
                     </div>

@@ -2,9 +2,11 @@ import { getAuth, signOut } from 'firebase/auth';
 import '../Styles/Sidebar.css';
 import React, { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useNavigate } from 'react-router-dom';
 
 const SidebarMaster = () => {
   const auth = getAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     signOut(auth)
@@ -69,12 +71,14 @@ const SidebarMaster = () => {
           <div className={`collapse ${openMenuId === 'collapseAdministrators' ? 'show' : ''}`} id="collapseAdministrators">
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}>
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/CreateAdministrator')}>
               Add new administrator
             </div>
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}>
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/TableAdministrator')}>
               View administrators
             </div>
           </div>
@@ -93,7 +97,8 @@ const SidebarMaster = () => {
           <div className={`collapse ${openMenuId === 'collapseReports' ? 'show' : ''}`} id="collapseReports">
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}>
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/MasterReport')}>
               New report
             </div>
           </div>
@@ -112,17 +117,20 @@ const SidebarMaster = () => {
           <div className={`collapse ${openMenuId === 'collapsePlans' ? 'show' : ''}`} id="collapsePlans">
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}>
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/PlanManagement')}>
               View plans
             </div>
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}>
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/CreatePlan')}>
               Add new plans
             </div>
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}>
+              onMouseLeave={handleMouseLeave}
+              onClick={() => navigate('/TableSubscriber')}>
               View subscribers
             </div>
           </div>
@@ -131,7 +139,8 @@ const SidebarMaster = () => {
           <div className="p-2 sidebar-menu"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            style={{ marginTop: '10px' }}>
+            style={{ marginTop: '10px' }}
+            onClick={() => navigate('/MasterConfiguration')}>
             <i class="bi bi-person-gear" style={{ fontSize: '31px' }}></i>
             <span>Configuration</span>
           </div>
