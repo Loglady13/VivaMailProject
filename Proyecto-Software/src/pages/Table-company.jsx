@@ -3,7 +3,7 @@ import SidebarAdmin from '../shared-components/Sidebar-admin';
 
 
 
-const ViewCompany = () => {
+const TableCompany = () => {
 
     return (
         <div className='Home'>
@@ -13,4 +13,4 @@ const ViewCompany = () => {
     );
 };
 
-export default ViewCompany;
+export default TableCompany;

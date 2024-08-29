@@ -11,7 +11,7 @@ import Login from './pages/Login';
 import SidebarMaster from './shared-components/Sidebar-master';
 import SidebarAdmin from './shared-components/Sidebar-admin';
 import NewCompany from './pages/Create-company';
-import ViewCompany from './pages/View-companies';
+import TableCompany from './pages/Table-company';
 
 const router = createBrowserRouter([
   {
@@ -49,8 +49,8 @@ const router = createBrowserRouter([
     element: <NewCompany/>
   },
   {
-    path: "ViewCompany",
-    element: <ViewCompany/>
+    path: "TableCompany",
+    element: <TableCompany/>
   }
 
 ]);
