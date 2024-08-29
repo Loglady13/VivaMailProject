@@ -9,6 +9,7 @@ import Home from './pages/Home-page-master';
 import Principal from './pages/Principal';
 import Login from './pages/Login';
 import SidebarMaster from './shared-components/Sidebar-master';
+import SidebarAdmin from './shared-components/Sidebar-admin';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Principal/>
+  },
+  {
+    path: "SidebarAdmin",
+    element: <SidebarAdmin/>
   }
 
 ]);

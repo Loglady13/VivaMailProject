@@ -1,10 +1,10 @@
 import React from 'react';
-import '../Styles/Home.css';
+import '../Styles/Home-master.css';
 import SidebarMaster from '../shared-components/Sidebar-master';
 
 
 
-const Home = () => {
+const HomeMaster = () => {
   
 
   return (
@@ -15,4 +15,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeMaster;

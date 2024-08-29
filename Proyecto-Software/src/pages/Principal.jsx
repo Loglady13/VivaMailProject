@@ -4,12 +4,12 @@ import logo from '../images/logo.png';
 const Principal = () => {
     return (
         <div>
-            <nav className="navbar" style={{backgroundColor: '#151718'}}>
+            <nav className="navbar" style={{backgroundColor: '#151718', padding: '20px'}}>
                 <div className="container-fluid">
-                    <img src={logo} width="100" alt="logo" />
+                    <img src={logo} width="150" alt="logo" />
                     <form className="d-flex" role="search">
                         <a className="navbar-brand" style={{color: 'white'}} href='/Login'>Log In</a>
-                        <button className="btn" type="submit" style={{backgroundColor: '#7839CD', color: 'white'}}>Plans</button>
+                        <button className="btn" type="submit" style={{backgroundColor: '#7839CD', color: 'white',}}>Plans</button>
                     </form>
                 </div>
             </nav>
