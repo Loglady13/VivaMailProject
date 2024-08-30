@@ -127,7 +127,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
 
     return (
         <div className="container mt-4">
-            <h1>{collectionName}</h1>
+            <h1 className='text-white'>{collectionName}</h1>
 
             {/* Search form */}
             <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex justify-content-end">
@@ -192,7 +192,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
 
             {/* Pagination controls */}
             <div className="d-flex justify-content-between align-items-center mt-3">
-                <span className='font-weight-bold'>Showing {currentPage} of {totalPages} entries</span>
+                <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} entries</span>
                 <div className='d-flex justify-content-between align-items-center'>
                     <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                         Prev
