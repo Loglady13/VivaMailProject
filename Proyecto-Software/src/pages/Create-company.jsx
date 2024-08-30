@@ -7,6 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const CreateCompany = () => {
+    /*
+        COSAS QUE FALTAN
+
+        -VERIFICAR CUANTAS EMPRESAS LE PERMITE TENER SU PLAN PARA SABER SI PUEDE CREAR OTRA O NO
+
+    */
+
     /* To redirect to the home page from the cancel button */
     const navigate = useNavigate();
 
@@ -54,7 +61,7 @@ const CreateCompany = () => {
             isValid = false;
         }
 
-        /* Verify the field is not empty and validate basic email formatting (must includ @ y .com) */
+        /* Verify the field is not empty and validate basic email formatting (must includ @ y .example) */
         if (!company.email) {
             newErrors.email = 'Email is required.';
             isValid = false;
