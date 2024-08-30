@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import '../Styles/Create-company.css';
-import { getFirestore, collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../services/credenciales';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -105,13 +105,12 @@ const CreateCompany = () => {
             const currentDate = new Date(); // Capture the current date and time
             await addDoc(collection(db, 'Company'), {
                 ...company,
-                createDate: currentDate,
+                creationDate: currentDate,
                 lastUpdate: currentDate, // Both dates are current at the time of creation
             });
             setErrors({ companyName:'', legalID:'', email:''});
             setCompany(defaultEntry);
             setIsSuccess(true); // Activar la alerta de éxito
-            //navigate('/HomeAdmin'); // Redirige después de guardar !!!!!!!!
         } catch (error) {
             console.log(error);
             setErrors({...errors, global: 'An error occurred while saving the company'})
@@ -138,7 +137,7 @@ const CreateCompany = () => {
                     </div>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
                         <label htmlFor="email" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Email address</label>
-                        <input onChange={captureInputs} value={company.email} type="email" name='email' className="form-control" aria-describedby="emailHelp" style={{ width: '100%' }}/>
+                        <input onChange={captureInputs} value={company.email} type="text" name='email' className="form-control" aria-describedby="emailHelp" style={{ width: '100%' }}/>
                         {errors.email && <div className='text-danger'>{errors.email}</div>}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '800px', marginTop: '18px', marginBottom: '-10px' }}>
