@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy, limit, startAfter, startAt, where } from 'firebase/firestore';
-import db from './Credenciales.js';
+import db from '../services/credenciales.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function TableComponent({collectionName, columnsToShow, orderField, ViewModal, EditModal, DeleteModal}) {
@@ -33,7 +33,7 @@ function TableComponent({collectionName, columnsToShow, orderField, ViewModal, E
 
             if (search) {
                 // Para la busqueda en el search
-                queryC = query(queryCollection, where('nombre', '>=', search), where('nombre', '<=', search + '\uf8ff'), orderBy(orderField), limit(pageSize));
+                queryC = query(queryCollection, where('nameCompany', '>=', search), where('nameCompany', '<=', search + '\uf8ff'), orderBy(orderField), limit(pageSize));
 
             } else if (isNextPage && lastVisible) {
                 // Para la siguiente pagina
@@ -141,7 +141,6 @@ function TableComponent({collectionName, columnsToShow, orderField, ViewModal, E
         console.log("Ver documento con id:", itemId);
         setShowModal('view');
         setSelectedId(itemId);
-        
     };
 
     const handleEditClick = (itemId) => {
@@ -166,8 +165,8 @@ function TableComponent({collectionName, columnsToShow, orderField, ViewModal, E
             <h1>{collectionName}</h1>
             
             {/* Barra de búsqueda */}
-            <form onSubmit={handleSearchSubmit} className="form-inline mb-3">
-                <div className='input-group mb-3' style={{width:'300px'}}>
+            <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex justify-content-end">
+                <div className='input-group mb-3' style={{maxWidth:'300px'}}>
                     <input 
                         type="text" 
                         placeholder="Search" 
@@ -181,8 +180,6 @@ function TableComponent({collectionName, columnsToShow, orderField, ViewModal, E
                     </span>
                 </div>
             </form>
-          
-            
         
             <div className="table-responsive rounded">
                 <table className="table table-hover ">
