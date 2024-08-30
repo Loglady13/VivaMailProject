@@ -81,7 +81,7 @@ const CreateCompany = () => {
                 title: 'Success',
                 showCloseButton: true,
                 html: 'The company has been successfully created',
-            }).then(() => setIsSuccess(false)); // Resetear el estado después de mostrar la alerta
+            }).then(() => setIsSuccess(false)); // Resetting the status after displaying the alert
         }
     }, [isSuccess]);
 
@@ -110,7 +110,7 @@ const CreateCompany = () => {
             });
             setErrors({ companyName:'', legalID:'', email:''});
             setCompany(defaultEntry);
-            setIsSuccess(true); // Activar la alerta de éxito
+            setIsSuccess(true); // Activate success alert
         } catch (error) {
             console.log(error);
             setErrors({...errors, global: 'An error occurred while saving the company'})
