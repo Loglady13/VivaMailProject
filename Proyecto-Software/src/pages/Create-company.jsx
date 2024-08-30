@@ -26,7 +26,7 @@ const CreateCompany = () => {
 
     const [company, setCompany] = useState(defaultEntry);
     const [errors, setErrors] = useState({ companyName: '', legalID:'', email:''});
-    const [isSuccess, setIsSuccess] = useState(false); // Estado para el éxito
+    const [isSuccess, setIsSuccess] = useState(false); 
 
 
     const captureInputs = (e) => {
