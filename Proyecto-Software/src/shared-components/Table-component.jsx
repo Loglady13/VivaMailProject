@@ -33,7 +33,7 @@ function TableComponent({collectionName, columnsToShow, orderField, ViewModal, E
 
             if (search) {
                 // Para la busqueda en el search
-                queryC = query(queryCollection, where('nameCompany', '>=', search), where('nameCompany', '<=', search + '\uf8ff'), orderBy(orderField), limit(pageSize));
+                queryC = query(queryCollection, where(orderField, '>=', search), where(orderField, '<=', search + '\uf8ff'), orderBy(orderField), limit(pageSize));
 
             } else if (isNextPage && lastVisible) {
                 // Para la siguiente pagina
