@@ -25,7 +25,7 @@ const TableCompany = () => {
                 <TableComponent
                     collectionName="Company"  // Nombre de la colección en tu base de datos Firebase
                     columnsToShow={['Name', 'Email']}  // Las columnas que deseas mostrar
-                    orderField="nameCompany"  // Campo por el cual ordenar los datos
+                    orderField="companyName"  // Campo por el cual ordenar los datos
                     ViewModal={ViewModal}  // Componente modal para visualizar
                     EditModal={EditModal}  // Componente modal para editar
                     DeleteModal={DeleteModal}  // Componente modal para eliminar

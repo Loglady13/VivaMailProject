@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy, limit, startAfter, startAt, where } from 'firebase/firestore';
-import db from '../services/credenciales.js';
+import { db } from '../services/credenciales.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function TableComponent({collectionName, columnsToShow, orderField, ViewModal, EditModal, DeleteModal}) {
@@ -33,7 +33,7 @@ function TableComponent({collectionName, columnsToShow, orderField, ViewModal, E
 
             if (search) {
                 // Para la busqueda en el search
-                queryC = query(queryCollection, where(orderField, '>=', search), where(orderField, '<=', search + '\uf8ff'), orderBy(orderField), limit(pageSize));
+                queryC = query(queryCollection, where('companyName', '>=', search), where('companyName', '<=', search + '\uf8ff'), orderBy(orderField), limit(pageSize));
 
             } else if (isNextPage && lastVisible) {
                 // Para la siguiente pagina
