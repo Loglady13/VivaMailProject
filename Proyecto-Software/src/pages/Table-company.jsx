@@ -134,7 +134,7 @@ const TableCompany = () => {
                 { label: 'Company name', key: 'name' },
                 { label: 'Legal identification number', key: 'legalID' },
                 { label: 'Company email', key: 'email' },
-                { label: 'Creation date', key: 'creationDate', format: formatTimestamp }, 
+                { label: 'Creation date', key: 'creationDate', format: formatTimestamp },
                 { label: 'Last update date', key: 'lastUpdate', format: formatTimestamp },
                 { label: 'State', key: 'state', format: (value) => (value ? 'Active' : 'Inactive') }
             ],
@@ -238,6 +238,16 @@ const TableCompany = () => {
         }
     };
 
+    // Nueva función para manejar la llamada al modal de eliminación
+    const handleDeleteClick = (item) => {
+        ModalDelete({
+            item,
+            collectionName: 'Company',
+            onSuccessMessage: 'The company has been deleted, refresh to see the changes!',
+        });
+    };
+
+
     return (
         <div className='TableCompany'>
             <SidebarAdmin />
@@ -290,12 +300,9 @@ const TableCompany = () => {
                                         </button>
                                     </td>
                                     <td className='text-center'>
-                                        {/* Call to the Delete modal we send the item, the name of the collection and the succes message we want to show */}
-                                        <ModalDelete
-                                            item={item}
-                                            collectionName="Company"
-                                            onSuccessMessage="The company has been deleted, refresh to see the changes!"
-                                        />
+                                        <button onClick={() => handleDeleteClick(item)} className="btn btn-danger btn-sm">
+                                            <i className="bi bi-trash3" style={{ fontSize: '18px', color: 'white' }}></i>
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
