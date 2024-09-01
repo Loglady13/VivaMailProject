@@ -238,7 +238,8 @@ const TableCompany = () => {
         }
     };
 
-    // Nueva función para manejar la llamada al modal de eliminación
+    /* Call to the delete modal, you need to pass de name of the collection and the messagge you want
+    to show when teh action success*/
     const handleDeleteClick = (item) => {
         ModalDelete({
             item,
