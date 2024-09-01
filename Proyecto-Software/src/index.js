@@ -19,7 +19,6 @@ import CreateMailGroup from './pages/Create-mail-group';
 import CreatePlan from './pages/Create-plan';
 import TableCampaign from './pages/Table-campaign';
 import TableClientMail from './pages/Table-client-mail';
-import TableCompanie from './pages/Table-companie';
 import TableMailGroup from './pages/Table-mail-group';
 import TableSubscriber from './pages/Table-subscriber';
 import MailList from './pages/Mail-list';
@@ -104,8 +103,8 @@ const router = createBrowserRouter([
     element:<TableClientMail/>
   },
   {
-    path:"TableCompanie",
-    element:<TableCompanie/>
+    path:"TableCompany",
+    element:<TableCompany/>
   },
   {
     path:"TableMailGroup",

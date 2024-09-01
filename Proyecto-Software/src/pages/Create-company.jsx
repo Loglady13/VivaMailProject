@@ -11,6 +11,8 @@ const CreateCompany = () => {
         COSAS QUE FALTAN
 
         -VERIFICAR CUANTAS EMPRESAS LE PERMITE TENER SU PLAN PARA SABER SI PUEDE CREAR OTRA O NO
+        -VERIFICAR A LA HORA DE AGREGAR LA COMPAÑIA SI YA ESTE ADMIN TIENE EMPRESAS PARA ESTABLECER
+        EL STATE(si tiene otras tiene que tener una activa al menos sino se guarda la nueva como activa)
 
     */
 
@@ -107,6 +109,7 @@ const CreateCompany = () => {
                 ...company,
                 creationDate: currentDate,
                 lastUpdate: currentDate, // Both dates are current at the time of creation
+                state: false,
             });
             setErrors({ companyName:'', legalID:'', email:''});
             setCompany(defaultEntry);
