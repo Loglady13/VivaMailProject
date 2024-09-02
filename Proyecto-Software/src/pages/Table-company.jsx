@@ -238,12 +238,13 @@ const TableCompany = () => {
         }
     };
 
-    /* Call to the delete modal, you need to pass de name of the collection and the messagge you want
-    to show when teh action success*/
+    /* Call to the delete modal, you need to pass de name of the collection, an extra warning message and the messagge you want
+    to show when the action success*/
     const handleDeleteClick = (item) => {
         ModalDelete({
             item,
             collectionName: 'Company',
+            warningMessage: 'You will lose everything',
             onSuccessMessage: 'The company has been deleted, refresh to see the changes!',
         });
     };

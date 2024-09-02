@@ -3,7 +3,7 @@ import { collection, getDocs, query, limit, startAfter, startAt } from 'firebase
 import { db } from '../services/credenciales.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, EditModal, DeleteModal }) {
+function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick }) {
     const [data, setData] = useState([]); // Holds the data to display in the table
     const [loading, setLoading] = useState(false); // Indicates if data is being fetched
     const [lastVisible, setLastVisible] = useState(null); // Tracks the last document fetched for pagination
@@ -11,8 +11,6 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
     const [currentPage, setCurrentPage] = useState(1); // Tracks the current page number
     const [totalPages, setTotalPages] = useState(0); // Tracks the total number of pages
     const [searchTerm, setSearchTerm] = useState(''); // Tracks the search term input by the user
-    const [showModal, setShowModal] = useState(null); // Controls which modal (view, edit, delete) is displayed
-    const [selectedId, setSelectedId] = useState(null); // Tracks the ID of the selected item for modals
 
     // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
@@ -21,7 +19,6 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
         return querySnapshot.size;
     };
 
-    // Fetches data from Firestore, either with search, next, or previous page
     const fetchData = async (isNextPage = false, isPrevPage = false) => {
         setLoading(true); // Start loading
         try {
@@ -48,7 +45,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
                 setData(documents);
 
                 const totalDocuments = await fetchTotalDocuments();
-                setTotalPages(Math.ceil(totalDocuments / pageSize)); // Calculate total pages
+                setTotalPages(Math.ceil(totalDocuments / pageSize));
             } else {
                 console.log('No data found');
             }
@@ -64,7 +61,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
         fetchData();
     }, [collectionName, pageSize]);
 
-    // Load the next page of data
+     // Load the next page of data
     const loadNext = () => {
         if (currentPage < totalPages) {
             fetchData(true);
@@ -82,10 +79,10 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
 
     // Handle the change in page size (number of items per page)
     const handlePageSizeChange = (event) => {
-        setPageSize(Number(event.target.value)); // Update page size
-        setData([]); // Clear existing data
-        setLastVisible(null); // Reset last visible for fresh fetch
-        fetchData(); // Fetch new data
+        setPageSize(Number(event.target.value));
+        setData([]);
+        setLastVisible(null);
+        fetchData();
     };
 
     // Update search term as user types
@@ -96,33 +93,9 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
     // Handle search form submission
     const handleSearchSubmit = (event) => {
         event.preventDefault();
-        setData([]); // Clear existing data
-        setLastVisible(null); // Reset last visible for fresh fetch
-        fetchData(); // Fetch new data based on search term
-    };
-
-    // Open the view modal with the selected item ID
-    const handleViewClick = (itemId) => {
-        setShowModal('view');
-        setSelectedId(itemId);
-    };
-
-    // Open the edit modal with the selected item ID
-    const handleEditClick = (itemId) => {
-        setShowModal('edit');
-        setSelectedId(itemId);
-    };
-
-    // Open the delete modal with the selected item ID
-    const handleDeleteClick = (itemId) => {
-        setShowModal('delete');
-        setSelectedId(itemId);
-    };
-
-    // Close any open modal
-    const handleCloseClick = () => {
-        setShowModal(null);
-        setSelectedId(null);
+        setData([]);
+        setLastVisible(null);
+        fetchData();
     };
 
     return (
@@ -145,7 +118,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
                 </div>
             </form>
 
-            {/* Data table */}
+            {/* Date table */}
             <div className="table-responsive rounded">
                 <table className="table table-hover">
                     <thead className="thead-dark text-center">
@@ -165,17 +138,17 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
                                     <td key={column} style={{ textAlign: "center" }}>{item[column]}</td>
                                 ))}
                                 <td style={{ textAlign: "center" }}>
-                                    <button onClick={() => handleViewClick(item.id)} className="btn btn-success btn-sm">
+                                    <button onClick={() => handleViewClick(item)} className="btn btn-success btn-sm">
                                         <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
                                     </button>
                                 </td>
                                 <td style={{ textAlign: "center" }}>
-                                    <button onClick={() => handleEditClick(item.id)} className="btn btn-warning btn-sm">
+                                    <button onClick={() => handleEditClick(item)} className="btn btn-warning btn-sm">
                                         <i className="bi bi-pencil" style={{ fontSize: '18px', color: 'white' }}></i>
                                     </button>
                                 </td>
                                 <td style={{ textAlign: "center" }}>
-                                    <button onClick={() => handleDeleteClick(item.id)} className="btn btn-danger btn-sm">
+                                    <button onClick={() => handleDeleteClick(item)} className="btn btn-danger btn-sm">
                                         <i className="bi bi-trash3" style={{ fontSize: '18px', color: 'white' }}></i>
                                     </button>
                                 </td>
@@ -184,11 +157,6 @@ function TableComponent({ collectionName, columnName, columnsToShow, ViewModal, 
                     </tbody>
                 </table>
             </div>
-
-            {/* Modals for view, edit, delete */}
-            {showModal === 'view' && <ViewModal id={selectedId} onClose={handleCloseClick} />}
-            {showModal === 'edit' && <EditModal id={selectedId} onClose={handleCloseClick} />}
-            {showModal === 'delete' && <DeleteModal id={selectedId} onClose={handleCloseClick} />}
 
             {/* Pagination controls */}
             <div className="d-flex justify-content-between align-items-center mt-3">

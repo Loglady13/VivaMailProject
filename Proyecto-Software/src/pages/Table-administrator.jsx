@@ -1,36 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import TableComponent from '../shared-components/Table-component';
+import ModalViewMore from '../shared-components/Modal-view-more.jsx';
+import ModalDelete from '../shared-components/Modal-delete.jsx';
 
+const TableAdministrator = () => {
 
-const TableAdministrator=()=>{
-     // Modales vacíos para placeholders
-     const ViewModal = ({ onClose }) => {
-        return null;
+    // To format the date to show it
+    const formatTimestamp = (timestamp) => {
+        if (!timestamp) return '';
+        const date = new Date(timestamp.seconds * 1000);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
 
-    const EditModal = ({ onClose }) => {
-        return null;
+    const handleViewClick = (item) => {
+        // Calls the modal display function from TableComponent
+        showModal('view', item);
     };
 
-    const DeleteModal = ({ onClose }) => {
-        return null;
+    const handleDeleteClick = (item) => {
+        // Calls the modal removal function from the TableComponent
+        showModal('delete', item);
     };
 
-    return(
+    const handleEditClick = (item) => {
+        return null;
+    }
+
+    const showModal = (modalType, item) => {
+        switch (modalType) {
+            case 'view':
+                ModalViewMore({
+                    title: 'Administrator Details',
+                    fields: [
+                        { label: 'Administrator ID', key: 'id' },
+                        { label: 'Administrator name', key: 'nameAdmin' },
+                        { label: 'Email', key: 'email' },
+                        { label: 'Plan', key: 'plan' },
+                        { label: 'Last update date', key: 'creationDate', format: formatTimestamp },
+                        { label: 'Last update date', key: 'lastUpdate', format: formatTimestamp },
+                    ],
+                    data: item
+                });
+                break;
+            case 'delete':
+                ModalDelete({
+                    item,
+                    collectionName: 'Administrator',
+                    warningMessage: 'You will lose it forever',
+                    onSuccessMessage: 'The administrator has been deleted, refresh to see the changes!',
+                });
+                break;
+            default:
+                break;
+        }
+    };
+
+    return (
         <div>
-            <SidebarMaster/>
+            <SidebarMaster />
             <TableComponent
-                    collectionName="Company"  // Nombre de la colección en tu base de datos Firebase
-                    columnName={['Company', 'Email']} // Nombre de las columnas
-                    columnsToShow={['companyName', 'email']}  // Las columnas que deseas mostrar
-                    ViewModal={ViewModal}  // Componente modal para visualizar
-                    EditModal={EditModal}  // Componente modal para editar
-                    DeleteModal={DeleteModal}  // Componente modal para eliminar
+                collectionName="Administrator" //Name of the Collection
+                columnName={['Name', 'Email']} //Name to show y in table
+                columnsToShow={['nameAdmin', 'email']} //Name of the fields in firebase
+                handleViewClick={handleViewClick}  
+                handleEditClick={handleEditClick}
+                handleDeleteClick={handleDeleteClick}  
             />
         </div>
-        
     );
+};
 
-}
 export default TableAdministrator;
