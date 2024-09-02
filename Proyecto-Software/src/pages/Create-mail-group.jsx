@@ -8,9 +8,6 @@ const CreateMailGroup=()=>{
     return(
         <div>
         <SidebarAdmin/>
-        <div className='container'>
-            <p>Bienvenido</p>
-        </div>
         </div>
 
 
