@@ -39,7 +39,6 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             if (!queryGetCollection.empty) {
                 const documents = queryGetCollection.docs.map(doc => ({
                     id: doc.id,
-                    
                     ...doc.data()
                 }));
                 setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Set last visible document for pagination
@@ -103,6 +102,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
         <div className="container mt-4">
             <h1 className='text-white'>{collectionName}</h1>
 
+            {/* Search form */}
             <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex justify-content-end">
                 <div className='input-group mb-3' style={{ maxWidth: '300px' }}>
                     <input
@@ -118,6 +118,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
                 </div>
             </form>
 
+            {/* Date table */}
             <div className="table-responsive rounded">
                 <table className="table table-hover">
                     <thead className="thead-dark text-center">

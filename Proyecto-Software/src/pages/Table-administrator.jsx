@@ -14,12 +14,12 @@ const TableAdministrator = () => {
     };
 
     const handleViewClick = (item) => {
-        // Llama a la función de visualización del modal desde el TableComponent
+        // Calls the modal display function from TableComponent
         showModal('view', item);
     };
 
     const handleDeleteClick = (item) => {
-        // Llama a la función de eliminación del modal desde el TableComponent
+        // Calls the modal removal function from the TableComponent
         showModal('delete', item);
     };
 
@@ -60,12 +60,12 @@ const TableAdministrator = () => {
         <div>
             <SidebarMaster />
             <TableComponent
-                collectionName="Administrator"
-                columnName={['Name', 'Email']}
-                columnsToShow={['nameAdmin', 'email']}
-                handleViewClick={handleViewClick}  // Pasar función para manejar vista
+                collectionName="Administrator" //Name of the Collection
+                columnName={['Name', 'Email']} //Name to show y in table
+                columnsToShow={['nameAdmin', 'email']} //Name of the fields in firebase
+                handleViewClick={handleViewClick}  
                 handleEditClick={handleEditClick}
-                handleDeleteClick={handleDeleteClick}  // Pasar función para manejar eliminación
+                handleDeleteClick={handleDeleteClick}  
             />
         </div>
     );
