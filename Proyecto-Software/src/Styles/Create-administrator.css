@@ -12,11 +12,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../images/background-create-administrator.jpg');
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.3), /* Blanco con opacidad del 40% */
+        rgba(255, 255, 255, 0.3)  /* Blanco con opacidad del 40% */
+      ), url('../images/background-create-administrator.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    filter: brightness(35%); 
     z-index: -1; 
 }
 
