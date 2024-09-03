@@ -8,8 +8,11 @@ import * as XLSX from 'xlsx';
 import '../Styles/Create-client-mail.css'
 
 const CreateClientMail = () => {
+
+     /* To redirect to the home page from the cancel button */
     const navigate = useNavigate();
 
+     /* To set inputs as empty after a creation */
     const defaultEntry = {
         nameClient: '',
         emailClient: '',
