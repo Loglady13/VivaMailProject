@@ -54,7 +54,7 @@ const SidebarAdmin = () => {
                 </div>
 
                 <div className="search-box" style={{ marginTop: '30px' }}>
-                    <i class="bi bi-search" alt="Search Icon" style={{ fontSize: '18px', marginRight: '10px', color: 'white' }}></i>
+                    <i class="bi bi-search" alt="Search Icon" style={{ fontSize: '17px', marginRight: '10px', color: 'white' }}></i>
                     <input type="text" placeholder="Search"/>
                 </div>
 
