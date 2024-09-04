@@ -1,0 +1,52 @@
+.plan-management::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.3), /* Blanco con opacidad del 40% */
+        rgba(255, 255, 255, 0.3)  /* Blanco con opacidad del 40% */
+      ),  url('../images/background-plan-management.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: -1; 
+    
+}
+
+.plan-management .content {
+    position: relative;
+    z-index: 1; 
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in width and height calculation */
+}
+
+.plan-management {
+    position: relative;
+    width: 100%;
+    min-height: 100vh; /* Use min-height to allow content to extend the container */
+    overflow: hidden; 
+}
+
+.carousel-indicators {
+    transform: translateY(60%);
+    z-index: 100;
+}
+
+.carousel {
+    width: 100%;  
+}
+
+.card-hover-effect {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+  
+.card-hover-effect:hover {
+transform: scale(1.1);
+box-shadow: 0 5px 10px rgba(0, 0, 0, 4);
+}  
+
+
