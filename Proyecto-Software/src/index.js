@@ -8,8 +8,7 @@ import ViewLogin from './pages/ViewLogin';
 import HomeMaster from './pages/Home-page-master';
 import Home from './pages/Principal';
 import Login from './pages/Login';
-import SidebarAdmin from './shared-components/Sidebar-admin';
-import NewCompany from './pages/Create-company';
+import CreateCompany from './pages/Create-company';
 import TableCompany from './pages/Table-company';
 import HomeAdmin from './pages/Home-page-admin';
 import CreateAdministrator from './pages/Create-administrator';
@@ -66,13 +65,8 @@ const router = createBrowserRouter([
     element: <CreateCampaign/>
   },
   {
-
-    path: "SidebarAdmin",
-    element: <SidebarAdmin/>
-  },
-  {
-    path: "NewCompany",
-    element: <NewCompany/>
+    path: "CreateCompany",
+    element: <CreateCompany/>
   },
   {
     path: "TableCompany",

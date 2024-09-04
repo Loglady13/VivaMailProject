@@ -74,7 +74,7 @@ const SidebarAdmin = () => {
                         <div className="p-2 menu-item"
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/NewCompany')}>
+                            onClick={() => navigate('/CreateCompany')}>
                             Add new company
                         </div>
                         <div className="p-2 menu-item"
