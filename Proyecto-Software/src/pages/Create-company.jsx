@@ -42,7 +42,7 @@ const CreateCompany = () => {
         const q = query(collection(db, 'Company'), where('email', '==', email));
         const querySnapshot = await getDocs(q);
         return !querySnapshot.empty;
-    };
+    }; 
 
     const validateInputs = () => {
         const newErrors = { companyName: '', legalID: '', email: ''};
@@ -123,7 +123,7 @@ const CreateCompany = () => {
     return (
         <div className='NewCompany'>
             <SidebarAdmin />
-            <div className="container-md" style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <div className="container-md" style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '50px', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ marginBottom: '20px' }}>
                     <p className="fs-2 text-white" style={{ textAlign: 'left' }}>New Company</p>
                 </div>
@@ -144,7 +144,6 @@ const CreateCompany = () => {
                         {errors.email && <div className='text-danger'>{errors.email}</div>}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '800px', marginTop: '18px', marginBottom: '-10px' }}>
-                        <button type='button' className="btn btn-primary" style={{ backgroundColor: '#DE3232', border: 'none', margin: '5px', width: '90px', height: '40px' }} onClick={() => navigate('/HomeAdmin')}>Cancel</button>
                         <button className="btn btn-primary" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>Add</button>
                     </div>
                 </form>

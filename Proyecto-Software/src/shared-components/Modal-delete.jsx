@@ -18,6 +18,7 @@ const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMess
     confirmButtonColor: '#CB2A2A',
     cancelButtonColor: '#423F3F',
     showCloseButton: true,
+    allowOutsideClick: false,
   });
 
   if (result.isConfirmed) {

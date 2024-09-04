@@ -116,7 +116,8 @@ const PlanManagement = () => {
   const handleDeleteClick = (item) => {
       ModalDelete({
           item,
-          collectionName: 'Plan',
+          collectionName: 'Plan', 
+          warningMessage: 'Mensaje de warning :c',
           onSuccessMessage: 'The plan has been deleted, refresh to see the changes!',
       });
   };

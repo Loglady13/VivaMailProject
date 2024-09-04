@@ -28,7 +28,7 @@ const TableCompany = () => {
 
     // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
-        const queryCollection = collection(db, 'Company'); 
+        const queryCollection = collection(db, 'Company');
         const querySnapshot = await getDocs(queryCollection);
         return querySnapshot.size;
     };
@@ -257,15 +257,14 @@ const TableCompany = () => {
                 <h1 className='text-white' >Company</h1>
 
                 {/* Search form */}
-                <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex justify-content-end">
-                    <div className='input-group mb-3' style={{ maxWidth: '300px' }}>
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                            className="form-control"
-                        />
+                <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
+                    
+                    <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px'}}>
+                        <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
+                    </button>
+
+                    <div className="input-group" style={{ maxWidth: '300px' }}>
+                        <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control"/>
                         <span className="input-group-text">
                             <i className="bi bi-search"></i>
                         </span>
@@ -292,7 +291,7 @@ const TableCompany = () => {
                                     <td style={{ textAlign: "center" }}>{item.email}</td>
                                     <td style={{ textAlign: "center" }}>{item.state ? 'Active' : 'Inactive'}</td>
                                     <td className='text-center'>
-                                        <button onClick={() => handleViewClick(item)} className="btn btn-success btn-sm">
+                                        <button onClick={() => handleViewClick(item)} className="btn btn-primary btn-sm">
                                             <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
                                         </button>
                                     </td>

@@ -113,7 +113,7 @@ const CreatePlan=()=>{
     return(
         <div className='create-new-plan'>
             <div><SidebarMaster/></div>
-            <div className='container-create-plan' style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <div className='container-create-plan' style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '50px', display: 'flex', flexDirection: 'column' }}>
                 <p className="fs-2 text-white" style={{ marginBottom: '20px', textAlign: 'left' }}>New Plan</p>
                 <div className='form-create-plan'>
                     <form onSubmit={save} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

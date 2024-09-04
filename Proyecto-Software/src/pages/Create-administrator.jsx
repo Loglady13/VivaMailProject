@@ -139,7 +139,7 @@ const CreateAdministrator=()=>{
     return(
         <div className='NewAdmin'>
             <SidebarMaster />
-            <div className="container-md" style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <div className="container-md" style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '50px', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ marginBottom: '20px' }}>
                     <p className="fs-2 text-white" style={{ textAlign: 'left' }}>New Administrator</p>
                 </div>

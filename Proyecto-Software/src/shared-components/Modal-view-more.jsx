@@ -47,6 +47,7 @@ const ModalViewMore = ({ title, fields, data }) => {
     html: generateHtmlContent(),
     showConfirmButton: false,
     showCloseButton: true,
+    allowOutsideClick: false,
     background: '#DFD8E2',
     width: '750px'
   });

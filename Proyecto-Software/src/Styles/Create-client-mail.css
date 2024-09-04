@@ -1,7 +1,7 @@
 .NewClient {
     position: relative;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden; 
 }
 
@@ -28,4 +28,5 @@
     z-index: 1; 
     padding: 20px;
     width: 100%;
+    box-sizing: border-box;
 }
