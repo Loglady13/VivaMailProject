@@ -49,7 +49,7 @@ const ModalViewMore = ({ title, fields, data }) => {
     showCloseButton: true,
     allowOutsideClick: false,
     background: '#DFD8E2',
-    width: '750px'
+    width: '650px'
   });
 };
 

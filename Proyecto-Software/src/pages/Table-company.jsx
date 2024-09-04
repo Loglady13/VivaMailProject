@@ -166,7 +166,8 @@ const TableCompany = () => {
             cancelButtonColor: '#DE3232',
             showCloseButton: true,
             background: '#DFD8E2',
-            width: '700px',
+            width: '650px',
+            allowOutsideClick: false,
             customClass: {
                 container: 'swal2-container',
                 popup: 'swal2-popup',

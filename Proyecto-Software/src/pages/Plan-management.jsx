@@ -65,6 +65,7 @@ const PlanManagement = () => {
       cancelButtonColor: '#DE3232',
       background: '#F5F5F5',
       showCloseButton: true,
+      allowOutsideClick: false,
       preConfirm: () => {
         const form = document.getElementById('edit-form');
         const namePlan = form.querySelector('#namePlan').value;
