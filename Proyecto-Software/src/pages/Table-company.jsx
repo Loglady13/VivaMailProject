@@ -28,7 +28,7 @@ const TableCompany = () => {
 
     // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
-        const queryCollection = collection(db, 'Company');
+        const queryCollection = collection(db, 'Company'); 
         const querySnapshot = await getDocs(queryCollection);
         return querySnapshot.size;
     };

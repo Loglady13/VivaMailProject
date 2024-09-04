@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt } from 'firebase/firestore';
+import { collection, getDocs, query, limit, startAfter, startAt, where} from 'firebase/firestore';
 import { db } from '../services/credenciales.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick }) {
-    const [data, setData] = useState([]); // Holds the data to display in the table
-    const [loading, setLoading] = useState(false); // Indicates if data is being fetched
-    const [lastVisible, setLastVisible] = useState(null); // Tracks the last document fetched for pagination
-    const [pageSize, setPageSize] = useState(5); // Number of items per page
-    const [currentPage, setCurrentPage] = useState(1); // Tracks the current page number
-    const [totalPages, setTotalPages] = useState(0); // Tracks the total number of pages
-    const [searchTerm, setSearchTerm] = useState(''); // Tracks the search term input by the user
+    const [data, setData] = useState([]);  // State to hold the fetched data
+    const [loading, setLoading] = useState(false);  // Indicates if data is still being loaded
+    const [lastVisible, setLastVisible] = useState(null);  // Stores the last visible document for pagination
+    const [firstVisible, setFirstVisible] = useState(null);  // Stores the first visible document
+    const [pageSize, setPageSize] = useState(5);  // Default page size
+    const [isFirstPage, setIsFirstPage] = useState(true);  // Indicates if it's the first page
+    const [searchTerm, setSearchTerm] = useState('');  // State for the search term
+    const [currentPage, setCurrentPage] = useState(1);  // Current page number
+    const [totalPages, setTotalPages] = useState(0);  // Total number of pages
+    const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents
 
-    // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
         const queryCollection = collection(db, collectionName);
         const querySnapshot = await getDocs(queryCollection);
@@ -20,19 +22,23 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
     };
 
     const fetchData = async (isNextPage = false, isPrevPage = false) => {
-        setLoading(true); // Start loading
+        setLoading(true);
         try {
-            const queryCollection = collection(db, collectionName);
+            const queryCollection = collection(db, collectionName);  // Checks if the collection exists, if not, creates it
             let queryC;
 
             if (searchTerm) {
-                queryC = query(queryCollection, limit(pageSize)); // Search scenario
+                // Handles search functionality
+                queryC = query(queryCollection, where(columnsToShow[0], '>=', searchTerm), where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
             } else if (isNextPage && lastVisible) {
-                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize)); // Pagination: Next page
-            } else if (isPrevPage && currentPage > 1) {
-                queryC = query(queryCollection, startAt(lastVisible), limit(pageSize)); // Pagination: Previous page
+                // Handles next page functionality
+                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+            } else if (isPrevPage && firstVisiblePages.length > 1) {
+                // Handles previous page functionality
+                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
             } else {
-                queryC = query(queryCollection, limit(pageSize)); // Initial load
+                // Loads the first page
+                queryC = query(queryCollection, limit(pageSize));
             }
 
             const queryGetCollection = await getDocs(queryC);
@@ -41,7 +47,13 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
                     id: doc.id,
                     ...doc.data()
                 }));
-                setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Set last visible document for pagination
+
+                if (!isPrevPage) {
+                    setData(documents);
+                    setFirstVisible(queryGetCollection.docs[0]);
+                    setFirstVisiblePages([...firstVisiblePages, queryGetCollection.docs[0]]);
+                }
+                setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Updates lastVisible
                 setData(documents);
 
                 const totalDocuments = await fetchTotalDocuments();
@@ -49,60 +61,72 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             } else {
                 console.log('No data found');
             }
+            setIsFirstPage(!isNextPage);
         } catch (err) {
             console.log(err);
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     };
 
-    // Fetch data when component mounts or when collectionName or pageSize changes
     useEffect(() => {
-        fetchData();
+        fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
     }, [collectionName, pageSize]);
 
-     // Load the next page of data
     const loadNext = () => {
         if (currentPage < totalPages) {
-            fetchData(true);
-            setCurrentPage(currentPage + 1); // Increment current page
+            fetchData(true);  // Fetches next page data
+            setCurrentPage(currentPage + 1);  // Increments the current page number
         }
     };
 
-    // Load the previous page of data
     const loadPrev = () => {
         if (currentPage > 1) {
-            fetchData(false, true);
-            setCurrentPage(currentPage - 1); // Decrement current page
+            fetchData(false, true);  // Fetches previous page data
+            setCurrentPage(currentPage - 1);  // Decrements the current page number
+
+            // Removes the last entry from the history since we are going back
+            const newFirstVisiblePages = [...firstVisiblePages];
+            newFirstVisiblePages.pop();
+            setFirstVisiblePages(newFirstVisiblePages);
         }
     };
 
-    // Handle the change in page size (number of items per page)
     const handlePageSizeChange = (event) => {
-        setPageSize(Number(event.target.value));
-        setData([]);
-        setLastVisible(null);
-        fetchData();
+        setPageSize(Number(event.target.value));  // Updates the page size
+        setData([]);  // Clears the current data
+        setLastVisible(null);  // Resets lastVisible
+        fetchData();  // Fetches data with the new page size
     };
 
-    // Update search term as user types
     const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
+        setSearchTerm(event.target.value);  // Updates the search term
     };
 
-    // Handle search form submission
     const handleSearchSubmit = (event) => {
         event.preventDefault();
-        setData([]);
-        setLastVisible(null);
-        fetchData();
+        // Checks if the search term is not empty before executing the query
+        if (searchTerm.trim() !== '') {
+            // Resets pagination when a search is performed
+            setData([]);
+            setLastVisible(null);
+            setFirstVisible(null);
+            fetchData(false, false, searchTerm);  // Calls fetchData with the search term
+            console.log(searchTerm);
+        } else {
+            // If the search field is empty, show all results
+            setData([]);
+            setLastVisible(null);
+            setFirstVisible(null);
+
+            fetchData();  // Calls fetchData without any search term
+        }
     };
 
     return (
         <div className="container mt-4">
             <h1 className='text-white'>{collectionName}</h1>
 
-            {/* Search form */}
             <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex justify-content-end">
                 <div className='input-group mb-3' style={{ maxWidth: '300px' }}>
                     <input
@@ -118,7 +142,6 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
                 </div>
             </form>
 
-            {/* Date table */}
             <div className="table-responsive rounded">
                 <table className="table table-hover">
                     <thead className="thead-dark text-center">
@@ -158,19 +181,18 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
                 </table>
             </div>
 
-            {/* Pagination controls */}
             <div className="d-flex justify-content-between align-items-center mt-3">
-                <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} entries</span>
+                <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} pages</span>
                 <div className='d-flex justify-content-between align-items-center'>
-                    <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
+                    <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                         Prev
                     </button>
-                    <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block" style={{ width: '22.5%', height: '38.5px' }}>
+                    <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px',  textAlign: "center"  }}>
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <button onClick={loadNext} disabled={currentPage === totalPages || loading} className="btn btn-light d-inline-block" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
+                    <button onClick={loadNext} disabled={currentPage === totalPages || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                         Next
                     </button>
                 </div>
