@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, where} from 'firebase/firestore';
+import { collection, getDocs, query, limit, startAfter, startAt, where, onSnapshot} from 'firebase/firestore';
 import { db } from '../services/credenciales.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick }) {
+function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick }) {
     const [data, setData] = useState([]);  // State to hold the fetched data
     const [loading, setLoading] = useState(false);  // Indicates if data is still being loaded
     const [lastVisible, setLastVisible] = useState(null);  // Stores the last visible document for pagination
@@ -29,7 +29,16 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
 
             if (searchTerm) {
                 // Handles search functionality
-                queryC = query(queryCollection, where(columnsToShow[0], '>=', searchTerm), where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                const regex = /^[a-zA-Z0-9._%+-]+@$/;
+                if(regex.test(searchTerm)){
+                    queryC = query(queryCollection, 
+                        where(columnsToShow[1], '>=', searchTerm), //Search for email
+                        where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                } else {
+                    queryC = query(queryCollection, 
+                        where(columnsToShow[0], '>=', searchTerm), //Search for name
+                        where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                };
             } else if (isNextPage && lastVisible) {
                 // Handles next page functionality
                 queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
@@ -70,7 +79,16 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
     };
 
     useEffect(() => {
+        const queryCollection = collection(db, collectionName);
+        const unsubscribe = onSnapshot(queryCollection, (snapshot) => {
+            const documents = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setData(documents);
+        });
         fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
+        return () => unsubscribe();  
     }, [collectionName, pageSize]);
 
     const loadNext = () => {
@@ -118,8 +136,9 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             setData([]);
             setLastVisible(null);
             setFirstVisible(null);
-
+            setCurrentPage(1);  // Reinicia el número de la página actual
             fetchData();  // Calls fetchData without any search term
+
         }
     };
 
@@ -127,60 +146,65 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
         <div className="container mt-4">
             <h1 className='text-white'>{collectionName}</h1>
 
-            <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex justify-content-end">
-                <div className='input-group mb-3' style={{ maxWidth: '300px' }}>
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        className="form-control"
-                    />
-                    <span className="input-group-text">
+            <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
+                <button onClick={() => {handleCreateClick()}} type="button" className="btn btn-success me-5" style={{ fontSize: '18px'}}>
+                    <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
+                </button>
+
+                <div className="input-group" style={{ maxWidth: '300px' }}>
+                    <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control"/>
+                    <button className="input-group-text">
                         <i className="bi bi-search"></i>
-                    </span>
+                    </button>
                 </div>
-            </form>
+            </form> 
 
-            <div className="table-responsive rounded">
-                <table className="table table-hover">
-                    <thead className="thead-dark text-center">
-                        <tr>
-                            {columnName.map((column) => (
-                                <th className='text-white' style={{ background: '#222527' }} key={column}>{column}</th>
-                            ))}
-                            <th className='text-white' style={{ background: '#222527', width: '8%' }}>View More</th>
-                            <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
-                            <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item) => (
-                            <tr key={item.id}>
-                                {columnsToShow.map((column) => (
-                                    <td key={column} style={{ textAlign: "center" }}>{item[column]}</td>
+            {loading ? (
+                <div className="d-flex justify-content-center">
+                    <div className="spinner-border text-light" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            ) : (
+                <div className="table-responsive rounded">
+                    <table className="table table-hover">
+                        <thead className="thead-dark text-center">
+                            <tr>
+                                {columnName.map((column) => (
+                                    <th className='text-white' style={{ background: '#222527' }} key={column}>{column}</th>
                                 ))}
-                                <td style={{ textAlign: "center" }}>
-                                    <button onClick={() => handleViewClick(item)} className="btn btn-success btn-sm">
-                                        <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
-                                    </button>
-                                </td>
-                                <td style={{ textAlign: "center" }}>
-                                    <button onClick={() => handleEditClick(item)} className="btn btn-warning btn-sm">
-                                        <i className="bi bi-pencil" style={{ fontSize: '18px', color: 'white' }}></i>
-                                    </button>
-                                </td>
-                                <td style={{ textAlign: "center" }}>
-                                    <button onClick={() => handleDeleteClick(item)} className="btn btn-danger btn-sm">
-                                        <i className="bi bi-trash3" style={{ fontSize: '18px', color: 'white' }}></i>
-                                    </button>
-                                </td>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>View More</th>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
+                        </thead>
+                        <tbody>
+                            {data.map((item) => (
+                                <tr key={item.id}>
+                                    {columnsToShow.map((column) => (
+                                        <td key={column} style={{ textAlign: "center" }}>{item[column]}</td>
+                                    ))}
+                                    <td style={{ textAlign: "center" }}>
+                                        <button onClick={() => handleViewClick(item)} className="btn btn-primary btn-sm">
+                                            <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
+                                        </button>
+                                    </td>
+                                    <td style={{ textAlign: "center" }}>
+                                        <button onClick={() => handleEditClick(item)} className="btn btn-warning btn-sm">
+                                            <i className="bi bi-pencil" style={{ fontSize: '18px', color: 'white' }}></i>
+                                        </button>
+                                    </td>
+                                    <td style={{ textAlign: "center" }}>
+                                        <button onClick={() => handleDeleteClick(item)} className="btn btn-danger btn-sm">
+                                            <i className="bi bi-trash3" style={{ fontSize: '18px', color: 'white' }}></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
             <div className="d-flex justify-content-between align-items-center mt-3">
                 <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} pages</span>
                 <div className='d-flex justify-content-between align-items-center'>
