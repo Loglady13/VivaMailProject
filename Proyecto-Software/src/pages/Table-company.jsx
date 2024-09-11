@@ -7,7 +7,7 @@ import '../Styles/Table-company.css';
 import Swal from 'sweetalert2';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
-
+import { useNavigate } from 'react-router-dom';
 
 const TableCompany = () => {
 
@@ -29,6 +29,7 @@ const TableCompany = () => {
     const [searchTerm, setSearchTerm] = useState(''); // Tracks the search term input by the user
     const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents 
 
+    const navigate = useNavigate();
     // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
         const queryCollection = collection(db, 'Company');
@@ -302,6 +303,10 @@ const TableCompany = () => {
         });
     };
 
+    const handleCreateClick = () =>{
+        navigate('/CreateCompany');
+    };
+
 
     return (
         <div className='TableCompany'>
@@ -312,7 +317,7 @@ const TableCompany = () => {
                 {/* Search form */}
                 <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
                     
-                    <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px'}}>
+                    <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px'}} onClick={handleCreateClick}>
                         <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
                     </button>
 
