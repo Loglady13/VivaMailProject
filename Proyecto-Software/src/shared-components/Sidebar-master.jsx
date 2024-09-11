@@ -42,7 +42,7 @@ const SidebarMaster = () => {
       </button>
 
       {/* Sidebar */}
-      <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel" data-bs-scroll="true" style={{ backgroundColor: '#151718', width: '380px' }}>
+      <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel" data-bs-scroll="true" style={{ backgroundColor: '#151718', width: '370px' }}>
         {/* Sidebar top */}
         <div className="offcanvas-header text-white" style={{ backgroundColor: '#222527', height: '85px' }}>
           <div className="sidebar-logo" style={{ display: 'flex', justifyContent: 'center', alignItems: 'Center' }}>
