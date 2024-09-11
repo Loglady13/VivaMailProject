@@ -7,8 +7,10 @@ import Swal from 'sweetalert2';
 import { collection, getDocs, query, doc, updateDoc, where } from 'firebase/firestore';
 import { db } from '../services/credenciales.js';
 import '../Styles/Create-company.css';
+import { useNavigate } from 'react-router-dom';
 
 const TableAdministrator = () => {
+    const navigate = useNavigate();
 
     // To format the date to show it
     const formatTimestamp = (timestamp) => {
@@ -138,6 +140,10 @@ const TableAdministrator = () => {
         }
     };
 
+    const handleCreateClick = () =>{
+        navigate('/CreateAdministrator');
+    };
+
     const showModal = (modalType, item) => {
         switch (modalType) {
             case 'view':
@@ -177,6 +183,7 @@ const TableAdministrator = () => {
                 handleViewClick={handleViewClick}  
                 handleEditClick={handleEditClick}
                 handleDeleteClick={handleDeleteClick}  
+                handleCreateClick={handleCreateClick}
             />
         </div>
     );
