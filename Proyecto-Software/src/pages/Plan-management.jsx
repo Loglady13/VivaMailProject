@@ -118,7 +118,7 @@ const PlanManagement = () => {
       ModalDelete({
           item,
           collectionName: 'Plan', 
-          warningMessage: 'Mensaje de warning :c',
+          warningMessage: 'You will lose it forever',
           onSuccessMessage: 'The plan has been deleted, refresh to see the changes!',
       });
   };
