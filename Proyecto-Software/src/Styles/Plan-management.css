@@ -31,22 +31,40 @@
     overflow: hidden; 
 }
 
+/* Carousel indicators */
 .carousel-indicators {
     transform: translateY(60%);
     z-index: 100;
 }
 
+/* General carousel settings */
 .carousel {
-    width: 100%;  
+    width: 100%;
 }
 
+/* Style cards with hover effect */
 .card-hover-effect {
+    min-height: 400px;
+    max-height: 600px;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
+    z-index: 1; /* Ensures that the card is above the rest */
+    margin-top: 20px; /* Adjust the top margin if necessary */
 }
-  
+
+/* Effect when hovering over cards */
 .card-hover-effect:hover {
-transform: scale(1.1);
-box-shadow: 0 5px 10px rgba(0, 0, 0, 4);
-}  
+    transform: scale(1.1); /* Enlarge the card on hover */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4); /* Add shadow */
+    z-index: 2; /* Raise the card so that it is displayed on top */
+    max-height: 660px; /* Ensures the card has space as it grows */
+}
+
+/* Ensures that the content of the cards is not cut off */
+.carousel-item {
+    overflow: visible; /* Allows cards to expand on hover */
+}
+
+
+
 
 

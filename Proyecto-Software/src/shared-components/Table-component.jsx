@@ -173,7 +173,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
                                 {columnName.map((column) => (
                                     <th className='text-white' style={{ background: '#222527' }} key={column}>{column}</th>
                                 ))}
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>View More</th>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>More</th>
                                 <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
                                 <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
                             </tr>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, onSnapshot, deleteDoc } from 'firebase/firestore';
 import { db } from '../services/credenciales.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
@@ -21,10 +21,13 @@ const TableCompany = () => {
     const [data, setData] = useState([]); // Holds the data to display in the table
     const [loading, setLoading] = useState(false); // Indicates if data is being fetched
     const [lastVisible, setLastVisible] = useState(null); // Tracks the last document fetched for pagination
+    const [fistVisible, setFirstVisible] = useState(null);
     const [pageSize, setPageSize] = useState(5); // Number of items per page
+    const [isFirstPage, setIsFirstPage] = useState(true);
     const [currentPage, setCurrentPage] = useState(1); // Tracks the current page number
     const [totalPages, setTotalPages] = useState(0); // Tracks the total number of pages
     const [searchTerm, setSearchTerm] = useState(''); // Tracks the search term input by the user
+    const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents 
 
     // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
@@ -41,13 +44,26 @@ const TableCompany = () => {
             let queryC;
 
             if (searchTerm) {
-                queryC = query(queryCollection, limit(pageSize)); // Search scenario
+                // Handles search functionality
+                const regex = /^[a-zA-Z0-9._%+-]+@$/;
+                if (regex.test(searchTerm)) {
+                    queryC = query(queryCollection,
+                        where('email', '>=', searchTerm), //Search for email
+                        where('email', '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                } else {
+                    queryC = query(queryCollection,
+                        where('companyName', '>=', searchTerm), //Search for name
+                        where('companyName', '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                };
             } else if (isNextPage && lastVisible) {
-                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize)); // Pagination: Next page
-            } else if (isPrevPage && currentPage > 1) {
-                queryC = query(queryCollection, startAt(lastVisible), limit(pageSize)); // Pagination: Previous page
+                // Handles next page functionality
+                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+            } else if (isPrevPage && firstVisiblePages.length > 1) {
+                // Handles previous page functionality
+                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
             } else {
-                queryC = query(queryCollection, limit(pageSize)); // Initial load
+                // Loads the first page
+                queryC = query(queryCollection, limit(pageSize));
             }
 
             const queryGetCollection = await getDocs(queryC);
@@ -61,7 +77,13 @@ const TableCompany = () => {
                     creationDate: doc.data().creationDate,
                     lastUpdate: doc.data().lastUpdate,
                 }));
-                setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Set last visible document for pagination
+
+                if (!isPrevPage) {
+                    setData(documents);
+                    setFirstVisible(queryGetCollection.docs[0]);
+                    setFirstVisiblePages([...firstVisiblePages, queryGetCollection.docs[0]]);
+                }
+                setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Updates lastVisible
                 setData(documents);
 
                 const totalDocuments = await fetchTotalDocuments();
@@ -69,6 +91,7 @@ const TableCompany = () => {
             } else {
                 console.log('No data found');
             }
+            setIsFirstPage(!isNextPage);
         } catch (err) {
             console.log(err);
         } finally {
@@ -78,8 +101,18 @@ const TableCompany = () => {
 
     // Fetch data when component mounts or when pageSize changes
     useEffect(() => {
-        fetchData();
-    }, [pageSize]);
+        const queryCollection = collection(db, 'Company');
+        const unsubscribe = onSnapshot(queryCollection, (snapshot) => {
+            const documents = snapshot.docs.map(doc => ({
+                id: doc.id,
+                name: doc.data().companyName,
+                ...doc.data()
+            }));
+            setData(documents);
+        });
+        fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
+        return () => unsubscribe();
+    }, ['Company', pageSize]);
 
     // Load the next page of data
     const loadNext = () => {
@@ -92,8 +125,13 @@ const TableCompany = () => {
     // Load the previous page of data
     const loadPrev = () => {
         if (currentPage > 1) {
-            fetchData(false, true);
-            setCurrentPage(currentPage - 1); // Decrement current page
+            fetchData(false, true);  // Fetches previous page data
+            setCurrentPage(currentPage - 1);  // Decrements the current page number
+
+            // Removes the last entry from the history since we are going back
+            const newFirstVisiblePages = [...firstVisiblePages];
+            newFirstVisiblePages.pop();
+            setFirstVisiblePages(newFirstVisiblePages);
         }
     };
 
@@ -113,9 +151,23 @@ const TableCompany = () => {
     // Handle search form submission
     const handleSearchSubmit = (event) => {
         event.preventDefault();
-        setData([]); // Clear existing data
-        setLastVisible(null); // Reset last visible for fresh fetch
-        fetchData(); // Fetch new data based on search term
+        // Checks if the search term is not empty before executing the query
+        if (searchTerm.trim() !== '') {
+            // Resets pagination when a search is performed
+            setData([]);
+            setLastVisible(null);
+            setFirstVisible(null);
+            fetchData(false, false, searchTerm);  // Calls fetchData with the search term
+            console.log(searchTerm);
+        } else {
+            // If the search field is empty, show all results
+            setData([]);
+            setLastVisible(null);
+            setFirstVisible(null);
+            setCurrentPage(1);  // Reinicia el número de la página actual
+            fetchData();  // Calls fetchData without any search term
+
+        }
     };
 
     // To format the date to show it
@@ -223,7 +275,7 @@ const TableCompany = () => {
                 Swal.fire({
                     position: 'top-end', // Position in the top right corner
                     icon: 'success',
-                    text: 'Company update done, refresh to see the changes!',
+                    text: 'Company update done!',
                     showConfirmButton: false, // Remove the confirm button
                     timer: 5000, // Message will disappear after 5 seconds
                     toast: true, // Convert the alert into a toast notification
@@ -246,7 +298,7 @@ const TableCompany = () => {
             item,
             collectionName: 'Company',
             warningMessage: 'You will lose everything',
-            onSuccessMessage: 'The company has been deleted, refresh to see the changes!',
+            onSuccessMessage: 'The company has been deleted!',
         });
     };
 
@@ -272,46 +324,52 @@ const TableCompany = () => {
                     </div>
                 </form>
 
-                {/* Data table */}
-                <div className="table-responsive rounded">
-                    <table className="table table-hover">
-                        <thead className="thead-dark text-center">
-                            <tr>
-                                <th className='text-white' style={{ background: '#222527', width: '26%' }}> Name </th>
-                                <th className='text-white' style={{ background: '#222527', width: '26%' }}> Email </th>
-                                <th className='text-white' style={{ background: '#222527', width: '26%' }}> State </th>
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>View More</th>
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((item) => (
-                                <tr key={item.id}>
-                                    <td style={{ textAlign: "center" }}>{item.name}</td>
-                                    <td style={{ textAlign: "center" }}>{item.email}</td>
-                                    <td style={{ textAlign: "center" }}>{item.state ? 'Active' : 'Inactive'}</td>
-                                    <td className='text-center'>
-                                        <button onClick={() => handleViewClick(item)} className="btn btn-primary btn-sm">
-                                            <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
-                                        </button>
-                                    </td>
-                                    <td className='text-center'>
-                                        <button onClick={() => handleEditClick(item)} className="btn btn-warning btn-sm">
-                                            <i className="bi bi-pencil" style={{ fontSize: '18px', color: 'white' }}></i>
-                                        </button>
-                                    </td>
-                                    <td className='text-center'>
-                                        <button onClick={() => handleDeleteClick(item)} className="btn btn-danger btn-sm">
-                                            <i className="bi bi-trash3" style={{ fontSize: '18px', color: 'white' }}></i>
-                                        </button>
-                                    </td>
+                {loading ? (
+                    <div className="d-flex justify-content-center">
+                        <div className="spinner-border text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="table-responsive rounded">
+                        <table className="table table-hover">
+                            <thead className="thead-dark text-center">
+                                <tr>
+                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}> Name </th>
+                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}> Email </th>
+                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}> State </th>
+                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>More</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-
+                            </thead>
+                            <tbody>
+                                {data.map((item) => (
+                                    <tr key={item.id}>
+                                        <td style={{ textAlign: "center" }}>{item.name}</td>
+                                        <td style={{ textAlign: "center" }}>{item.email}</td>
+                                        <td style={{ textAlign: "center" }}>{item.state ? 'Active' : 'Inactive'}</td>
+                                        <td className='text-center'>
+                                            <button onClick={() => handleViewClick(item)} className="btn btn-primary btn-sm">
+                                                <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
+                                            </button>
+                                        </td>
+                                        <td className='text-center'>
+                                            <button onClick={() => handleEditClick(item)} className="btn btn-warning btn-sm">
+                                                <i className="bi bi-pencil" style={{ fontSize: '18px', color: 'white' }}></i>
+                                            </button>
+                                        </td>
+                                        <td className='text-center'>
+                                            <button onClick={() => handleDeleteClick(item)} className="btn btn-danger btn-sm">
+                                                <i className="bi bi-trash3" style={{ fontSize: '18px', color: 'white' }}></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
                 {/* Pagination controls */}
                 <div className="d-flex justify-content-between align-items-center mt-3">
                     <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} entries</span>

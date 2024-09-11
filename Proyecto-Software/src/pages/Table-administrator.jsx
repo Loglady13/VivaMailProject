@@ -73,7 +73,8 @@ const TableAdministrator = () => {
                 cancelButtonColor: '#DE3232',
                 showCloseButton: true,
                 background: '#DFD8E2',
-                width: '700px',
+                allowOutsideClick: false,
+                width: '700px', 
                 customClass: {
                     container: 'swal2-container',
                     popup: 'swal2-popup',
