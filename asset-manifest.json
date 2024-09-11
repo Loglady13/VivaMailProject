@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/VivaMailProject/static/css/main.abb533ac.css",
+    "main.js": "/VivaMailProject/static/js/main.c2bd68e3.js",
+    "static/media/background-create-plan.png": "/VivaMailProject/static/media/background-create-plan.cabb28179eb4d38e9c86.png",
+    "static/media/background-master-configuration.jpg": "/VivaMailProject/static/media/background-master-configuration.833b541811135c482230.jpg",
+    "static/media/background-plan-management.png": "/VivaMailProject/static/media/background-plan-management.201b311dd9d037f20daa.png",
+    "static/media/background-create-client-mail.jpg": "/VivaMailProject/static/media/background-create-client-mail.40a6d5302f05adcbdc61.jpg",
+    "static/media/background-create-administrator.jpg": "/VivaMailProject/static/media/background-create-administrator.eb7e6472c1c38bfcafea.jpg",
+    "static/media/background-create-company.jpg": "/VivaMailProject/static/media/background-create-company.8b4969e33a14b224d279.jpg",
+    "static/media/bootstrap-icons.woff?": "/VivaMailProject/static/media/bootstrap-icons.39795c0b4513de014cf8.woff",
+    "static/media/background-tables.jpg": "/VivaMailProject/static/media/background-tables.24bca191ea76f3861d90.jpg",
+    "static/media/bootstrap-icons.woff2?": "/VivaMailProject/static/media/bootstrap-icons.b7bcc075b395c14ce8c2.woff2",
+    "static/media/logo.png": "/VivaMailProject/static/media/logo.cedfda6b6bedbd0d9f26.png",
+    "index.html": "/VivaMailProject/index.html",
+    "main.abb533ac.css.map": "/VivaMailProject/static/css/main.abb533ac.css.map",
+    "main.c2bd68e3.js.map": "/VivaMailProject/static/js/main.c2bd68e3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.abb533ac.css",
+    "static/js/main.c2bd68e3.js"
+  ]
+}
