@@ -8,7 +8,7 @@ const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMess
     title: `<div style="text-align: left;">Delete ${collectionName}<hr style="border: 1px solid #5A5555;"></div>`,
     html: `
       <div>
-        <p>¿Are you sure you want to delete this ${collectionName}?</p>
+        <p>Are you sure you want to delete this ${collectionName}?</p>
         <p style="margin-bottom: 2px; ">${warningMessage}</p>
       </div>
     `,

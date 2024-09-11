@@ -16,9 +16,6 @@ const CreateCompany = () => {
 
     */
 
-    /* To redirect to the home page from the cancel button */
-    const navigate = useNavigate();
-
     /* To set inputs as empty after a creation */
     const defaultEntry = {
         companyName: '',
