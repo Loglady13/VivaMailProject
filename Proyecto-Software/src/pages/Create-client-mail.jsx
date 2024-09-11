@@ -149,7 +149,9 @@ const CreateClientMail = () => {
                         title: 'Success',
                         showCloseButton: true,
                         html: 'The clients have been successfully created',
-                    }).then(() => setIsSuccess(true)); // Marcar `isSuccess` como `true` después de cerrar el modal.
+                    }).then(() => setIsSuccess(true));
+                    
+                    navigate('/TableClientMail')// Marcar `isSuccess` como `true` después de cerrar el modal.
                 }
             };
             reader.readAsArrayBuffer(selectedFile); // Leer el archivo como un ArrayBuffer.

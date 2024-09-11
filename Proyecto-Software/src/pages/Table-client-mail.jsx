@@ -7,8 +7,11 @@ import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import '../Styles/Table-client-mail.css';
 import Swal from 'sweetalert2';
+import CreateClientMail from './Create-client-mail.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const TableClientMail=()=>{
+    const navigate = useNavigate();
     // To format the date to show it
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return '';
@@ -24,6 +27,10 @@ const TableClientMail=()=>{
     const handleDeleteClick = (item) => {
         // Calls the modal removal function from the TableComponent
         showModal('delete', item);
+    };
+
+    const handleCreateClick = () =>{
+        navigate('/CreateClientMail');
     };
 
     const handleEditClick = async (item) => {
@@ -112,7 +119,7 @@ const TableClientMail=()=>{
                 Swal.fire({
                     position: 'top-end', // Position in the top right corner
                     icon: 'success',
-                    text: 'Client update done, refresh to see the changes!',
+                    text: 'Client update done!',
                     showConfirmButton: false, // Remove the confirm button
                     timer: 5000, // Message will disappear after 5 seconds
                     toast: true, // Convert the alert into a toast notification
@@ -149,7 +156,7 @@ const TableClientMail=()=>{
                     item,
                     collectionName: 'EmailClient',
                     warningMessage: 'You will lose it forever',
-                    onSuccessMessage: 'The client has been deleted, refresh to see the changes!',
+                    onSuccessMessage: 'The client has been deleted!',
                 });
                 break;
             default:
@@ -166,7 +173,8 @@ const TableClientMail=()=>{
                 columnsToShow={['nameClient', 'emailClient', 'idAdmin']} //Name of the fields in firebase
                 handleViewClick={handleViewClick}  
                 handleEditClick={handleEditClick}
-                handleDeleteClick={handleDeleteClick}  
+                handleDeleteClick={handleDeleteClick}
+                handleCreateClick={handleCreateClick}  
             />
         </div>
     );
