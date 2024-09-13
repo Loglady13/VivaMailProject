@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, deleteDoc } from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { db } from '../services/credentials.js';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import TableComponent from '../shared-components/Table-component';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';

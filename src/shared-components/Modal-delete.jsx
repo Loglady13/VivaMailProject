@@ -1,7 +1,5 @@
-import React from 'react';
 import Swal from 'sweetalert2';
-import { doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { deleteItem } from '../services/provider.js';
 
 const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMessage }) => {
   const result = await Swal.fire({
@@ -23,10 +21,9 @@ const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMess
   });
 
   if (result.isConfirmed) {
-    try {
-      const itemRef = doc(db, collectionName, item.id);
-      await deleteDoc(itemRef);
+    const success = await deleteItem(collectionName, item.id);
 
+    if (success) {
       Swal.fire({
         position: 'top-end',
         icon: 'success',
@@ -35,7 +32,7 @@ const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMess
         timer: 5000,
         toast: true,
       });
-    } catch (error) {
+    } else {
       Swal.fire({
         icon: 'error',
         title: 'Delete Failed',

@@ -5,7 +5,7 @@ import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import Swal from 'sweetalert2';
 import { collection, getDocs, query, doc, updateDoc, where } from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { db } from '../services/credentials.js';
 import '../Styles/Create-company.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -178,13 +178,14 @@ const TableAdministrator = () => {
         <div className='TableCompany'>
             <SidebarMaster />
             <TableComponent
-                collectionName="Administrator" //Name of the Collection
+                collectionName="User" //Name of the Collection
                 columnName={['Name', 'Email']} //Name to show y in table
                 columnsToShow={['nameAdmin', 'email']} //Name of the fields in firebase
                 handleViewClick={handleViewClick}  
                 handleEditClick={handleEditClick}
                 handleDeleteClick={handleDeleteClick}  
                 handleCreateClick={handleCreateClick}
+                roleFilter="Administrator"
             />
         </div>
     );

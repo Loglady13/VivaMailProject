@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Styles/Plan-management.css';
 import ModalDelete from '../shared-components/Modal-delete.jsx';

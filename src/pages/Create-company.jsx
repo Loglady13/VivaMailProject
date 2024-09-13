@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import '../Styles/Create-company.css';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../services/credenciales';
+import { db } from '../services/credentials';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
+import { addCompany, checkIfEmailExists } from '../services/provider';
+ 
 const CreateCompany = () => {
     /*
         COSAS QUE FALTAN
@@ -33,13 +34,6 @@ const CreateCompany = () => {
         setCompany({ ...company, [name]: value });
         setErrors({...errors, [name]: ''})
     };
-
-    /* To check there's no company with this mail already */
-    const checkIfEmailExists = async (email) => {
-        const q = query(collection(db, 'Company'), where('email', '==', email));
-        const querySnapshot = await getDocs(q);
-        return !querySnapshot.empty;
-    }; 
 
     const validateInputs = () => {
         const newErrors = { companyName: '', legalID: '', email: ''};
@@ -92,22 +86,16 @@ const CreateCompany = () => {
             return;
         }
 
-        /* Does the verification of the email */
-        const emailExists = await checkIfEmailExists(company.email);
-        if (emailExists) {
-            setErrors({...errors, email: 'A company with this email already exists.'});
-            return;
-        }
-
         /* Saves de company */
         try {
-            const currentDate = new Date(); // Capture the current date and time
-            await addDoc(collection(db, 'Company'), {
-                ...company,
-                creationDate: currentDate,
-                lastUpdate: currentDate, // Both dates are current at the time of creation
-                state: false,
-            });
+
+            const emailExists = await checkIfEmailExists(company.email);
+            if(emailExists) {
+                setErrors({ ...errors, email: 'A company with this email already exists.'});
+                return;
+            }
+
+            await addCompany(company);
             setErrors({ companyName:'', legalID:'', email:''});
             setCompany(defaultEntry);
             setIsSuccess(true); // Activate success alert

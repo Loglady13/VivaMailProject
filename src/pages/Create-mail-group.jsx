@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
-import appFirebase from '../services/credenciales';
+import appFirebase from '../services/credentials';
 import {getAuth, signAuth} from 'firebase/auth';
 
 

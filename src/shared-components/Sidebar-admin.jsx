@@ -1,26 +1,46 @@
 import { getAuth, signOut } from 'firebase/auth';
 import '../Styles/Sidebar.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
+import { getUserInfo } from '../services/provider';
 
 
 const SidebarAdmin = () => {
     const navigate = useNavigate();
     const auth = getAuth();
+    const [isOpen, setIsOpen] = useState(false);
+    const [openMenuId, setOpenMenuId] = useState(null);
+    const [userInfo, setUserInfo] = useState({ name: '', email: '' });
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const info = await getUserInfo();
+                if (info) {
+                    setUserInfo({
+                        name: info.nameAdmin || 'Nombre no disponible',
+                        email: info.email || 'Correo no disponible',
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
 
     const handleLogout = () => {
         signOut(auth)
             .then(() => {
                 console.log("Sesión cerrada exitosamente");
+                navigate('/Login'); // Redirige a la página de Login después de cerrar sesión
             })
             .catch((error) => {
                 console.error("Error al cerrar sesión: ", error);
             });
     };
-
-    const [isOpen, setIsOpen] = useState(false);
-    const [openMenuId, setOpenMenuId] = useState(null);
 
     const toggleCollapse = (menuId) => {
         setIsOpen(prevState => !prevState);
@@ -48,7 +68,11 @@ const SidebarAdmin = () => {
                 {/* Sidebar top */}
                 <div className="offcanvas-header text-white" style={{ backgroundColor: '#222527', height: '85px' }}>
                     <div className="sidebar-infoAdmin" style={{ display: 'flex', justifyContent: 'center', alignItems: 'Center' }}>
-                        Info del admin
+                        <i class="bi bi-person-circle" alt="User Icon" style={{ fontSize: '38px', color: 'white', marginLeft: '12px' }}></i>
+                        <div style={{ marginLeft: '19px' }}>
+                            <div><strong>{userInfo.name}</strong></div>
+                            <div>{userInfo.email}</div>
+                        </div>
                     </div>
                     <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" style={{ marginRight: '5px' }}></button>
                 </div>
@@ -211,12 +235,12 @@ const SidebarAdmin = () => {
                 </div>
 
                 {/* Log Out */}
-                <div className="p-3 text-white">
+                <div className="p-1 text-white">
                     <div className='logout-container'
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                         onClick={handleLogout}>
-                        <i className="bi bi-box-arrow-right" style={{ fontSize: '31px', verticalAlign: 'middle' }}></i>
+                        <i className="bi bi-box-arrow-right" style={{ fontSize: '30px', verticalAlign: 'middle' }}></i>
                         <span style={{ marginLeft: '15px', verticalAlign: 'middle', lineHeight: '31px' }}>Sign Out</span>
                     </div>
                 </div>

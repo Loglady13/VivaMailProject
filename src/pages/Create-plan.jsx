@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import '../Styles/Create-plan.css';
 import {useNavigate } from 'react-router-dom';
-import { db } from '../services/credenciales';
+import { db } from '../services/credentials';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 

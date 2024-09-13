@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import '../Styles/Create-administrator.css';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, getDocs, query, where, onSnapshot  } from 'firebase/firestore';
-import { db } from '../services/credenciales';
+import { collection, addDoc, doc, getDocs, query, where, onSnapshot, setDoc  } from 'firebase/firestore';
+import { db } from '../services/credentials';
 import Swal from 'sweetalert2';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -117,10 +117,16 @@ const CreateAdministrator=()=>{
         /* Saves Administrator */
         try {
             // Create an user in Firebase
-            await createUserWithEmailAndPassword(auth, admin.email, admin.password);
+            const userCredential = await createUserWithEmailAndPassword(auth, admin.email, admin.password);
+            const user = userCredential.user; // The credencials of the new user
             const currentDate = new Date(); // Capture the current date and time
+            const role = 'Administrator'
+            const companyIDs = []
             const {adminName, email, planAdmin} = admin;
-            await addDoc(collection(db, 'Administrator'), {
+
+            await setDoc(doc(db, 'User', user.uid), {
+                role: role,
+                companyIDs, 
                 nameAdmin: adminName,
                 email: email,
                 creationDate: currentDate,

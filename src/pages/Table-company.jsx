@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, onSnapshot, deleteDoc } from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import '../Styles/Table-company.css';
@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUserId, removeCompanyFromUser } from '../services/provider.js';
 
 const TableCompany = () => {
 
@@ -30,6 +31,8 @@ const TableCompany = () => {
     const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents 
 
     const navigate = useNavigate();
+    const userId = getCurrentUserId();
+
     // Fetches the total number of documents in the collection to calculate total pages
     const fetchTotalDocuments = async () => {
         const queryCollection = collection(db, 'Company');
@@ -50,21 +53,25 @@ const TableCompany = () => {
                 if (regex.test(searchTerm)) {
                     queryC = query(queryCollection,
                         where('email', '>=', searchTerm), //Search for email
-                        where('email', '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                        where('email', '<=', searchTerm + '\uf8ff'),
+                        where('adminID', '==', userId), 
+                        limit(pageSize));
                 } else {
                     queryC = query(queryCollection,
                         where('companyName', '>=', searchTerm), //Search for name
-                        where('companyName', '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                        where('companyName', '<=', searchTerm + '\uf8ff'), 
+                        where('adminID', '==', userId),
+                        limit(pageSize));               
                 };
             } else if (isNextPage && lastVisible) {
                 // Handles next page functionality
-                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+                queryC = query(queryCollection, where('adminID', '==', userId), startAfter(lastVisible), limit(pageSize));
             } else if (isPrevPage && firstVisiblePages.length > 1) {
                 // Handles previous page functionality
-                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
+                queryC = query(queryCollection, where('adminID', '==', userId), startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
             } else {
                 // Loads the first page
-                queryC = query(queryCollection, limit(pageSize));
+                queryC = query(queryCollection, where('adminID', '==', userId), limit(pageSize));
             }
 
             const queryGetCollection = await getDocs(queryC);
@@ -113,7 +120,7 @@ const TableCompany = () => {
         });
         fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
         return () => unsubscribe();
-    }, ['Company', pageSize]);
+    }, ['Company', userId, pageSize]);
 
     // Load the next page of data
     const loadNext = () => {
@@ -301,6 +308,7 @@ const TableCompany = () => {
             warningMessage: 'You will lose everything',
             onSuccessMessage: 'The company has been deleted!',
         });
+        removeCompanyFromUser(item.id);
     };
 
     const handleCreateClick = () =>{

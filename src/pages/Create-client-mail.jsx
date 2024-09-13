@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../services/credenciales';
+import { db } from '../services/credentials';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';

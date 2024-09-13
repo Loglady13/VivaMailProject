@@ -3,23 +3,24 @@ import '../Styles/Sidebar.css';
 import React, { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
+import { getUserInfo } from '../services/provider';
 
 const SidebarMaster = () => {
   const auth = getAuth();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const handleLogout = () => {
     signOut(auth)
       .then(() => {
         console.log("Sesión cerrada exitosamente");
+        navigate('/Login'); // Redirige a la página de Login después de cerrar sesión
       })
       .catch((error) => {
         console.error("Error al cerrar sesión: ", error);
       });
-  };
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [openMenuId, setOpenMenuId] = useState(null);
+  }; 
 
   const toggleCollapse = (menuId) => {
     setIsOpen(prevState => !prevState);
@@ -46,7 +47,7 @@ const SidebarMaster = () => {
         {/* Sidebar top */}
         <div className="offcanvas-header text-white" style={{ backgroundColor: '#222527', height: '85px' }}>
           <div className="sidebar-logo" style={{ display: 'flex', justifyContent: 'center', alignItems: 'Center' }}>
-            <img className='img-logo' style={{ width: '190px', marginLeft: '10px' }} src={require('../images/logo.png')} />
+            <img className='img-logo' style={{ width: '185px', marginLeft: '10px' }} src={require('../images/logo.png')} />
           </div>
           <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" style={{ marginRight: '5px' }}></button>
         </div>
@@ -147,12 +148,12 @@ const SidebarMaster = () => {
         </div>
 
         {/* Log Out */}
-        <div className="p-3 text-white">
+        <div className="p-1 text-white">
           <div className='logout-container'
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleLogout}>
-            <i className="bi bi-box-arrow-right" style={{ fontSize: '31px', verticalAlign: 'middle' }}></i>
+            <i className="bi bi-box-arrow-right" style={{ fontSize: '30px', verticalAlign: 'middle' }}></i>
             <span style={{ marginLeft: '15px', verticalAlign: 'middle', lineHeight: '31px' }}>Sign Out</span>
           </div>
         </div>

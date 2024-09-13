@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import appFirebase from '../services/credenciales';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import appFirebase from '../services/credentials';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import logo from '../images/logo.png';
 
-const auth = getAuth(appFirebase);
+const auth = getAuth();
 
 const ViewLogin = () => {
-    const [registro, setRegistro] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
 
     const handlerSubmit = async (e) => {
         e.preventDefault();
-        const email = e.target.email.value;
-        const password = e.target.password.value;
-
-        if (registro) {
-            await createUserWithEmailAndPassword(auth, email, password);
-        } else {
+        
+        try {
             await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            setError('Error al iniciar sesión: ' + error.message);
         }
     };
 
@@ -32,12 +32,13 @@ const ViewLogin = () => {
                     <form onSubmit={handlerSubmit}>
                         <div className="mb-3">
                             <label className="form-label text-white">Email Address:</label>
-                            <input type="email" className="form-control" placeholder="Enter email" id="email" required />
+                            <input type="email" className="form-control" placeholder="Enter email" value={email} required onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="mb-3">
                             <label className="form-label text-white">Password:</label>
-                            <input type="password" className="form-control" placeholder="Enter password" id="password" required />
+                            <input type="password" className="form-control" placeholder="Enter password" value={password} required onChange={(e) => setPassword(e.target.value)} />
                         </div>
+                        {error && <p className="text-danger">{error}</p>}
                         <button className="btn btn-primary w-100" type="submit">
                             Log in
                         </button>

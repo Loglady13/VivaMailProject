@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect} from 'react';
 import logo from '../images/logo.png';
 import { collection, getDocs} from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Styles/Principal.css';
 

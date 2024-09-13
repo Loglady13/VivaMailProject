@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, where, onSnapshot} from 'firebase/firestore';
-import { db } from '../services/credenciales.js';
+import { collection, getDocs, query, limit, startAfter, startAt, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick }) {
+function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick, roleFilter }) {
     const [data, setData] = useState([]);  // State to hold the fetched data
     const [loading, setLoading] = useState(false);  // Indicates if data is still being loaded
     const [lastVisible, setLastVisible] = useState(null);  // Stores the last visible document for pagination
@@ -27,27 +27,30 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             const queryCollection = collection(db, collectionName);  // Checks if the collection exists, if not, creates it
             let queryC;
 
+            // Filtra solo los administradores (asumiendo que tienes un campo role que diferencia entre 'admin' y 'master')
+            const adminFilter = where("role", "==", roleFilter);  // Filtrar solo administradores
+
             if (searchTerm) {
                 // Handles search functionality
                 const regex = /^[a-zA-Z0-9._%+-]+@$/;
-                if(regex.test(searchTerm)){
-                    queryC = query(queryCollection, 
+                if (regex.test(searchTerm)) {
+                    queryC = query(queryCollection,
                         where(columnsToShow[1], '>=', searchTerm), //Search for email
-                        where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                        where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), adminFilter, limit(pageSize));
                 } else {
-                    queryC = query(queryCollection, 
+                    queryC = query(queryCollection,
                         where(columnsToShow[0], '>=', searchTerm), //Search for name
-                        where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+                        where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), adminFilter, limit(pageSize));
                 };
             } else if (isNextPage && lastVisible) {
                 // Handles next page functionality
-                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+                queryC = query(queryCollection, startAfter(lastVisible), adminFilter, limit(pageSize));
             } else if (isPrevPage && firstVisiblePages.length > 1) {
                 // Handles previous page functionality
-                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
+                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), adminFilter, limit(pageSize));
             } else {
                 // Loads the first page
-                queryC = query(queryCollection, limit(pageSize));
+                queryC = query(queryCollection, adminFilter, limit(pageSize));
             }
 
             const queryGetCollection = await getDocs(queryC);
@@ -88,7 +91,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             setData(documents);
         });
         fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
-        return () => unsubscribe();  
+        return () => unsubscribe();
     }, [collectionName, pageSize]);
 
     const loadNext = () => {
@@ -147,17 +150,17 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             <h1 className='text-white'>{collectionName}</h1>
 
             <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
-                <button onClick={() => {handleCreateClick()}} type="button" className="btn btn-success me-5" style={{ fontSize: '18px'}}>
+                <button onClick={() => { handleCreateClick() }} type="button" className="btn btn-success me-5" style={{ fontSize: '18px' }}>
                     <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
                 </button>
 
                 <div className="input-group" style={{ maxWidth: '300px' }}>
-                    <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control"/>
+                    <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control" />
                     <button className="input-group-text">
                         <i className="bi bi-search"></i>
                     </button>
                 </div>
-            </form> 
+            </form>
 
             {loading ? (
                 <div className="d-flex justify-content-center">
@@ -211,7 +214,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
                     <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                         Prev
                     </button>
-                    <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px',  textAlign: "center"  }}>
+                    <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px', textAlign: "center" }}>
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
