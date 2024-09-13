@@ -82,9 +82,9 @@
 }
 
 .logout-container {
-  width: 130px;
+  width: 120px;
   margin-left: 30px;
-  padding: 10px;
+  padding: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;

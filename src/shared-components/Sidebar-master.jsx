@@ -20,7 +20,7 @@ const SidebarMaster = () => {
       .catch((error) => {
         console.error("Error al cerrar sesión: ", error);
       });
-  }; 
+  };
 
   const toggleCollapse = (menuId) => {
     setIsOpen(prevState => !prevState);
@@ -54,7 +54,7 @@ const SidebarMaster = () => {
 
         <div className="search-box" style={{ marginTop: '35px' }}>
           <i class="bi bi-search" alt="Search Icon" style={{ fontSize: '17px', marginRight: '10px', color: 'white' }}></i>
-          <input type="text" placeholder="Search"/>
+          <input type="text" placeholder="Search" />
         </div>
 
         {/* Sidebar content */}
@@ -149,12 +149,14 @@ const SidebarMaster = () => {
 
         {/* Log Out */}
         <div className="p-1 text-white">
-          <div className='logout-container'
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={handleLogout}>
-            <i className="bi bi-box-arrow-right" style={{ fontSize: '30px', verticalAlign: 'middle' }}></i>
-            <span style={{ marginLeft: '15px', verticalAlign: 'middle', lineHeight: '31px' }}>Sign Out</span>
+          <div style={{ padding: '8px' }}>
+            <div className='logout-container'
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={handleLogout}>
+              <i className="bi bi-box-arrow-right" style={{ fontSize: '30px', verticalAlign: 'middle' }}></i>
+              <span style={{ marginLeft: '15px', verticalAlign: 'middle', lineHeight: '31px' }}>Sign Out</span>
+            </div>
           </div>
         </div>
       </div>
