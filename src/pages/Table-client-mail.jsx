@@ -160,6 +160,7 @@ const TableClientMail=()=>{
         <div className='Background-Table'>
             <SidebarAdmin />
             <TableComponent
+                tittle={'Clients'}
                 collectionName="EmailClient" //Name of the Collection
                 columnName={['Name', 'Email']} //Name to show y in table
                 columnsToShow={['nameClient', 'emailClient']} //Name of the fields in firebase
