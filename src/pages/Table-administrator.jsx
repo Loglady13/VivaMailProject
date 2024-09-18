@@ -175,9 +175,10 @@ const TableAdministrator = () => {
     };
 
     return (
-        <div className='Background-Table'>
+        <div className='Background-Table'> 
             <SidebarMaster />
             <TableComponent
+                tittle='Administrators'
                 collectionName="User" //Name of the Collection
                 columnName={['Name', 'Email']} //Name to show y in table
                 columnsToShow={['nameAdmin', 'email']} //Name of the fields in firebase
@@ -185,7 +186,6 @@ const TableAdministrator = () => {
                 handleEditClick={handleEditClick}
                 handleDeleteClick={handleDeleteClick}  
                 handleCreateClick={handleCreateClick}
-                roleFilter="Administrator"
             />
         </div>
     );
