@@ -3,7 +3,7 @@ import { collection, getDocs, query, limit, startAfter, startAt, where, onSnapsh
 import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function TableComponent({ collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick, roleFilter }) {
+function TableComponent({ tittle, collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick }) {
     const [data, setData] = useState([]);  // State to hold the fetched data
     const [loading, setLoading] = useState(false);  // Indicates if data is still being loaded
     const [lastVisible, setLastVisible] = useState(null);  // Stores the last visible document for pagination
@@ -143,7 +143,7 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
 
     return (
         <div className="container mt-4">
-            <h1 className='text-white'>{collectionName}</h1>
+            <h1 className='text-white'>{tittle}</h1>
 
             <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
                 <button onClick={() => { handleCreateClick() }} type="button" className="btn btn-success me-5" style={{ fontSize: '18px' }}>
