@@ -15,12 +15,11 @@ const CreateClientMail = () => {
      /* To set inputs as empty after a creation */
     const defaultEntry = {
         nameClient: '',
-        emailClient: '',
-        idAdmin: ''
+        emailClient: ''
     };
 
     const [clientEmail, setClientEmail] = useState(defaultEntry);
-    const [errors, setErrors] = useState({ nameClient: '', emailClient: '', idAdmin: '' });
+    const [errors, setErrors] = useState({ nameClient: '', emailClient: '' });
     const [isSuccess, setIsSuccess] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedFile, setUploadedFile] = useState(null);
@@ -38,7 +37,7 @@ const CreateClientMail = () => {
     };
 
     const ValidateInputs = (isFileUpload = false) => {
-        const newErrors = { nameClient: '', emailClient: '', idAdmin: '' };
+        const newErrors = { nameClient: '', emailClient: ''};
         let isValid = true;
         const noNumbers = /^\D{3,}/;
         const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,11 +56,6 @@ const CreateClientMail = () => {
                 isValid = false;
             } else if (!emailFormat.test(clientEmail.emailClient)) {
                 newErrors.emailClient = 'Please enter a valid email format including @ and .example.';
-                isValid = false;
-            }
-
-            if (!clientEmail.idAdmin) {
-                newErrors.idAdmin = 'Id Admin is required.';
                 isValid = false;
             }
         }
@@ -104,9 +98,9 @@ const CreateClientMail = () => {
                 const currentDate = new Date(); // Obtener la fecha y hora actuales.
     
                 for (const entry of jsonData) { // Iterar sobre cada entrada en el JSON.
-                    const { nameClient, emailClient, idAdmin } = entry; // Extraer `nameClient`, `emailClient` y `idAdmin` de cada entrada.
+                    const { nameClient, emailClient} = entry; // Extraer `nameClient`, `emailClient` y `idAdmin` de cada entrada.
     
-                    if (!nameClient || !emailClient || !idAdmin) {
+                    if (!nameClient || !emailClient) {
                         // Verificar si alguno de los campos es nulo o está vacío.
                         console.warn(`Incomplete entry in the Excel file, will be ignored: ${JSON.stringify(entry)}`);
                         // Mostrar una advertencia en la consola si la entrada está incompleta y continuar con la siguiente entrada.
@@ -128,7 +122,6 @@ const CreateClientMail = () => {
                         await addDoc(collection(db, 'EmailClient'), {
                             nameClient, // Nombre del cliente.
                             emailClient, // Email del cliente.
-                            idAdmin, // ID del administrador.
                             creationDate: currentDate, // Fecha de creación.
                             lastUpdate: currentDate, // Última fecha de actualización.
                             state: false, // Estado inicial del cliente.
@@ -172,7 +165,7 @@ const CreateClientMail = () => {
                     lastUpdate: currentDate, // Última fecha de actualización.
                     state: false, // Estado inicial del cliente.
                 });
-                setErrors({ nameClient: '', emailClient: '', idAdmin: '' });
+                setErrors({ nameClient: '', emailClient: ''});
                 // Limpiar los errores después de agregar exitosamente.
                 setClientEmail(defaultEntry); // Restablecer los datos del cliente.
                 setIsSuccess(true); // Marcar `isSuccess` como `true` para indicar éxito.
@@ -213,11 +206,6 @@ const CreateClientMail = () => {
                         <label htmlFor="emailClient" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Enter the email of the client</label>
                         <input onChange={captureInputs} value={clientEmail.emailClient} type="text" name='emailClient' className="form-control" aria-describedby="emailHelp" style={{ width: '100%' }} />
                         {errors.emailClient && <div className='text-danger'>{errors.emailClient}</div>}
-                    </div>
-                    <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="idAdmin" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Id Administrator</label>
-                        <input onChange={captureInputs} value={clientEmail.idAdmin} type="text" name='idAdmin' className="form-control" style={{ width: '100%' }} />
-                        {errors.idAdmin && <div className='text-danger'>{errors.idAdmin}</div>}
                     </div>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
                         <label htmlFor="excelFile" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Upload Excel File (If you want to create more than one at time)</label>
