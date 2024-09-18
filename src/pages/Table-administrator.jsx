@@ -3,10 +3,10 @@ import SidebarMaster from '../shared-components/Sidebar-master';
 import TableComponent from '../shared-components/Table-component';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
+import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
 import { collection, getDocs, query, doc, updateDoc, where } from 'firebase/firestore';
 import { db } from '../services/credentials.js';
-import '../Styles/Create-company.css';
 import { useNavigate } from 'react-router-dom';
 
 const TableAdministrator = () => {
@@ -90,7 +90,7 @@ const TableAdministrator = () => {
                 }
 
                 try {
-                    const companiesRef = collection(db, "Administrator");
+                    const companiesRef = collection(db, "User");
                     const q = query(companiesRef, where("emailAdmin", "==", email));
                     const querySnapshot = await getDocs(q);
 
@@ -113,7 +113,7 @@ const TableAdministrator = () => {
             // Step 2: Update the company data if no conflicts
             const { name, email, planName } = formValues;
             try {
-                const docRef = doc(db, "Administrator", item.id); // Reference to the document to update
+                const docRef = doc(db, "User", item.id); // Reference to the document to update
                 await updateDoc(docRef, {
                     nameAdmin: name,
                     email: email,
@@ -125,7 +125,7 @@ const TableAdministrator = () => {
                 Swal.fire({
                     position: 'top-end', // Position in the top right corner
                     icon: 'success',
-                    text: 'Administrator update done, refresh to see the changes!',
+                    text: 'Administrator update done!',
                     showConfirmButton: false, // Remove the confirm button
                     timer: 5000, // Message will disappear after 5 seconds
                     toast: true, // Convert the alert into a toast notification
@@ -164,9 +164,9 @@ const TableAdministrator = () => {
             case 'delete':
                 ModalDelete({
                     item,
-                    collectionName: 'Administrator',
+                    collectionName: 'User',
                     warningMessage: 'You will lose it forever',
-                    onSuccessMessage: 'The administrator has been deleted, refresh to see the changes!',
+                    onSuccessMessage: 'The administrator has been deleted!',
                 });
                 break;
             default:
@@ -175,7 +175,7 @@ const TableAdministrator = () => {
     };
 
     return (
-        <div className='TableCompany'>
+        <div className='Background-Table'>
             <SidebarMaster />
             <TableComponent
                 collectionName="User" //Name of the Collection

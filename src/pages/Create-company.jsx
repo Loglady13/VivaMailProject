@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import '../Styles/Create-company.css';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../services/credentials';
-import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { addCompany, checkIfEmailExists } from '../services/provider';
+import { addCompany, checkIfEmailCompanyExists } from '../services/provider';
  
 const CreateCompany = () => {
-    /*
-        COSAS QUE FALTAN
-
-        -VERIFICAR CUANTAS EMPRESAS LE PERMITE TENER SU PLAN PARA SABER SI PUEDE CREAR OTRA O NO
-        -VERIFICAR A LA HORA DE AGREGAR LA COMPAÑIA SI YA ESTE ADMIN TIENE EMPRESAS PARA ESTABLECER
-        EL STATE(si tiene otras tiene que tener una activa al menos sino se guarda la nueva como activa)
-
-    */
 
     /* To set inputs as empty after a creation */
     const defaultEntry = {
@@ -89,7 +78,7 @@ const CreateCompany = () => {
         /* Saves de company */
         try {
 
-            const emailExists = await checkIfEmailExists(company.email);
+            const emailExists = await checkIfEmailCompanyExists(company.email);
             if(emailExists) {
                 setErrors({ ...errors, email: 'A company with this email already exists.'});
                 return;

@@ -27,30 +27,27 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             const queryCollection = collection(db, collectionName);  // Checks if the collection exists, if not, creates it
             let queryC;
 
-            // Filtra solo los administradores (asumiendo que tienes un campo role que diferencia entre 'admin' y 'master')
-            const adminFilter = where("role", "==", roleFilter);  // Filtrar solo administradores
-
             if (searchTerm) {
                 // Handles search functionality
                 const regex = /^[a-zA-Z0-9._%+-]+@$/;
                 if (regex.test(searchTerm)) {
                     queryC = query(queryCollection,
                         where(columnsToShow[1], '>=', searchTerm), //Search for email
-                        where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), adminFilter, limit(pageSize));
+                        where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
                 } else {
                     queryC = query(queryCollection,
                         where(columnsToShow[0], '>=', searchTerm), //Search for name
-                        where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), adminFilter, limit(pageSize));
+                        where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
                 };
             } else if (isNextPage && lastVisible) {
                 // Handles next page functionality
-                queryC = query(queryCollection, startAfter(lastVisible), adminFilter, limit(pageSize));
+                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
             } else if (isPrevPage && firstVisiblePages.length > 1) {
                 // Handles previous page functionality
-                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), adminFilter, limit(pageSize));
+                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
             } else {
                 // Loads the first page
-                queryC = query(queryCollection, adminFilter, limit(pageSize));
+                queryC = query(queryCollection, limit(pageSize));
             }
 
             const queryGetCollection = await getDocs(queryC);
@@ -133,7 +130,6 @@ function TableComponent({ collectionName, columnName, columnsToShow, handleViewC
             setLastVisible(null);
             setFirstVisible(null);
             fetchData(false, false, searchTerm);  // Calls fetchData with the search term
-            console.log(searchTerm);
         } else {
             // If the search field is empty, show all results
             setData([]);

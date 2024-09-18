@@ -1,23 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, onSnapshot } from 'firebase/firestore';
-import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
-import '../Styles/Table-company.css';
+import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUserId, removeCompanyFromUser } from '../services/provider.js';
+import { getCurrentUserId, removeCompanyFromUser, checkIfEmailCompanyExists, updateCompany, fetchCompanyData, fetchTotalDocumentsCompany} from '../services/provider.js';
 
 const TableCompany = () => {
-
-    /*
-        COSAS QUE FALTAN
-
-        -EL MANEJO DEL ESTADO (SIMPLEMENTE ES CAMBIAR EL STATE EN LA BASE Y CON ESTADOS CAMBIO EL COLOR DEL BOTON)
-
-    */
 
     const [data, setData] = useState([]); // Holds the data to display in the table
     const [loading, setLoading] = useState(false); // Indicates if data is being fetched
@@ -33,94 +24,27 @@ const TableCompany = () => {
     const navigate = useNavigate();
     const userId = getCurrentUserId();
 
-    // Fetches the total number of documents in the collection to calculate total pages
-    const fetchTotalDocuments = async () => {
-        const queryCollection = collection(db, 'Company');
-        const querySnapshot = await getDocs(queryCollection);
-        return querySnapshot.size;
-    };
-
-    // Fetches data from Firestore, either with search, next, or previous page
     const fetchData = async (isNextPage = false, isPrevPage = false) => {
-        setLoading(true); // Start loading
+        setLoading(true);
         try {
-            const queryCollection = collection(db, 'Company');
-            let queryC;
+            const result = await fetchCompanyData(userId, pageSize, searchTerm, lastVisible, firstVisiblePages, isNextPage, isPrevPage);
+            setData(result.documents);
+            setFirstVisible(result.firstVisible);
+            setLastVisible(result.lastVisible);
 
-            if (searchTerm) {
-                // Handles search functionality
-                const regex = /^[a-zA-Z0-9._%+-]+@$/;
-                if (regex.test(searchTerm)) {
-                    queryC = query(queryCollection,
-                        where('email', '>=', searchTerm), //Search for email
-                        where('email', '<=', searchTerm + '\uf8ff'),
-                        where('adminID', '==', userId), 
-                        limit(pageSize));
-                } else {
-                    queryC = query(queryCollection,
-                        where('companyName', '>=', searchTerm), //Search for name
-                        where('companyName', '<=', searchTerm + '\uf8ff'), 
-                        where('adminID', '==', userId),
-                        limit(pageSize));               
-                };
-            } else if (isNextPage && lastVisible) {
-                // Handles next page functionality
-                queryC = query(queryCollection, where('adminID', '==', userId), startAfter(lastVisible), limit(pageSize));
-            } else if (isPrevPage && firstVisiblePages.length > 1) {
-                // Handles previous page functionality
-                queryC = query(queryCollection, where('adminID', '==', userId), startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
-            } else {
-                // Loads the first page
-                queryC = query(queryCollection, where('adminID', '==', userId), limit(pageSize));
-            }
-
-            const queryGetCollection = await getDocs(queryC);
-            if (!queryGetCollection.empty) {
-                const documents = queryGetCollection.docs.map(doc => ({
-                    id: doc.id,
-                    name: doc.data().companyName,
-                    email: doc.data().email,
-                    legalID: doc.data().legalID,
-                    state: doc.data().state,
-                    creationDate: doc.data().creationDate,
-                    lastUpdate: doc.data().lastUpdate,
-                }));
-
-                if (!isPrevPage) {
-                    setData(documents);
-                    setFirstVisible(queryGetCollection.docs[0]);
-                    setFirstVisiblePages([...firstVisiblePages, queryGetCollection.docs[0]]);
-                }
-                setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Updates lastVisible
-                setData(documents);
-
-                const totalDocuments = await fetchTotalDocuments();
-                setTotalPages(Math.ceil(totalDocuments / pageSize)); // Calculate total pages
-            } else {
-                console.log('No data found');
-            }
+            const totalDocuments = await fetchTotalDocumentsCompany(userId);
+            setTotalPages(Math.ceil(totalDocuments / pageSize));
             setIsFirstPage(!isNextPage);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     };
 
-    // Fetch data when component mounts or when pageSize changes
     useEffect(() => {
-        const queryCollection = collection(db, 'Company');
-        const unsubscribe = onSnapshot(queryCollection, (snapshot) => {
-            const documents = snapshot.docs.map(doc => ({
-                id: doc.id,
-                name: doc.data().companyName,
-                ...doc.data()
-            }));
-            setData(documents);
-        });
-        fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
-        return () => unsubscribe();
-    }, ['Company', userId, pageSize]);
+        fetchData();
+    }, [userId, pageSize]);
 
     // Load the next page of data
     const loadNext = () => {
@@ -166,7 +90,6 @@ const TableCompany = () => {
             setLastVisible(null);
             setFirstVisible(null);
             fetchData(false, false, searchTerm);  // Calls fetchData with the search term
-            console.log(searchTerm);
         } else {
             // If the search field is empty, show all results
             setData([]);
@@ -202,7 +125,7 @@ const TableCompany = () => {
         });
     };
 
-    //Modal Edit (This one can´t be a shared component because all  edit modals are too diferent)
+    //Edit modal 
     const handleEditClick = async (item) => {
         const { value: formValues } = await Swal.fire({
             html: `
@@ -215,7 +138,7 @@ const TableCompany = () => {
                     <div style="margin-bottom: 25px;">
                         <label for="swal-input2" style="display: block; margin-bottom: 5px;">New company email</label>
                         <input id="swal-input2" class="swal2-input" style="width: 92%; margin: 0; background: #FFFFFF;" value="${item.email}">
-                    </div>
+                    </div> 
                 </div>
             `,
             focusConfirm: false,
@@ -233,7 +156,6 @@ const TableCompany = () => {
                 popup: 'swal2-popup',
             },
             preConfirm: async () => {
-                // Retrieve values from the inputs
                 const name = Swal.getPopup().querySelector('#swal-input1').value;
                 const email = Swal.getPopup().querySelector('#swal-input2').value;
 
@@ -244,13 +166,8 @@ const TableCompany = () => {
                 }
 
                 try {
-                    // Step 1: Check if the email is already used by another company
-                    const companiesRef = collection(db, "Company");
-                    const q = query(companiesRef, where("email", "==", email));
-                    const querySnapshot = await getDocs(q);
-
-                    // Check if the email belongs to a different company
-                    const emailExists = querySnapshot.docs.some(doc => doc.id !== item.id);
+                    // Check if the email is already used by another company
+                    const emailExists = await checkIfEmailCompanyExists(email, item.id);
 
                     if (emailExists) {
                         // Show error message if the email is already used
@@ -261,7 +178,6 @@ const TableCompany = () => {
                     // Return the values if all checks pass
                     return { name, email };
                 } catch (error) {
-                    // Handle any errors during data checking
                     Swal.showValidationMessage('Error checking data. Please try again later.');
                     return false; // Prevent submission if an error occurs
                 }
@@ -269,32 +185,26 @@ const TableCompany = () => {
         });
 
         if (formValues) {
-            // Step 2: Update the company data if no conflicts
-            const { name, email } = formValues;
+            // Update the company data if no conflicts
+            const updatedData = {
+                name: formValues.name,
+                email: formValues.email,
+                lastUpdate: new Date(), // Set the update date
+            };
+            
             try {
-                const docRef = doc(db, "Company", item.id); // Reference to the document to update
-                await updateDoc(docRef, {
-                    companyName: name,
-                    email: email,
-                    lastUpdate: new Date(),
-                });
-
+                await updateCompany(item.id, updatedData);
                 // Show success message after updating
                 Swal.fire({
                     position: 'top-end', // Position in the top right corner
                     icon: 'success',
-                    text: 'Company update done!',
+                    text: 'The company has been updated',
                     showConfirmButton: false, // Remove the confirm button
                     timer: 5000, // Message will disappear after 5 seconds
                     toast: true, // Convert the alert into a toast notification
                 });
             } catch (error) {
-                // Handle any errors during the update
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Update Failed',
-                    text: 'There was an error updating the company. Please try again later.',
-                });
+                await Swal.fire({icon: 'error', title: 'Update Failed', text: 'There was an error updating the company. Please try again later.', });
             }
         }
     };
@@ -311,29 +221,28 @@ const TableCompany = () => {
         removeCompanyFromUser(item.id);
     };
 
-    const handleCreateClick = () =>{
+    const handleCreateClick = () => {
         navigate('/CreateCompany');
     };
 
 
     return (
-        <div className='TableCompany'>
+        <div className='Background-Table'>
             <SidebarAdmin />
-            <div className="container-md" style={{ width: '82%' }}>
-                <h1 className='text-white' >Company</h1>
+            <div className="container-md" >
+                <h1 className='text-white' >Company</h1>    
 
-                {/* Search form */}
                 <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
-                    
-                    <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px'}} onClick={handleCreateClick}>
+
+                    <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px' }} onClick={handleCreateClick}>
                         <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
                     </button>
 
                     <div className="input-group" style={{ maxWidth: '300px' }}>
-                        <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control"/>
-                        <span className="input-group-text">
+                        <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control" />
+                        <button className="input-group-text">
                             <i className="bi bi-search"></i>
-                        </span>
+                        </button>
                     </div>
                 </form>
 
@@ -385,17 +294,17 @@ const TableCompany = () => {
                 )}
                 {/* Pagination controls */}
                 <div className="d-flex justify-content-between align-items-center mt-3">
-                    <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} entries</span>
+                    <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} pages</span>
                     <div className='d-flex justify-content-between align-items-center'>
-                        <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
+                        <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                             Prev
                         </button>
-                        <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block" style={{ width: '22.5%', height: '38.5px' }}>
+                        <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px', textAlign: "center"  }}>
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
                         </select>
-                        <button onClick={loadNext} disabled={currentPage === totalPages || loading} className="btn btn-light d-inline-block" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
+                        <button onClick={loadNext} disabled={currentPage === totalPages || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                             Next
                         </button>
                     </div>

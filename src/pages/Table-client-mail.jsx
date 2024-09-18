@@ -5,7 +5,7 @@ import SidebarAdmin from '../shared-components/Sidebar-admin';
 import TableComponent from '../shared-components/Table-component';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
-import '../Styles/Table-client-mail.css';
+import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
 import CreateClientMail from './Create-client-mail.jsx';
 import { useNavigate } from 'react-router-dom';
@@ -165,7 +165,7 @@ const TableClientMail=()=>{
     };
 
     return (
-        <div className='TableClientMail'>
+        <div className='Background-Table'>
             <SidebarAdmin />
             <TableComponent
                 collectionName="EmailClient" //Name of the Collection

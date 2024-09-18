@@ -1,31 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import appFirebase from '../services/credentials.js';
 import { onAuthStateChanged } from 'firebase/auth';
 import HomeMaster from '../pages/Home-page-master';
 import HomeAdmin from './Home-page-admin';
 import ViewLogin from '../pages/ViewLogin';
-import { auth, db } from '../services/credentials.js';
-import { doc, getDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { auth } from '../services/credentials.js';
+import { useNavigate } from 'react-router-dom'; 
+import { verifyUserRole } from '../services/provider.js';
 
 function Login() {
   const [usuario, setUsuario] = useState(null);
   const [tipoUsuario, setTipoUsuario] = useState(null);
   const [loading, setLoading] = useState(true); // Estado de carga para manejar la espera
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const [manualLogin, setManualLogin] = useState(false); 
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const verificarTipoUsuario = async (usuarioFirebase) => {
       if (usuarioFirebase) {
-
-        // Verificar en la colección de usuarios
-        const userDocRef = doc(db, 'User', usuarioFirebase.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          setTipoUsuario(userData.role); // Suponiendo que el rol se almacena en el campo 'rol'
-          navigate(userData.role === 'Master' ? '/HomeMaster' : '/HomeAdmin');
+        const userRole = await verifyUserRole(usuarioFirebase.uid);
+        if (userRole) {
+          setTipoUsuario(userRole); 
+          navigate(userRole === 'Master' ? '/HomeMaster' : '/HomeAdmin');
         } else {
           setTipoUsuario(null);
         }
@@ -34,21 +29,25 @@ function Login() {
     };
 
     const unsubscribe = onAuthStateChanged(auth, (usuarioFirebase) => {
-      setLoading(true); // Iniciar el estado de carga
-      if (usuarioFirebase) {
-        setUsuario(usuarioFirebase);
-        verificarTipoUsuario(usuarioFirebase).then(() => setLoading(false));
+      if (manualLogin) { // Solo si fue un login manual
+        setLoading(true);
+        if (usuarioFirebase) {
+          setUsuario(usuarioFirebase);
+          verificarTipoUsuario(usuarioFirebase).then(() => setLoading(false));
+        } else {
+          setUsuario(null);
+          setTipoUsuario(null);
+          setLoading(false);
+        }
       } else {
-        setUsuario(null);
-        setTipoUsuario(null);
-        setLoading(false); // Finalizar la carga si no hay usuario autenticado
+        setLoading(false); // Si no es login manual, detén la carga
       }
     });
 
     return () => unsubscribe();
-  }, [navigate]);
+  }, [manualLogin, navigate]);
 
-  // Mostrar una vista de carga mientras se verifica el estado del usuario
+  // Vista de carga 
   if (loading) {
     return <p>Cargando...</p>;
   }
@@ -64,7 +63,7 @@ function Login() {
           <p>No tienes permisos para acceder</p>
         )
       ) : (
-        <ViewLogin />
+        <ViewLogin setManualLogin={setManualLogin} />
       )}
     </div>
   );

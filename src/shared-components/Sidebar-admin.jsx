@@ -14,21 +14,26 @@ const SidebarAdmin = () => {
     const [userInfo, setUserInfo] = useState({ name: '', email: '' });
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const info = await getUserInfo();
-                if (info) {
-                    setUserInfo({
-                        name: info.nameAdmin || 'Nombre no disponible',
-                        email: info.email || 'Correo no disponible',
-                    });
+        const auth = getAuth();
+        const unsubscribe = auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const info = await getUserInfo();
+                    if (info) {
+                        setUserInfo({
+                            name: info.nameAdmin || 'Nombre no disponible',
+                            email: info.email || 'Correo no disponible',
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error fetching user info:', error);
                 }
-            } catch (error) {
-                console.error('Error fetching user info:', error);
+            } else {
+                console.log('No user logged in');
             }
-        };
-
-        fetchUserInfo();
+        });
+    
+        return () => unsubscribe(); 
     }, []);
 
     const handleLogout = () => {

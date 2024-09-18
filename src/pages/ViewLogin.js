@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
-import appFirebase from '../services/credentials';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import logo from '../images/logo.png';
 
 const auth = getAuth();
 
-const ViewLogin = () => {
+const ViewLogin = ({ setManualLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
 
     const handlerSubmit = async (e) => {
         e.preventDefault();
-        
         try {
             await signInWithEmailAndPassword(auth, email, password);
+            setManualLogin(true);
         } catch (error) {
             setError('Error al iniciar sesión: ' + error.message);
         }
@@ -26,7 +25,7 @@ const ViewLogin = () => {
                 <div className="col-md-5 d-flex justify-content-center align-items-center">
                     <img src={logo} alt="Logo" style={{ maxWidth: '100%' }} />
                 </div>
-                <div className="col-md-1"></div> {/* Esta columna actúa como un separador */}
+                <div className="col-md-1"></div> 
                 <div className="col-md-6 d-flex flex-column justify-content-center">
                     <h1 className="text-white mb-4">Log In</h1>
                     <form onSubmit={handlerSubmit}>

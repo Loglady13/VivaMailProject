@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
 
 
@@ -10,11 +10,22 @@ export const getCurrentUserId = () => {
 
 
 // Function to check if an email already exists
-export const checkIfEmailExists = async (email) => {
+export const checkIfEmailCompanyExists = async (email, currentCompanyId = null) => {
     const q = query(collection(db, 'Company'), where('email', '==', email));
     const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    // If there are no results, the email is not in use
+    if (querySnapshot.empty) return false;
+    // If there are results, we need to check if the email belongs to another company
+    for (const doc of querySnapshot.docs) {
+        if (doc.id !== currentCompanyId) {
+            // If the email is used by a different company, return true
+            return true;
+        }
+    }
+    // If no other companies are using the email, return false
+    return false;
 };
+
 
 
 // Function to delete an item from a specified collection
@@ -49,6 +60,24 @@ export const getUserInfo = async () => {
         }
     } catch (error) {
         console.error('Error getting user info:', error);
+        return null;
+    }
+};
+
+
+// Function to verify the role of the user based on their ID
+export const verifyUserRole = async (userId) => {
+    try {
+        const userDocRef = doc(db, 'User', userId);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+            return userDocSnap.data().role; // Return the role of the user
+        } else {
+            return null; // User document doesn't exist
+        }
+    } catch (error) {
+        console.error("Error fetching user role:", error);
         return null;
     }
 };
@@ -117,6 +146,72 @@ export const removeCompanyFromUser = async (companyId) => {
         console.error("Error updating user's companyIDs: ", error);
         return false; // Return false on failure
     }
+};
+
+
+// Function to update a company 
+export const updateCompany = async (companyId, updatedData) => {
+    try {
+        const companyRef = doc(db, 'Company', companyId); // Get a reference to the company document
+        await updateDoc(companyRef, updatedData); // Update the document with the new data
+        return true; // Return true on success
+    } catch (error) {
+        console.error('Error updating company: ', error);
+        return false; // Return false on failure
+    }
+};
+
+
+// Fetches the total number of documents
+export const fetchTotalDocumentsCompany = async (userId) => {
+    const queryCollection = query(collection(db, 'Company'), where('adminID', '==', userId));
+    const querySnapshot = await getDocs(queryCollection);
+    return querySnapshot.size;
+};
+
+// Fetches documents with pagination and optional search
+export const fetchCompanyData = async (userId, pageSize, searchTerm = '', lastVisible = null, firstVisiblePages = [], isNextPage = false, isPrevPage = false) => {
+    let queryC;
+    const queryCollection = query(collection(db, 'Company'), where('adminID', '==', userId));
+
+    if (searchTerm.trim() !== '') {
+        const isEmail = searchTerm.includes('@');
+        if (isEmail) {
+            queryC = query(queryCollection,
+                where('email', '>=', searchTerm),
+                where('email', '<=', searchTerm + '\uf8ff'),
+                limit(pageSize));
+        } else {
+            queryC = query(queryCollection,
+                where('companyName', '>=', searchTerm),
+                where('companyName', '<=', searchTerm + '\uf8ff'),
+                limit(pageSize));
+        }
+    } else if (isNextPage && lastVisible) {
+        queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+    } else if (isPrevPage && firstVisiblePages.length > 1) {
+        queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
+    } else {
+        queryC = query(queryCollection, limit(pageSize));
+    }
+
+    const querySnapshot = await getDocs(queryC);
+    const documents = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().companyName,
+        email: doc.data().email,
+        legalID: doc.data().legalID,
+        state: doc.data().state,
+        creationDate: doc.data().creationDate,
+        lastUpdate: doc.data().lastUpdate,
+    }));
+
+    return {
+        documents,
+        firstVisible: querySnapshot.docs[0],
+        lastVisible: querySnapshot.docs[querySnapshot.docs.length - 1],
+        totalDocuments: querySnapshot.size
+    };
 };
 
 
