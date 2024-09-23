@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, where, onSnapshot } from 'firebase/firestore';
-import { db } from '../services/credentials.js';
+import { fetchTotalDocuments, fetchData, subscribeToCollection } from '../services/provider.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function TableComponent({ tittle, collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick }) {
@@ -15,92 +14,41 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
     const [totalPages, setTotalPages] = useState(0);  // Total number of pages
     const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents
 
-    const fetchTotalDocuments = async () => {
-        const queryCollection = collection(db, collectionName);
-        const querySnapshot = await getDocs(queryCollection);
-        return querySnapshot.size;
-    };
-
-    const fetchData = async (isNextPage = false, isPrevPage = false) => {
+    const loadData = async (isNextPage = false, isPrevPage = false) => {
         setLoading(true);
         try {
-            const queryCollection = collection(db, collectionName);  // Checks if the collection exists, if not, creates it
-            let queryC;
+            const result = await fetchData({ collectionName, searchTerm,columnsToShow, lastVisible,isNextPage,isPrevPage, firstVisiblePages, pageSize });
+            setData(result.documents);
+            setLastVisible(result.lastVisible);
 
-            if (searchTerm) {
-                // Handles search functionality
-                const regex = /^[a-zA-Z0-9._%+-]+@$/;
-                if (regex.test(searchTerm)) {
-                    queryC = query(queryCollection,
-                        where(columnsToShow[1], '>=', searchTerm), //Search for email
-                        where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
-                } else {
-                    queryC = query(queryCollection,
-                        where(columnsToShow[0], '>=', searchTerm), //Search for name
-                        where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
-                };
-            } else if (isNextPage && lastVisible) {
-                // Handles next page functionality
-                queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
-            } else if (isPrevPage && firstVisiblePages.length > 1) {
-                // Handles previous page functionality
-                queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
-            } else {
-                // Loads the first page
-                queryC = query(queryCollection, limit(pageSize));
+            if (!isPrevPage) {
+                setFirstVisiblePages([...firstVisiblePages, result.firstVisible]);
             }
 
-            const queryGetCollection = await getDocs(queryC);
-            if (!queryGetCollection.empty) {
-                const documents = queryGetCollection.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-
-                if (!isPrevPage) {
-                    setData(documents);
-                    setFirstVisible(queryGetCollection.docs[0]);
-                    setFirstVisiblePages([...firstVisiblePages, queryGetCollection.docs[0]]);
-                }
-                setLastVisible(queryGetCollection.docs[queryGetCollection.docs.length - 1]); // Updates lastVisible
-                setData(documents);
-
-                const totalDocuments = await fetchTotalDocuments();
-                setTotalPages(Math.ceil(totalDocuments / pageSize));
-            } else {
-                console.log('No data found');
-            }
-            setIsFirstPage(!isNextPage);
-        } catch (err) {
-            console.log(err);
+            const totalDocuments = await fetchTotalDocuments(collectionName);
+            setTotalPages(Math.ceil(totalDocuments / pageSize));
+        } catch (error) {
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
 
+
     useEffect(() => {
-        const queryCollection = collection(db, collectionName);
-        const unsubscribe = onSnapshot(queryCollection, (snapshot) => {
-            const documents = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setData(documents);
-        });
-        fetchData();  // Fetches data when component mounts or when collectionName or pageSize changes
-        return () => unsubscribe();
+        subscribeToCollection(collectionName, setData, loadData);
     }, [collectionName, pageSize]);
 
     const loadNext = () => {
         if (currentPage < totalPages) {
-            fetchData(true);  // Fetches next page data
+            loadData(true);  // Fetches next page data
             setCurrentPage(currentPage + 1);  // Increments the current page number
         }
     };
 
     const loadPrev = () => {
         if (currentPage > 1) {
-            fetchData(false, true);  // Fetches previous page data
+            loadData(false, true);  // Fetches previous page data
             setCurrentPage(currentPage - 1);  // Decrements the current page number
 
             // Removes the last entry from the history since we are going back
@@ -114,7 +62,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
         setPageSize(Number(event.target.value));  // Updates the page size
         setData([]);  // Clears the current data
         setLastVisible(null);  // Resets lastVisible
-        fetchData();  // Fetches data with the new page size
+        loadData();  // Fetches data with the new page size
     };
 
     const handleSearchChange = (event) => {
@@ -129,14 +77,14 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
             setData([]);
             setLastVisible(null);
             setFirstVisible(null);
-            fetchData(false, false, searchTerm);  // Calls fetchData with the search term
+            loadData(false, false, searchTerm);  // Calls fetchData with the search term
         } else {
             // If the search field is empty, show all results
             setData([]);
             setLastVisible(null);
             setFirstVisible(null);
             setCurrentPage(1);  // Reinicia el número de la página actual
-            fetchData();  // Calls fetchData without any search term
+            loadData();  // Calls fetchData without any search term
 
         }
     };
