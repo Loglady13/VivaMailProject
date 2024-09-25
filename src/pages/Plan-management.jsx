@@ -6,6 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Styles/Plan-management.css';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import Swal from 'sweetalert2';
+import { planManagement } from '../shared-components/WordsBank.js';
 
 const PlanManagement = () => {
   const [dataCollection, setDataCollection] = useState([]);
@@ -29,10 +30,10 @@ const PlanManagement = () => {
   const handleEditClick = async (item) => {
     const { value: formValues } = await Swal.fire({
       html: `
-          <p style="font-size: 1.5rem; color: black; margin-bottom: 20px; text-align: left;">Edit Plan</p>
+          <p style="font-size: 1.5rem; color: black; margin-bottom: 20px; text-align: left;">${planManagement.editPlan}</p>
           <form id="edit-form" style="width: 100%; ;display: flex; flex-direction: column; align-items: center;">
             <div style="width: 100%; max-width: 800px; margin-bottom: 15px;">
-              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">Enter the name of the plan</label>
+              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">${planManagement.namePLan}</label>
               <input type="text" id="namePlan" style="background: #D9D9D9; width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" value="${item.namePlan}">
             </div>
             <div style="width: 100%; max-width: 800px; margin-bottom: 15px;">

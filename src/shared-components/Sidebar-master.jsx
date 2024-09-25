@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
 import { getUserInfo } from '../services/provider';
+import { generalSideBar, sideBarMaster } from './WordsBank';
 
 const SidebarMaster = () => {
   const auth = getAuth();
@@ -65,7 +66,7 @@ const SidebarMaster = () => {
             onMouseLeave={handleMouseLeave}
             onClick={() => toggleCollapse('collapseAdministrators')}>
             <i class="bi bi-person-circle icons-size"></i>
-            <span>Administrators Configuration</span>
+            <span>{sideBarMaster.admConfig}</span>
             <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseAdministrators' ? 'rotate' : ''}`} />
           </div>
           {/* First Submenu */}
@@ -74,13 +75,13 @@ const SidebarMaster = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={() => navigate('/CreateAdministrator')}>
-              Add new administrator
+              {sideBarMaster.newAdmin}
             </div>
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={() => navigate('/TableAdministrator')}>
-              View administrators
+              {sideBarMaster.viewAdmin}
             </div>
           </div>
 
@@ -91,7 +92,7 @@ const SidebarMaster = () => {
             onClick={() => toggleCollapse('collapseReports')}
             style={{ marginTop: '10px' }}>
             <i class="bi bi-bar-chart-line icons-size"></i>
-            <span>Reports</span>
+            <span>{sideBarMaster.reports}</span>
             <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseReports' ? 'rotate' : ''}`} />
           </div>
           {/* Second Submenu */}
@@ -100,7 +101,7 @@ const SidebarMaster = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={() => navigate('/MasterReport')}>
-              New report
+              {sideBarMaster.newreport}
             </div>
           </div>
 
@@ -111,7 +112,7 @@ const SidebarMaster = () => {
             onClick={() => toggleCollapse('collapsePlans')}
             style={{ marginTop: '10px' }}>
             <i class="bi bi-card-checklist icons-size"></i>
-            <span>Plans</span>
+            <span>{sideBarMaster.plans}</span>
             <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapsePlans' ? 'rotate' : ''}`} />
           </div>
           {/* Third Submenu */}
@@ -120,19 +121,19 @@ const SidebarMaster = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={() => navigate('/PlanManagement')}>
-              View plans
+              {sideBarMaster.viewPlan}
             </div>
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={() => navigate('/CreatePlan')}>
-              Add new plans
+              {sideBarMaster.addPlan}
             </div>
             <div className="p-2 menu-item"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={() => navigate('/TableSubscriber')}>
-              View subscribers
+              {sideBarMaster.subscribers}
             </div>
           </div>
 
@@ -143,7 +144,7 @@ const SidebarMaster = () => {
             style={{ marginTop: '10px' }}
             onClick={() => navigate('/MasterConfiguration')}>
             <i class="bi bi-person-gear" style={{ fontSize: '31px' }}></i>
-            <span>Configuration</span>
+            <span>{sideBarMaster.config}</span>
           </div>
         </div>
 
@@ -155,7 +156,7 @@ const SidebarMaster = () => {
               onMouseLeave={handleMouseLeave}
               onClick={handleLogout}>
               <i className="bi bi-box-arrow-right" style={{ fontSize: '30px', verticalAlign: 'middle' }}></i>
-              <span style={{ marginLeft: '15px', verticalAlign: 'middle', lineHeight: '31px' }}>Sign Out</span>
+              <span style={{ marginLeft: '15px', verticalAlign: 'middle', lineHeight: '31px' }}>{generalSideBar.signOut}</span>
             </div>
           </div>
         </div>

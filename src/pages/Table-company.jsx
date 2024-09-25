@@ -7,7 +7,8 @@ import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUserId, removeCompanyFromUser, checkIfEmailCompanyExists, updateCompany, fetchCompanyData, fetchTotalDocumentsCompany} from '../services/provider.js';
-
+import { sidebarAdmin, tableComponent } from '../shared-components/WordsBank.js';
+import { tab } from '@testing-library/user-event/dist/tab.js';
 const TableCompany = () => {
 
     const [data, setData] = useState([]); // Holds the data to display in the table
@@ -230,7 +231,7 @@ const TableCompany = () => {
         <div className='Background-Table'>
             <SidebarAdmin />
             <div className="container-md" >
-                <h1 className='text-white' >Company</h1>    
+                <h1 className='text-white' >{sidebarAdmin.company}</h1>    
 
                 <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
 
@@ -249,7 +250,7 @@ const TableCompany = () => {
                 {loading ? (
                     <div className="d-flex justify-content-center">
                         <div className="spinner-border text-light" role="status">
-                            <span className="visually-hidden">Loading...</span>
+                            <span className="visually-hidden">{tableComponent.loading}</span>
                         </div>
                     </div>
                 ) : (
@@ -257,12 +258,12 @@ const TableCompany = () => {
                         <table className="table table-hover">
                             <thead className="thead-dark text-center">
                                 <tr>
-                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}> Name </th>
-                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}> Email </th>
-                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}> State </th>
-                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>More</th>
-                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
-                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}>{tableComponent.name}</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}>{tableComponent.email}</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '26%' }}>{tableComponent.state}</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>{tableComponent.more}</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>{tableComponent.edit}</th>
+                                    <th className='text-white' style={{ background: '#222527', width: '8%' }}>{tableComponent.delete}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -294,10 +295,10 @@ const TableCompany = () => {
                 )}
                 {/* Pagination controls */}
                 <div className="d-flex justify-content-between align-items-center mt-3">
-                    <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} pages</span>
+                    <span className='font-weight-bold text-white'>{tableComponent.showing} {currentPage} {tableComponent.of} {totalPages} {tableComponent.pages}</span>
                     <div className='d-flex justify-content-between align-items-center'>
                         <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
-                            Prev
+                            {tableComponent.prev}
                         </button>
                         <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px', textAlign: "center"  }}>
                             <option value="5">5</option>
@@ -305,7 +306,7 @@ const TableCompany = () => {
                             <option value="15">15</option>
                         </select>
                         <button onClick={loadNext} disabled={currentPage === totalPages || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
-                            Next
+                            {tableComponent.next}
                         </button>
                     </div>
                 </div>
