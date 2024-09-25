@@ -87,6 +87,9 @@ export const verifyUserRole = async (userId) => {
 // Function to add a company
 export const addCompany = async (companyData) => {
     const userId = getCurrentUserId(); // Get the ID of the authenticated user
+    const companyCount = await getUserCompanyCount(userId)
+
+    const isFirstCompany = companyCount === 0;
 
     if (!userId) {
         throw new Error('No authenticated user found');
@@ -97,7 +100,7 @@ export const addCompany = async (companyData) => {
         ...companyData,
         creationDate: currentDate,
         lastUpdate: currentDate,
-        state: false,
+        state: isFirstCompany ? true : false,
         adminID: userId // The ID of the user who created the company
     });
 
@@ -213,6 +216,61 @@ export const fetchCompanyData = async (userId, pageSize, searchTerm = '', lastVi
         totalDocuments: querySnapshot.size
     };
 };
+
+// Get the number of companies allowed in the user's plan
+export const getNumberCompaniesAllowedByPlanForUser = async () => {
+    const userId = getCurrentUserId();
+    const userRef = doc(db, 'User', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+        throw new Error('User not found');
+    }
+
+    const planName = userDoc.data().plan;
+    const q = query(collection(db, 'Plan'), where('namePlan', '==', planName));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+        throw new Error('Plan not found');
+    }
+
+    const planDoc = querySnapshot.docs[0]; // Take the first document (it should be unique)
+
+    return planDoc.data().numberCompany;
+};
+
+
+// Get the number of companies in the arrangement in the user document
+export const getUserCompanyCount = async () => {
+    const userId = getCurrentUserId();
+
+    if (!userId) {
+        throw new Error('No authenticated user found');
+    }
+
+    const userRef = doc(db, 'User', userId);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+        throw new Error('User document not found');
+    }
+
+    const companyIDs = userDoc.data().companyIDs || [];
+    return companyIDs.length;  // Returns directly the number of companies
+    
+};
+
+
+export const updateCompanyState = async (companyId, newState) => {
+    try {
+        const companyRef = doc(db, 'Company', companyId);
+        await updateDoc(companyRef, { state: newState });
+    } catch (error) {
+        console.error("Error updating company state:", error);
+    }
+};
+
 
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import '../Styles/Create-company.css';
 import Swal from 'sweetalert2';
-import { addCompany, checkIfEmailCompanyExists } from '../services/provider';
+import { addCompany, checkIfEmailCompanyExists, getNumberCompaniesAllowedByPlanForUser, getUserCompanyCount } from '../services/provider';
  
 const CreateCompany = () => {
 
@@ -12,7 +12,7 @@ const CreateCompany = () => {
         legalID: '',
         email: ''
     };
-
+ 
     const [company, setCompany] = useState(defaultEntry);
     const [errors, setErrors] = useState({ companyName: '', legalID:'', email:''});
     const [isSuccess, setIsSuccess] = useState(false); 
@@ -84,6 +84,14 @@ const CreateCompany = () => {
                 return;
             }
 
+            const userPlan = await getNumberCompaniesAllowedByPlanForUser();
+            const companyCount = await getUserCompanyCount();
+            
+            if (companyCount >= userPlan) {
+                setErrors({ ...errors, global: 'You have reached the maximum number of companies allowed by your plan' });
+                return;
+            }
+
             await addCompany(company);
             setErrors({ companyName:'', legalID:'', email:''});
             setCompany(defaultEntry);
@@ -117,6 +125,7 @@ const CreateCompany = () => {
                         <input onChange={captureInputs} value={company.email} type="text" name='email' className="form-control" aria-describedby="emailHelp" style={{ width: '100%' }}/>
                         {errors.email && <div className='text-danger'>{errors.email}</div>}
                     </div>
+                    {errors.global && <div className='text-danger mb-3'>{errors.global}</div>}
                     <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '800px', marginTop: '18px', marginBottom: '-10px' }}>
                         <button className="btn btn-primary" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>Add</button>
                     </div>

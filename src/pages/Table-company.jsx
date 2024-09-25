@@ -6,7 +6,8 @@ import Swal from 'sweetalert2';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUserId, removeCompanyFromUser, checkIfEmailCompanyExists, updateCompany, fetchCompanyData, fetchTotalDocumentsCompany} from '../services/provider.js';
+import ModalCreateCompany from '../components/Modal-create-company.jsx';
+import { getCurrentUserId, removeCompanyFromUser, checkIfEmailCompanyExists, updateCompany, fetchCompanyData, fetchTotalDocumentsCompany, updateCompanyState } from '../services/provider.js';
 
 const TableCompany = () => {
 
@@ -20,6 +21,7 @@ const TableCompany = () => {
     const [totalPages, setTotalPages] = useState(0); // Tracks the total number of pages
     const [searchTerm, setSearchTerm] = useState(''); // Tracks the search term input by the user
     const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents 
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
     const userId = getCurrentUserId();
@@ -187,11 +189,11 @@ const TableCompany = () => {
         if (formValues) {
             // Update the company data if no conflicts
             const updatedData = {
-                name: formValues.name,
+                companyName: formValues.name,
                 email: formValues.email,
                 lastUpdate: new Date(), // Set the update date
             };
-            
+
             try {
                 await updateCompany(item.id, updatedData);
                 // Show success message after updating
@@ -203,26 +205,89 @@ const TableCompany = () => {
                     timer: 5000, // Message will disappear after 5 seconds
                     toast: true, // Convert the alert into a toast notification
                 });
+                fetchData();
             } catch (error) {
-                await Swal.fire({icon: 'error', title: 'Update Failed', text: 'There was an error updating the company. Please try again later.', });
+                await Swal.fire({ icon: 'error', title: 'Update Failed', text: 'There was an error updating the company. Please try again later.', });
             }
         }
     };
 
     /* Call to the delete modal, you need to pass de name of the collection, an extra warning message and the messagge you want
     to show when the action success*/
-    const handleDeleteClick = (item) => {
-        ModalDelete({
+    const handleDeleteClick = async (item) => {
+        const result = await ModalDelete({
             item,
             collectionName: 'Company',
             warningMessage: 'You will lose everything',
             onSuccessMessage: 'The company has been deleted!',
         });
-        removeCompanyFromUser(item.id);
+
+        if (result.isConfirmed) {
+            await removeCompanyFromUser(item.id); // Elimina el item de la base de datos
+            fetchData();  // Refresca la tabla después de la eliminación exitosa
+        }
     };
 
+
     const handleCreateClick = () => {
-        navigate('/CreateCompany');
+        setIsModalOpen(true); // Abre el modal
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); // Cierra el modal
+    };
+
+    const handleToggleActive = async (selectedCompany) => {
+        try {
+            const activeCompany = data.find(company => company.state === true);
+
+            if (activeCompany && activeCompany.id !== selectedCompany.id) {
+                const result = await Swal.fire({
+                    title: `<div style="text-align: left;"> Activate Company <hr style="border: 1px solid #5A5555;"></div>`,
+                    html: `
+                        <div>
+                            <p>Are you sure you want to activate this company?</p>
+                            <p style="margin-bottom: 4px; ">You can only have one active company so the currently active company will be deactivated</p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, activate',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#CB2A2A',
+                    cancelButtonColor: '#423F3F',
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                });
+
+                if (result.isConfirmed) {
+                    await updateCompanyState(activeCompany.id, false);
+
+                    await updateCompanyState(selectedCompany.id, true);
+
+                    fetchData();
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        text: 'The company has been activated',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        toast: true,
+                    });
+
+                }
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    text: 'This company is currently active',
+                    width: '300px',
+                    allowOutsideClick: false,
+                });
+            }
+        } catch (error) {
+            console.error("Error updating company state:", error);
+            Swal.fire('Error', 'Ocurrió un error al actualizar el estado de la empresa.', 'error');
+        }
     };
 
 
@@ -230,21 +295,27 @@ const TableCompany = () => {
         <div className='Background-Table'>
             <SidebarAdmin />
             <div className="container-md" >
-                <h1 className='text-white' >Company</h1>    
+                <h1 className='text-white' >Company</h1>
 
-                <form onSubmit={handleSearchSubmit} className="form-inline mb-3 d-flex align-items-center justify-content-end" >
-
-                    <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px' }} onClick={handleCreateClick}>
-                        <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
-                    </button>
-
-                    <div className="input-group" style={{ maxWidth: '300px' }}>
-                        <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control" />
-                        <button className="input-group-text">
-                            <i className="bi bi-search"></i>
+                <div className="form-inline mb-3 d-flex align-items-center justify-content-end">
+                    <div>
+                        <button type="button" className="btn btn-success me-5" style={{ fontSize: '18px' }} onClick={handleCreateClick} >
+                            <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
                         </button>
+
+                        <ModalCreateCompany isOpen={isModalOpen} onClose={handleCloseModal} />
                     </div>
-                </form>
+
+                    <form onSubmit={handleSearchSubmit} className="d-flex">
+                        <div className="input-group" style={{ maxWidth: '300px', minWidth:'300px' }}>
+                            <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange}  className="form-control"/>
+                            <button className="input-group-text">
+                                <i className="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
 
                 {loading ? (
                     <div className="d-flex justify-content-center">
@@ -270,7 +341,13 @@ const TableCompany = () => {
                                     <tr key={item.id}>
                                         <td style={{ textAlign: "center" }}>{item.name}</td>
                                         <td style={{ textAlign: "center" }}>{item.email}</td>
-                                        <td style={{ textAlign: "center" }}>{item.state ? 'Active' : 'Inactive'}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <button
+                                                onClick={() => handleToggleActive(item)}
+                                                className={`btn ${item.state ? 'btn-success' : 'btn-secondary'}`}>
+                                                {item.state ? 'Active' : 'Inactive'}
+                                            </button>
+                                        </td>
                                         <td className='text-center'>
                                             <button onClick={() => handleViewClick(item)} className="btn btn-primary btn-sm">
                                                 <i className="bi bi-three-dots" style={{ fontSize: '18px', color: 'white' }}></i>
@@ -299,7 +376,7 @@ const TableCompany = () => {
                         <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
                             Prev
                         </button>
-                        <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px', textAlign: "center"  }}>
+                        <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px', textAlign: "center" }}>
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
