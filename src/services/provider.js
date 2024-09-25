@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot, docSnap } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
 
 
@@ -81,6 +81,8 @@ export const verifyUserRole = async (userId) => {
         return null;
     }
 };
+
+
 
 
 /* ------------------------------------------------------------- ONLY FOR COMPANY -----------------------------------------------------*/
@@ -217,4 +219,87 @@ export const fetchCompanyData = async (userId, pageSize, searchTerm = '', lastVi
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 
+/* ------------------------------------------------------- TABLE COMPONENT   ------------------------------------------------------------*/
 
+// Function to know collection size. 
+export const fetchTotalDocuments = async (collectionName) => {
+    const queryCollection = collection(db, collectionName);
+    const querySnapshot = await getDocs(queryCollection);
+    return querySnapshot.size;
+};
+
+// Fetch data (includes pagination and search)
+export const fetchData = async ({ collectionName, searchTerm = '', columnsToShow, lastVisible, isNextPage = false, isPrevPage = false, firstVisiblePages = [], pageSize = 5 }) => {
+    const queryCollection = collection(db, collectionName);
+    let queryC;
+
+    if ( collectionName === 'User'){
+        const queryUser = query(queryCollection, where('role', '==', 'Administrator'));
+        if (searchTerm) {
+            const regex = /^[a-zA-Z0-9._%+-]+@$/;
+            if (regex.test(searchTerm)) {
+                queryC = query(queryUser,
+                    where(columnsToShow[1], '>=', searchTerm),
+                    where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            } else {
+                queryC = query(queryUser,
+                    where(columnsToShow[0], '>=', searchTerm),
+                    where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            }
+        } else if (isNextPage && lastVisible) {
+            queryC = query(queryUser, startAfter(lastVisible), limit(pageSize));
+        } else if (isPrevPage && firstVisiblePages.length > 1) {
+            queryC = query(queryUser, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
+        } else {
+            queryC = query(queryUser, limit(pageSize));
+        }
+    } else {
+        if (searchTerm) {
+            const regex = /^[a-zA-Z0-9._%+-]+@$/;
+            if (regex.test(searchTerm)) {
+                queryC = query(queryCollection,
+                    where(columnsToShow[1], '>=', searchTerm),
+                    where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            } else {
+                queryC = query(queryCollection,
+                    where(columnsToShow[0], '>=', searchTerm),
+                    where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            }
+        } else if (isNextPage && lastVisible) {
+            queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+        } else if (isPrevPage && firstVisiblePages.length > 1) {
+            queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
+        } else {
+            queryC = query(queryCollection, limit(pageSize));
+        }
+    }
+    const querySnapshot = await getDocs(queryC);
+    const documents = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+
+    const lastVisibleDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+    return {
+        documents,
+        lastVisible: lastVisibleDoc,
+        firstVisible: querySnapshot.docs[0]
+    };
+};
+
+// Function for 
+export const subscribeToCollection = (collectionName, setData, loadData) => {
+    const queryCollection = collection(db, collectionName);
+    const unsubscribe = onSnapshot(queryCollection, (snapshot) => {
+        const documents = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setData(documents);
+    });
+    loadData();  // Fetches data when component mounts or when collectionName or pageSize changes
+    return () => unsubscribe(); 
+};
+
+/* --------------------------------------------------------------------------------------------------------------------------------------*/
