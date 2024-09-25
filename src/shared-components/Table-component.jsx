@@ -6,9 +6,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
     const [data, setData] = useState([]);  // State to hold the fetched data
     const [loading, setLoading] = useState(false);  // Indicates if data is still being loaded
     const [lastVisible, setLastVisible] = useState(null);  // Stores the last visible document for pagination
-    const [firstVisible, setFirstVisible] = useState(null);  // Stores the first visible document
     const [pageSize, setPageSize] = useState(5);  // Default page size
-    const [isFirstPage, setIsFirstPage] = useState(true);  // Indicates if it's the first page
     const [searchTerm, setSearchTerm] = useState('');  // State for the search term
     const [currentPage, setCurrentPage] = useState(1);  // Current page number
     const [totalPages, setTotalPages] = useState(0);  // Total number of pages
@@ -76,13 +74,11 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
             // Resets pagination when a search is performed
             setData([]);
             setLastVisible(null);
-            setFirstVisible(null);
             loadData(false, false, searchTerm);  // Calls fetchData with the search term
         } else {
             // If the search field is empty, show all results
             setData([]);
             setLastVisible(null);
-            setFirstVisible(null);
             setCurrentPage(1);  // Reinicia el número de la página actual
             loadData();  // Calls fetchData without any search term
 
@@ -113,7 +109,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
                     </div>
                 </div>
             ) : (
-                <div className="table-responsive rounded">
+                <div className="table-responsive rounded" style={{maxHeight: '350px', overflowY: 'auto'}}>
                     <table className="table table-hover">
                         <thead className="thead-dark text-center">
                             <tr>

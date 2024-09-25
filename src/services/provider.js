@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot, docSnap } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
 
 
@@ -81,6 +81,8 @@ export const verifyUserRole = async (userId) => {
         return null;
     }
 };
+
+
 
 
 /* ------------------------------------------------------------- ONLY FOR COMPANY -----------------------------------------------------*/
@@ -217,8 +219,9 @@ export const fetchCompanyData = async (userId, pageSize, searchTerm = '', lastVi
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 
-/* --------------------------------------------------- TABLE COMPONENT ------------------------------------------------------------*/
-// Fetch total documents
+/* ------------------------------------------------------- TABLE COMPONENT   ------------------------------------------------------------*/
+
+// Function to know collection size. 
 export const fetchTotalDocuments = async (collectionName) => {
     const queryCollection = collection(db, collectionName);
     const querySnapshot = await getDocs(queryCollection);
@@ -230,25 +233,46 @@ export const fetchData = async ({ collectionName, searchTerm = '', columnsToShow
     const queryCollection = collection(db, collectionName);
     let queryC;
 
-    if (searchTerm) {
-        const regex = /^[a-zA-Z0-9._%+-]+@$/;
-        if (regex.test(searchTerm)) {
-            queryC = query(queryCollection,
-                where(columnsToShow[1], '>=', searchTerm),
-                where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+    if ( collectionName === 'User'){
+        const queryUser = query(queryCollection, where('role', '==', 'Administrator'));
+        if (searchTerm) {
+            const regex = /^[a-zA-Z0-9._%+-]+@$/;
+            if (regex.test(searchTerm)) {
+                queryC = query(queryUser,
+                    where(columnsToShow[1], '>=', searchTerm),
+                    where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            } else {
+                queryC = query(queryUser,
+                    where(columnsToShow[0], '>=', searchTerm),
+                    where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            }
+        } else if (isNextPage && lastVisible) {
+            queryC = query(queryUser, startAfter(lastVisible), limit(pageSize));
+        } else if (isPrevPage && firstVisiblePages.length > 1) {
+            queryC = query(queryUser, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
         } else {
-            queryC = query(queryCollection,
-                where(columnsToShow[0], '>=', searchTerm),
-                where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            queryC = query(queryUser, limit(pageSize));
         }
-    } else if (isNextPage && lastVisible) {
-        queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
-    } else if (isPrevPage && firstVisiblePages.length > 1) {
-        queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
     } else {
-        queryC = query(queryCollection, limit(pageSize));
+        if (searchTerm) {
+            const regex = /^[a-zA-Z0-9._%+-]+@$/;
+            if (regex.test(searchTerm)) {
+                queryC = query(queryCollection,
+                    where(columnsToShow[1], '>=', searchTerm),
+                    where(columnsToShow[1], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            } else {
+                queryC = query(queryCollection,
+                    where(columnsToShow[0], '>=', searchTerm),
+                    where(columnsToShow[0], '<=', searchTerm + '\uf8ff'), limit(pageSize));
+            }
+        } else if (isNextPage && lastVisible) {
+            queryC = query(queryCollection, startAfter(lastVisible), limit(pageSize));
+        } else if (isPrevPage && firstVisiblePages.length > 1) {
+            queryC = query(queryCollection, startAt(firstVisiblePages[firstVisiblePages.length - 2]), limit(pageSize));
+        } else {
+            queryC = query(queryCollection, limit(pageSize));
+        }
     }
-
     const querySnapshot = await getDocs(queryC);
     const documents = querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -264,6 +288,7 @@ export const fetchData = async ({ collectionName, searchTerm = '', columnsToShow
     };
 };
 
+// Function for 
 export const subscribeToCollection = (collectionName, setData, loadData) => {
     const queryCollection = collection(db, collectionName);
     const unsubscribe = onSnapshot(queryCollection, (snapshot) => {
@@ -276,3 +301,5 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
     loadData();  // Fetches data when component mounts or when collectionName or pageSize changes
     return () => unsubscribe(); 
 };
+
+/* --------------------------------------------------------------------------------------------------------------------------------------*/

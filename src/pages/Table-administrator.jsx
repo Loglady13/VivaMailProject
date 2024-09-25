@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const TableAdministrator = () => {
     const navigate = useNavigate();
-
+    
     // To format the date to show it
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return '';
