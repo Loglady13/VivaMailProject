@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import { deleteItem } from '../services/provider.js';
 
-const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMessage }) => {
+const ModalDelete = async ({ item, collectionName, warningMessage, onSuccessMessage }) => {
   const result = await Swal.fire({
     title: `<div style="text-align: left;">Delete ${collectionName}<hr style="border: 1px solid #5A5555;"></div>`,
     html: `
@@ -40,6 +40,9 @@ const ModalDelete = async ({ item, collectionName, warningMessage ,onSuccessMess
       });
     }
   }
+
+  return result;
 };
+
 
 export default ModalDelete;

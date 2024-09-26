@@ -4,6 +4,7 @@ import { collection, getDocs} from 'firebase/firestore';
 import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Styles/Principal.css';
+import { principal } from '../shared-components/WordsBank.js';
 
 const Principal = () => {
     // Status to control the visibility of plans
@@ -63,8 +64,8 @@ const Principal = () => {
                 <div className="container-fluid">
                     <img src={logo} width="150" alt="logo" />
                     <form className="d-flex" role="search">
-                        <a className="navbar-brand" style={{ color: 'white' }} href='/Login'>Log In</a>
-                        <button className="btn" type="button" onClick={handleShowPlans} style={{ backgroundColor: '#7839CD', color: 'white' }}>Plans</button>
+                        <a className="navbar-brand" style={{ color: 'white' }} href='/Login'>{principal.login}</a>
+                        <button className="btn" type="button" onClick={handleShowPlans} style={{ backgroundColor: '#7839CD', color: 'white' }}>{principal.plans}</button>
                     </form>
                 </div>
             </nav>
@@ -94,12 +95,12 @@ const Principal = () => {
                     <br />
                     <img src={logo} alt="main logo" className='img-fluid rounded mx-auto d-block' />
                     <br />
-                    <h1 style={{ color: 'white', fontSize: '30px' }} className='text-center'>EMAIL SENDING AUTOMATION</h1>
+                    <h1 style={{ color: 'white', fontSize: '30px' }} className='text-center'>{principal.description}</h1>
                     <br />
-                    <h1 style={{ color: 'white', fontSize: '30px' }} className='text-center'>Plans start from $**** per month</h1>
+                    <h1 style={{ color: 'white', fontSize: '30px' }} className='text-center'>{principal.plansdescription}</h1>
                     <br />
                     <div className="d-flex justify-content-center">
-                        <button className="btn btn-lg" type="button" onClick={handleShowPlans} style={{ backgroundColor: '#7839CD', color: 'white' }}>Plans</button>
+                        <button className="btn btn-lg" type="button" onClick={handleShowPlans} style={{ backgroundColor: '#7839CD', color: 'white' }}>{principal.plans}</button>
                     </div>
                 </div>
             </div>
@@ -135,7 +136,7 @@ const Principal = () => {
                                                 </div>
                                                 <div className="d-flex flex-column align-items-center" style={{ marginBottom: '10px' }}>
                                                     <button className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
-                                                        Contact us
+                                                        {principal.contact}
                                                     </button>
                                                 </div>
                                             </div>
@@ -149,11 +150,11 @@ const Principal = () => {
                         </div>
                         <button className="carousel-control-prev" type="button" data-bs-target="#planCarousel" data-bs-slide="prev">
                             <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
+                            <span className="visually-hidden">{principal.previous}</span>
                         </button>
                         <button className="carousel-control-next" type="button" data-bs-target="#planCarousel" data-bs-slide="next">
                             <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
+                            <span className="visually-hidden">{principal.next}</span>
                         </button>
                     </div>
                 </div>

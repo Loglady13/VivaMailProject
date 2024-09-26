@@ -5,6 +5,7 @@ import {useNavigate } from 'react-router-dom';
 import { db } from '../services/credentials';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { createPlan, planManagement, create } from '../shared-components/WordsBank';
 
 const CreatePlan=()=>{
 
@@ -114,43 +115,43 @@ const CreatePlan=()=>{
         <div className='create-new-plan'>
             <div><SidebarMaster/></div>
             <div className='container-create-plan' style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '50px', display: 'flex', flexDirection: 'column' }}>
-                <p className="fs-2 text-white" style={{ marginBottom: '20px', textAlign: 'left' }}>New Plan</p>
+                <p className="fs-2 text-white" style={{ marginBottom: '20px', textAlign: 'left' }}>{createPlan.newPlan}</p>
                 <div className='form-create-plan'>
                     <form onSubmit={save} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div className='"mb-3"' style={{ width: '100%', maxWidth: '800px' }}>
-                            <label htmlFor="namePlan" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Enter the name of the plan</label>
+                            <label htmlFor="namePlan" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createPlan.namePlan}</label>
                             <input type="text"  name="namePlan" className="form-control" style={{ width: '100%' }} onChange={data} value={formData.namePlan} ></input>
                             {errors.namePlan && <div className="text-danger">{errors.namePlan}</div>}
                         </div>
                         <div className='"mb-3"' style={{ width: '100%', maxWidth: '800px' }}> 
-                            <label htmlFor="description" className="form-label fs-6 text-white" style={{ textAlign: 'center' }} >Enter the description</label>
+                            <label htmlFor="description" className="form-label fs-6 text-white" style={{ textAlign: 'center' }} >{createPlan.planDesc}</label>
                             <input type="text" name="description" className="form-control" style={{ width: '100%' }} onChange={data} value={formData.description}></input>
                             {errors.description && <div className="text-danger">{errors.description}</div>}
                         </div>
                         <div  className='"mb-3"' style={{ width: '100%', maxWidth: '800px' }}>
                             <label htmlFor="numberCompany" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>
-                            Enter the number of companies for the plan</label>
+                            {createPlan.numberOfCompanies}</label>
                             <input type="text" name="numberCompany" className="form-control" style={{ width: '100%' }} onChange={data} value={formData.numberCompany}></input>
                             {errors.numberCompany && <div className="text-danger">{errors.numberCompany}</div>}
                         </div>
                         <div  className='"mb-3"' style={{ width: '100%', maxWidth: '800px' }}>
                             <label htmlFor="price" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>
-                                Enter the price</label>
+                                {createPlan.planPrice}</label>
                             <input type="text" name="price" className="form-control" style={{ width: '100%' }} onChange={data} value={formData.price}></input>
                             {errors.price && <div className="text-danger">{errors.price}</div>}
                         </div>
                         <div className='"mb-3"' style={{ width: '100%', maxWidth: '800px' }}>
                             <label htmlFor="paymentFrecuency" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>
-                                Select the payment frequency</label>
+                                {createPlan.paymentFrequency}</label>
                             <select name="paymentFrecuency" className="form-select" style={{ width: '100%'}} onChange={data} value={formData.paymentFrecuency}>
-                                <option value="year">Per year</option>
-                                <option value="month">Per month</option> 
-                                <option value="week">Per week</option>
+                                <option value="year">{planManagement.year}</option>
+                                <option value="month">{planManagement.month}</option> 
+                                <option value="week">{planManagement.week}</option>
                             </select>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '800px', marginTop: '18px', marginBottom: '-10px' }}>
-                            <button type='button' className="btn btn-primary" style={{ backgroundColor: '#DE3232', border: 'none', margin: '5px', width: '90px', height: '40px' }} onClick={() => navigate('/HomeMaster')}>Cancel</button>
-                            <button className="btn btn-primary" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>Add</button>
+                            <button type='button' className="btn btn-primary" style={{ backgroundColor: '#DE3232', border: 'none', margin: '5px', width: '90px', height: '40px' }} onClick={() => navigate('/HomeMaster')}>{create.cancel}</button>
+                            <button className="btn btn-primary" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>{create.add}</button>
                         </div>
                     </form>      
                 </div>

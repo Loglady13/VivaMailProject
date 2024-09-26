@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import logo from '../images/logo.png';
+import { login, principal } from '../shared-components/WordsBank';
 
 const auth = getAuth();
 
@@ -27,19 +28,19 @@ const ViewLogin = ({ setManualLogin }) => {
                 </div>
                 <div className="col-md-1"></div> 
                 <div className="col-md-6 d-flex flex-column justify-content-center">
-                    <h1 className="text-white mb-4">Log In</h1>
+                    <h1 className="text-white mb-4">{principal.login}</h1>
                     <form onSubmit={handlerSubmit}>
                         <div className="mb-3">
-                            <label className="form-label text-white">Email Address:</label>
-                            <input type="email" className="form-control" placeholder="Enter email" value={email} required onChange={(e) => setEmail(e.target.value)} />
+                            <label className="form-label text-white">{login.emailAddress}</label>
+                            <input type="email" className="form-control" placeholder={login.enterEmail} value={email} required onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label text-white">Password:</label>
-                            <input type="password" className="form-control" placeholder="Enter password" value={password} required onChange={(e) => setPassword(e.target.value)} />
+                            <label className="form-label text-white">{login.password}</label>
+                            <input type="password" className="form-control" placeholder={login.enterPassword} value={password} required onChange={(e) => setPassword(e.target.value)} />
                         </div>
                         {error && <p className="text-danger">{error}</p>}
                         <button className="btn btn-primary w-100" type="submit">
-                            Log in
+                            {login.login}
                         </button>
                     </form>
                 </div>

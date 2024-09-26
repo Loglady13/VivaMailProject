@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchTotalDocuments, fetchData, subscribeToCollection } from '../services/provider.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { tableComponent } from './WordsBank.js';
+import { tab } from '@testing-library/user-event/dist/tab.js';
 
 function TableComponent({ tittle, collectionName, columnName, columnsToShow, handleViewClick, handleEditClick, handleDeleteClick, handleCreateClick }) {
     const [data, setData] = useState([]);  // State to hold the fetched data
@@ -105,7 +107,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
             {loading ? (
                 <div className="d-flex justify-content-center">
                     <div className="spinner-border text-light" role="status">
-                        <span className="visually-hidden">Loading...</span>
+                        <span className="visually-hidden">{tableComponent.loading}</span>
                     </div>
                 </div>
             ) : (
@@ -116,9 +118,9 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
                                 {columnName.map((column) => (
                                     <th className='text-white' style={{ background: '#222527' }} key={column}>{column}</th>
                                 ))}
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>More</th>
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>Edit</th>
-                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>Delete</th>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>{tableComponent.more}</th>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>{tableComponent.edit}</th>
+                                <th className='text-white' style={{ background: '#222527', width: '8%' }}>{tableComponent.delete}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,10 +151,10 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
                 </div>
             )}
             <div className="d-flex justify-content-between align-items-center mt-3">
-                <span className='font-weight-bold text-white'>Showing {currentPage} of {totalPages} pages</span>
+                <span className='font-weight-bold text-white'>{tableComponent.showing} {currentPage} {tableComponent.of} {totalPages} {tableComponent.pages}</span>
                 <div className='d-flex justify-content-between align-items-center'>
                     <button onClick={loadPrev} disabled={currentPage === 1 || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
-                        Prev
+                        {tableComponent.prev}
                     </button>
                     <select id="pageSize" value={pageSize} onChange={handlePageSizeChange} className="form-control d-inline-block m-1" style={{ width: '30%', height: '38.5px', textAlign: "center" }}>
                         <option value="5">5</option>
@@ -160,7 +162,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
                         <option value="15">15</option>
                     </select>
                     <button onClick={loadNext} disabled={currentPage === totalPages || loading} className="btn btn-light d-inline-block m-1" style={{ background: 'rgba(255, 255, 255, 0.5)' }}>
-                        Next
+                        {tableComponent.next}
                     </button>
                 </div>
             </div>

@@ -5,7 +5,8 @@ import { db } from '../services/credentials';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-import '../Styles/Create-client-mail.css'
+import '../Styles/Create-client-mail.css';
+import { createClient, create } from '../shared-components/WordsBank';
 
 const CreateClientMail = () => {
 
@@ -15,12 +16,11 @@ const CreateClientMail = () => {
      /* To set inputs as empty after a creation */
     const defaultEntry = {
         nameClient: '',
-        emailClient: '',
-        idAdmin: ''
+        emailClient: ''
     };
 
     const [clientEmail, setClientEmail] = useState(defaultEntry);
-    const [errors, setErrors] = useState({ nameClient: '', emailClient: '', idAdmin: '' });
+    const [errors, setErrors] = useState({ nameClient: '', emailClient: '' });
     const [isSuccess, setIsSuccess] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedFile, setUploadedFile] = useState(null);
@@ -38,7 +38,7 @@ const CreateClientMail = () => {
     };
 
     const ValidateInputs = (isFileUpload = false) => {
-        const newErrors = { nameClient: '', emailClient: '', idAdmin: '' };
+        const newErrors = { nameClient: '', emailClient: ''};
         let isValid = true;
         const noNumbers = /^\D{3,}/;
         const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,11 +57,6 @@ const CreateClientMail = () => {
                 isValid = false;
             } else if (!emailFormat.test(clientEmail.emailClient)) {
                 newErrors.emailClient = 'Please enter a valid email format including @ and .example.';
-                isValid = false;
-            }
-
-            if (!clientEmail.idAdmin) {
-                newErrors.idAdmin = 'Id Admin is required.';
                 isValid = false;
             }
         }
@@ -104,9 +99,9 @@ const CreateClientMail = () => {
                 const currentDate = new Date(); // Obtener la fecha y hora actuales.
     
                 for (const entry of jsonData) { // Iterar sobre cada entrada en el JSON.
-                    const { nameClient, emailClient, idAdmin } = entry; // Extraer `nameClient`, `emailClient` y `idAdmin` de cada entrada.
+                    const { nameClient, emailClient} = entry; // Extraer `nameClient`, `emailClient` y `idAdmin` de cada entrada.
     
-                    if (!nameClient || !emailClient || !idAdmin) {
+                    if (!nameClient || !emailClient) {
                         // Verificar si alguno de los campos es nulo o está vacío.
                         console.warn(`Incomplete entry in the Excel file, will be ignored: ${JSON.stringify(entry)}`);
                         // Mostrar una advertencia en la consola si la entrada está incompleta y continuar con la siguiente entrada.
@@ -128,7 +123,6 @@ const CreateClientMail = () => {
                         await addDoc(collection(db, 'EmailClient'), {
                             nameClient, // Nombre del cliente.
                             emailClient, // Email del cliente.
-                            idAdmin, // ID del administrador.
                             creationDate: currentDate, // Fecha de creación.
                             lastUpdate: currentDate, // Última fecha de actualización.
                             state: false, // Estado inicial del cliente.
@@ -172,7 +166,7 @@ const CreateClientMail = () => {
                     lastUpdate: currentDate, // Última fecha de actualización.
                     state: false, // Estado inicial del cliente.
                 });
-                setErrors({ nameClient: '', emailClient: '', idAdmin: '' });
+                setErrors({ nameClient: '', emailClient: ''});
                 // Limpiar los errores después de agregar exitosamente.
                 setClientEmail(defaultEntry); // Restablecer los datos del cliente.
                 setIsSuccess(true); // Marcar `isSuccess` como `true` para indicar éxito.
@@ -201,37 +195,32 @@ const CreateClientMail = () => {
             <SidebarAdmin />
             <div className="container-md" style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '50px', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ marginBottom: '20px' }}>
-                    <p className="fs-2 text-white" style={{ textAlign: 'left' }}>New Client</p>
+                    <p className="fs-2 text-white" style={{ textAlign: 'left' }}>{createClient.newClient}</p>
                 </div>
                 <form onSubmit={saveClientEmail} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="nameClient" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Enter the name of the client</label>
+                        <label htmlFor="nameClient" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createClient.nameClient}</label>
                         <input onChange={captureInputs} value={clientEmail.nameClient} type="text" name='nameClient' className="form-control" style={{ width: '100%' }} />
                         {errors.nameClient && <div className='text-danger'>{errors.nameClient}</div>}
                     </div>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="emailClient" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Enter the email of the client</label>
+                        <label htmlFor="emailClient" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createClient.emailClient}</label>
                         <input onChange={captureInputs} value={clientEmail.emailClient} type="text" name='emailClient' className="form-control" aria-describedby="emailHelp" style={{ width: '100%' }} />
                         {errors.emailClient && <div className='text-danger'>{errors.emailClient}</div>}
                     </div>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="idAdmin" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Id Administrator</label>
-                        <input onChange={captureInputs} value={clientEmail.idAdmin} type="text" name='idAdmin' className="form-control" style={{ width: '100%' }} />
-                        {errors.idAdmin && <div className='text-danger'>{errors.idAdmin}</div>}
-                    </div>
-                    <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="excelFile" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Upload Excel File (If you want to create more than one at time)</label>
+                        <label htmlFor="excelFile" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createClient.excelFile}</label>
                         <input type="file" id="excelFile" name="excelFile" className="form-control" style={{ width: '100%' }} accept=".xlsx, .xls" onChange={selectedExcel} />
                     </div>
                     {uploadedFile && (
                         <div style={{ marginTop: '10px' }}>
                             <span className="text-white">{uploadedFile.name}</span>
-                            <button type="button" className="btn btn-danger ms-3" onClick={removeUploadedFile}>Remove</button>
+                            <button type="button" className="btn btn-danger ms-3" onClick={removeUploadedFile}>{create.remove}</button>
                         </div>
                     )}
                     <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '800px', marginTop: '18px', marginBottom: '-10px' }}>
-                        <button type='button' className="btn btn-primary" style={{ backgroundColor: '#DE3232', border: 'none', margin: '5px', width: '90px', height: '40px' }} onClick={() => navigate('/HomeAdmin')}>Cancel</button>
-                        <button className="btn btn-primary" type="submit" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>Add</button>
+                        <button type='button' className="btn btn-primary" style={{ backgroundColor: '#DE3232', border: 'none', margin: '5px', width: '90px', height: '40px' }} onClick={() => navigate('/HomeAdmin')}>{create.cancel}</button>
+                        <button className="btn btn-primary" type="submit" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>{create.add}</button>
                     </div>
                 </form>
             </div>
