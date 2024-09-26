@@ -1,5 +1,6 @@
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot, docSnap } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
+
 
 
 // Function to obtain the current authenticated user ID
@@ -303,3 +304,12 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
 };
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
+/* ------------------------------------------------------------ ADMINISTRATOR -----------------------------------------------------------*/
+async function deleteAdminAuthentication(uid) {
+    try {
+      await admin.auth().deleteUser(uid);
+      console.log(`Usuario con UID: ${uid} eliminado de Firebase Authentication`);
+    } catch (error) {
+      console.error("Error al eliminar usuario:", error);
+    }
+  }
