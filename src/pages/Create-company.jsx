@@ -3,6 +3,7 @@ import SidebarAdmin from '../shared-components/Sidebar-admin';
 import '../Styles/Create-company.css';
 import Swal from 'sweetalert2';
 import { addCompany, checkIfEmailCompanyExists } from '../services/provider';
+import { createCompany, create  } from '../shared-components/WordsBank';
  
 const CreateCompany = () => {
 
@@ -99,26 +100,26 @@ const CreateCompany = () => {
             <SidebarAdmin />
             <div className="container-md" style={{ background: 'black', width: '50%', padding: '40px', borderRadius: '10px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '50px', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ marginBottom: '20px' }}>
-                    <p className="fs-2 text-white" style={{ textAlign: 'left' }}>New Company</p>
+                    <p className="fs-2 text-white" style={{ textAlign: 'left' }}>{createCompany.newCompany}</p>
                 </div>
                 <form onSubmit={saveCompany} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="companyName" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Enter the company name</label>
+                        <label htmlFor="companyName" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createCompany.nameCompany}</label>
                         <input onChange={captureInputs} value={company.companyName} type="text" name='companyName' className="form-control" style={{ width: '100%' }}/>
                         {errors.companyName && <div className='text-danger'>{errors.companyName}</div>}
                     </div>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="legalID" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Enter the legal identification number</label>
+                        <label htmlFor="legalID" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createCompany.legalIdCompany}</label>
                         <input onChange={captureInputs} value={company.legalID} type="text" name='legalID' className="form-control" style={{ width: '100%' }}/>
                         {errors.legalID && <div className='text-danger'>{errors.legalID}</div>}
                     </div>
                     <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
-                        <label htmlFor="email" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>Email address</label>
+                        <label htmlFor="email" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createCompany.emailCompany}</label>
                         <input onChange={captureInputs} value={company.email} type="text" name='email' className="form-control" aria-describedby="emailHelp" style={{ width: '100%' }}/>
                         {errors.email && <div className='text-danger'>{errors.email}</div>}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', maxWidth: '800px', marginTop: '18px', marginBottom: '-10px' }}>
-                        <button className="btn btn-primary" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>Add</button>
+                        <button className="btn btn-primary" style={{ backgroundColor: '#35D79C', border: 'none', margin: '5px', width: '90px', height: '40px' }}>{create.add}</button>
                     </div>
                 </form>
             </div>

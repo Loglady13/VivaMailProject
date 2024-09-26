@@ -6,7 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Styles/Plan-management.css';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import Swal from 'sweetalert2';
-import { planManagement } from '../shared-components/WordsBank.js';
+import { planManagement, tableComponent } from '../shared-components/WordsBank.js';
 
 const PlanManagement = () => {
   const [dataCollection, setDataCollection] = useState([]);
@@ -37,23 +37,23 @@ const PlanManagement = () => {
               <input type="text" id="namePlan" style="background: #D9D9D9; width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" value="${item.namePlan}">
             </div>
             <div style="width: 100%; max-width: 800px; margin-bottom: 15px;">
-              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">Enter the description</label>
+              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">${planManagement.descriptionPlan}</label>
               <input type="text" id="description" style="background: #D9D9D9; width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" value="${item.description}">
             </div>
             <div style="width: 100%; max-width: 800px; margin-bottom: 15px;">
-              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">Enter the number of companies for the plan</label>
+              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">${planManagement.numberCompanies}</label>
               <input type="text" id="numberCompany" style="width: 100%; background: #D9D9D9; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" value="${item.numberCompany}">
             </div>
             <div style="width: 100%; max-width: 800px; margin-bottom: 15px;">
-              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">Enter the price</label>
+              <label style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">${planManagement.price}</label>
               <input type="text" id="price" style="width: 100%; background: #D9D9D9; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" value="${item.price}">
             </div>
             <div style="width: 100%; max-width: 800px; margin-bottom: 15px;">
-              <label for="paymentFrecuency" style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">Select the payment frequency</label>
+              <label for="paymentFrecuency" style="font-size: 1rem; font-weight: bold; color: black; text-align: left; display: block;">${planManagement.payment}</label>
               <select id="paymentFrecuency" style="width: 100%; background: #D9D9D9;padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="year" ${item.paymentFrecuency === 'year' ? 'selected' : ''}>Per year</option>
-                <option value="month" ${item.paymentFrecuency === 'month' ? 'selected' : ''}>Per month</option>
-                <option value="week" ${item.paymentFrecuency === 'week' ? 'selected' : ''}>Per week</option>
+                <option value="year" ${item.paymentFrecuency === 'year' ? 'selected' : ''}>${planManagement.year}</option>
+                <option value="month" ${item.paymentFrecuency === 'month' ? 'selected' : ''}>${planManagement.month}</option>
+                <option value="week" ${item.paymentFrecuency === 'week' ? 'selected' : ''}>${planManagement.week}</option>
               </select>
             </div>
           </form>
@@ -173,10 +173,10 @@ const PlanManagement = () => {
                                         </div>
                                         <div className="d-flex flex-column align-items-center" style={{ marginBottom: '10px' }}>
                                             <button onClick={() => handleEditClick(list)} className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
-                                                Edit
+                                                {tableComponent.edit}
                                             </button>
                                             <button onClick={() => handleDeleteClick(list)} className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
-                                                Delete
+                                                {tableComponent.delete}
                                             </button>
                                         </div>
                                     </div>
@@ -190,11 +190,11 @@ const PlanManagement = () => {
                 </div>
                 <button className="carousel-control-prev" type="button" data-bs-target="#planCarousel" data-bs-slide="prev">
                     <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span className="visually-hidden">Previous</span>
+                    <span className="visually-hidden">${tableComponent.previous}</span>
                 </button>
                 <button className="carousel-control-next" type="button" data-bs-target="#planCarousel" data-bs-slide="next">
                     <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span className="visually-hidden">Next</span>
+                    <span className="visually-hidden">${tableComponent.next}</span>
                 </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import '../Styles/Master-configuration.css';
+import { masterConfiguration } from '../shared-components/WordsBank';
 
 const MasterConfiguration=()=>{
 
@@ -19,9 +20,9 @@ const MasterConfiguration=()=>{
                 {/* Sección para el intervalo de tiempo */}
                 <div className="row justify-content-center mb-3" style={{ width: '100%', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto', display: 'flex', flexDirection: 'column'}}>
                     <div className="col-12 col-md-8 col-lg-6 bg-white p-4 rounded shadow-sm" style={{ width: '100%'}}>
-                    <h5 className="text-left mb-4" style={{fontWeight: '350'}}>Frequency of scheduling and sending of emails</h5>
+                    <h5 className="text-left mb-4" style={{fontWeight: '350'}}>{masterConfiguration.frequencySendingEmails}</h5>
                     <div className="form-group mt-3" style={{margin:'3%'}}>
-                        <label htmlFor="timeInterval" className="form-label fs-6" style={{fontWeight: 'bold'}}>Enter the time interval</label>
+                        <label htmlFor="timeInterval" className="form-label fs-6" style={{fontWeight: 'bold'}}>{masterConfiguration.enterInterval}</label>
                         <input type="text" className="form-control" id="timeInterval" />
                     </div>
                     </div>
@@ -30,7 +31,7 @@ const MasterConfiguration=()=>{
                 {/* Sección para las notificaciones (empresas) */}
                 <div className="row justify-content-center" style={{ width: '100%', maxWidth: '800px',marginLeft: 'auto', marginRight: 'auto', display: 'flex', flexDirection: 'column' }}>
                     <div className="col-md-8 bg-white p-4 rounded shadow-sm" style={{ width: '100%' }}> 
-                    <h5 className="text-left" style={{marginBottom:'4%',fontWeight: '350'}}>Applications for company creation</h5>
+                    <h5 className="text-left" style={{marginBottom:'4%',fontWeight: '350'}}>{masterConfiguration.applicationsForCompany}</h5>
                     {notifications.map((notification) => (
                         <div className="input-group mb-3" key={notification.id}>
                         {/* Div que muestra el nombre de la empresa */}

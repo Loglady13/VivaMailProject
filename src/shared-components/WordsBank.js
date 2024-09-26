@@ -78,6 +78,7 @@ export const tableComponent ={
     name: 'Name',
     email: 'Email',
     state: 'State',
+    previous: 'Previous'
 
 }
 
@@ -92,6 +93,43 @@ export const login ={
 export const planManagement ={
     namePLan: 'Enter the name of the plan',
     editPlan: 'Edit Plan',
-    
+    descriptionPlan: 'Enter the description',
+    numberCompanies: 'Enter the number of companies for the plan',
+    price: 'Enter the price',
+    payment: 'Select the payment frequency',
+    year: 'Per year',
+    month: 'Per month',
+    week: 'Per week'
+}
+
+export const masterConfiguration ={
+    frequencySendingEmails: 'Frequency of scheduling and sending of emails',
+    enterInterval: 'Enter the time interval',
+    applicationsForCompany: 'Applications for company creation'
+}
+
+export const createPlan ={
+    newPlan: 'New Plan',
+    namePlan: 'Enter the name of the plan',
+    planDesc: 'Enter the description',
+    numberOfCompanies: 'Enter the number of companies for the plan',
+    planPrice: 'Enter the price',
+    paymentFrequency: 'Select the payment frequency'
+}
+
+export const createCompany ={
+    newCompany: 'New Company',
+    nameCompany: 'Enter the company name',
+    legalIdCompany: 'Enter the legal identification number',
+    emailCompany: 'Email Address',
+
+}
+
+export const createAdministrator ={
+    newAdmin: 'New Administrator',
+    nameAdmin: 'Enter the administrator name',
+    emailAdmin: 'Email Address',
+    passwordAdmin: 'Password',
+    selectPlan: 'Select a Plan'
 }
 
