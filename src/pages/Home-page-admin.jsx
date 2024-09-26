@@ -7,7 +7,7 @@ const HomeAdmin = () => {
   
 
   return (
-    <div className='Home'>
+    <div>
       <SidebarAdmin/>
       
     </div>

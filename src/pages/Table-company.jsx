@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import ModalCreateCompany from '../components/Modal-create-company.jsx';
+import { tableComponent } from '../shared-components/WordsBank.js';
 import { getCurrentUserId, removeCompanyFromUser, checkIfEmailCompanyExists, updateCompany, fetchCompanyData, fetchTotalDocumentsCompany, updateCompanyState } from '../services/provider.js';
 
 const TableCompany = () => {

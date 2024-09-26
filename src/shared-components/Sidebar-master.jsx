@@ -1,8 +1,9 @@
 import { getAuth, signOut } from 'firebase/auth';
-import '../Styles/Sidebar.css';
+import '../Styles/Sidebar-master.css';
 import React, { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
+import { generalSideBar } from './WordsBank';
 
 const SidebarMaster = () => {
   const auth = getAuth();

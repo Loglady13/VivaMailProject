@@ -1,5 +1,5 @@
 import { getAuth, signOut } from 'firebase/auth';
-import '../Styles/Sidebar.css';
+import '../Styles/Sidebar-admin.css'
 import React, { useState, useEffect } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
