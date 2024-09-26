@@ -26,6 +26,7 @@ const TableAdministrator = () => {
     const handleDeleteClick = (item) => {
         // Calls the modal removal function from the TableComponent
         showModal('delete', item);
+        //deleteUserFromAuth(item.uid);
     };
 
     const handleEditClick = async (item) => {

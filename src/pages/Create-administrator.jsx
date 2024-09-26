@@ -49,7 +49,7 @@ const CreateAdministrator=()=>{
 
     /* To check there's no company with this mail already */
     const checkIfEmailExists = async (email) => {
-        const q = query(collection(db, 'Administrator'), where('email', '==', email));
+        const q = query(collection(db, 'User'), where('email', '==', email));
         const querySnapshot = await getDocs(q);
         return !querySnapshot.empty;
     };

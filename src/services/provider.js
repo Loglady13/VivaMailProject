@@ -1,8 +1,6 @@
 import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
 
-
-
 // Function to obtain the current authenticated user ID
 export const getCurrentUserId = () => {
     const user = auth.currentUser;
@@ -363,16 +361,15 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 /* ------------------------------------------------------------ ADMINISTRATOR -----------------------------------------------------------*/
-/*async function deleteAdminAuthentication(uid) {
-     // Sin terminar 
+// Function that delete information in Firebase Authentication. 
+/*export const deleteUserFromAuth = async (uid) => {
     try {
-
-        await admin.auth().deleteUser(uid);
-        console.log(`Usuario con UID: ${uid} eliminado de Firebase Authentication`);
+      await admin.auth().deleteUser(uid);
+      console.log('Usuario eliminado de la autenticación');
     } catch (error) {
-      console.error("Error al eliminar usuario:", error);
+      console.error('Error al eliminar el usuario de la autenticación:', error);
     }
-};*/
+  }*/
 
 // Function for obtain plans
 export const fetchPlans = async () => {
