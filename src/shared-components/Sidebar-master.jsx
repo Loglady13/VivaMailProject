@@ -39,7 +39,7 @@ const SidebarMaster = () => {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
-  // Definir las opciones del sidebar
+  // Options of the sidebar
   const menuItems = [
     {
       id: 'collapseAdministrators',
@@ -67,7 +67,6 @@ const SidebarMaster = () => {
     }
   ];
 
-  // Filtrar las opciones según el término de búsqueda
   const filteredMenuItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(searchTerm) ||
     item.submenus.some(sub => sub.toLowerCase().includes(searchTerm))
@@ -85,7 +84,7 @@ const SidebarMaster = () => {
         {/* Sidebar top */}
         <div className="offcanvas-header text-white" style={{ backgroundColor: '#222527', height: '85px' }}>
           <div className="sidebar-logo" style={{ display: 'flex', justifyContent: 'center', alignItems: 'Center' }}>
-            <img className='img-logo' style={{ width: '185px', marginLeft: '10px' }} src={require('../images/logo.png')} />
+            <img className='img-logo' alt='logo' style={{ width: '185px', marginLeft: '10px' }} src={require('../images/logo.png')} />
           </div>
           <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" style={{ marginRight: '5px' }}></button>
         </div>

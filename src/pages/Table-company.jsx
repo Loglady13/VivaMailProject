@@ -5,7 +5,6 @@ import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
-import { useNavigate } from 'react-router-dom';
 import ModalCreateCompany from '../components/Modal-create-company.jsx';
 import { getCurrentUserId, removeCompanyFromUser, checkIfEmailCompanyExists, updateCompany, fetchCompanyData, fetchTotalDocumentsCompany, updateCompanyState } from '../services/provider.js';
 
@@ -23,7 +22,6 @@ const TableCompany = () => {
     const [firstVisiblePages, setFirstVisiblePages] = useState([]);  // Stores the history of first visible documents 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const navigate = useNavigate();
     const userId = getCurrentUserId();
 
     const fetchData = async (isNextPage = false, isPrevPage = false) => {
@@ -235,6 +233,7 @@ const TableCompany = () => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false); // Cierra el modal
+        fetchData();
     };
 
     const handleToggleActive = async (selectedCompany) => {
@@ -246,7 +245,7 @@ const TableCompany = () => {
                     title: `<div style="text-align: left;"> Activate Company <hr style="border: 1px solid #5A5555;"></div>`,
                     html: `
                         <div>
-                            <p>Are you sure you want to activate this company?</p>
+                            <p style="margin-top: -10px;" >Are you sure you want to activate this company?</p>
                             <p style="margin-bottom: 4px; ">You can only have one active company so the currently active company will be deactivated</p>
                         </div>
                     `,
@@ -275,6 +274,35 @@ const TableCompany = () => {
                         toast: true,
                     });
 
+                }
+            } else if (!activeCompany) {
+                // Caso: No hay ninguna empresa activa
+                const result = await Swal.fire({
+                    title: `<div style="text-align: left;">Activate Company<hr style="border: 1px solid #5A5555;"></div>`,
+                    html: `<div <p style="margin-top: -10px; margin-bottom: -10px;" >Are you sure you want to activate this company?</p></div>`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, activate',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#CB2A2A',
+                    cancelButtonColor: '#423F3F',
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                    width: '400px'
+                });
+
+                if (result.isConfirmed) {
+                    // Activar la empresa seleccionada
+                    await updateCompanyState(selectedCompany.id, true);
+                    fetchData();
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        text: 'The company has been activated',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        toast: true,
+                    });
                 }
             } else {
                 Swal.fire({
@@ -307,8 +335,8 @@ const TableCompany = () => {
                     </div>
 
                     <form onSubmit={handleSearchSubmit} className="d-flex">
-                        <div className="input-group" style={{ maxWidth: '300px', minWidth:'300px' }}>
-                            <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange}  className="form-control"/>
+                        <div className="input-group" style={{ maxWidth: '300px', minWidth: '300px' }}>
+                            <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control" />
                             <button className="input-group-text">
                                 <i className="bi bi-search"></i>
                             </button>

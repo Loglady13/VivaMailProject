@@ -1,14 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { BrowserRouter } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import App from './App';
 import ViewLogin from './pages/ViewLogin';
 import HomeMaster from './pages/Home-page-master';
 import Home from './pages/Principal';
 import Login from './pages/Login';
-import CreateCompany from './pages/Create-company';
 import TableCompany from './pages/Table-company';
 import HomeAdmin from './pages/Home-page-admin';
 import CreateAdministrator from './pages/Create-administrator';
@@ -63,10 +61,6 @@ const router = createBrowserRouter([
   {
     path: "CreateCampaign",
     element: <CreateCampaign/>
-  },
-  {
-    path: "CreateCompany",
-    element: <CreateCompany/>
   },
   {
     path: "TableCompany",

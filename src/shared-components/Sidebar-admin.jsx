@@ -64,14 +64,14 @@ const SidebarAdmin = () => {
         setSearchTerm(e.target.value.toLowerCase());
     };
 
-    // Definir las opciones del sidebar
+    // Options of the sidebar
     const menuItems = [
         {
             id: 'collapseCompany',
             icon: 'bi-building',
             label: 'Company',
-            submenus: ['Add new company', 'View companies'],
-            paths: ['/CreateCompany', '/TableCompany']
+            submenus: ['View companies'],
+            paths: ['/TableCompany']
         },
         {
             id: 'collapseEmails',

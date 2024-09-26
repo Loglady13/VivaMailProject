@@ -24,7 +24,7 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
     const validateInputs = () => {
         const newErrors = { companyName: '', legalID: '', email: '' };
         let isValid = true;
-        
+
         /* Verify the field is not empty */
         if (!company.companyName) {
             newErrors.companyName = 'Company name is required.';
@@ -56,10 +56,12 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (isSuccess) {
             Swal.fire({
+                position: 'top-end',
                 icon: 'success',
-                title: 'Success',
-                showCloseButton: true,
-                html: 'The company has been successfully created',
+                text: 'The company has been successfully created',
+                showConfirmButton: false,
+                timer: 5000,
+                toast: true,
             }).then(() => setIsSuccess(false)); // Reset the success status
         }
     }, [isSuccess]);
@@ -101,19 +103,26 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
         }
     };
 
+    // Reset inputs when modal closes
+    const handleClose = () => {
+        setCompany(defaultEntry); // Reset the form fields
+        setErrors({ companyName: '', legalID: '', email: '' }); // Clear errors
+        onClose(); // Trigger the close passed down as a prop
+    };
+
     return (
-        <div className={`modal ${isOpen ? 'd-block' : 'd-none'}`} style={{ background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop:'50px' }}>
-            <div className="modal-dialog" style={{ margin: 'auto', maxWidth:'100%', width:'640px' }}>
-                <div className="modal-content" style={{ background: 'black', padding: '28px', borderRadius: '10px', marginBottom: '50px'}}>
-                    <div class="modal-header" style={{ marginBottom: '10px'}}>
+        <div className={`modal ${isOpen ? 'd-block' : 'd-none'}`} style={{ background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '50px' }}>
+            <div className="modal-dialog" style={{ margin: 'auto', maxWidth: '100%', width: '640px' }}>
+                <div className="modal-content" style={{ background: 'black', padding: '28px', borderRadius: '10px', marginBottom: '50px' }}>
+                    <div class="modal-header" style={{ marginBottom: '10px' }}>
                         <span className="modal-title text-white fs-3">New Company</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={onClose} style={{ filter: 'invert(1)', marginBottom: '30px' }}></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleClose} style={{ filter: 'invert(1)', marginBottom: '30px' }}></button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={saveCompany}>
                             <div className="mb-3">
                                 <label className="form-label text-white">Enter the company name</label>
-                                <input onChange={captureInputs} value={company.companyName} type="text" name='companyName' className="form-control"/>
+                                <input onChange={captureInputs} value={company.companyName} type="text" name='companyName' className="form-control" />
                                 {errors.companyName && <div className='text-danger'>{errors.companyName}</div>}
                             </div>
                             <div className="mb-3">
@@ -129,9 +138,9 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
 
                             {errors.global && <div className='text-danger mb-3'>{errors.global}</div>}
 
-                            <div class="modal-footer" style={{marginTop: '40px', marginBottom: '-28px'}}>
-                                <button type="button" className="btn btn-danger" style={{ width:'80px', height:'40px', marginTop: '25px' }} onClick={onClose}>Cancel</button>
-                                <button type="submit" className="btn btn-success" style={{ width:'80px', height:'40px', marginTop: '25px' }}>Add</button>
+                            <div class="modal-footer" style={{ marginTop: '40px', marginBottom: '-28px' }}>
+                                <button type="button" className="btn btn-danger" style={{ width: '80px', height: '40px', marginTop: '25px' }} onClick={handleClose}>Cancel</button>
+                                <button type="submit" className="btn btn-success" style={{ width: '80px', height: '40px', marginTop: '25px' }}>Add</button>
                             </div>
                         </form>
                     </div>
