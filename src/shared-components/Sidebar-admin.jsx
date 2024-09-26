@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { getUserInfo } from '../services/provider';
 import { sidebarAdmin, generalSideBar } from './WordsBank';
 
-
 const SidebarAdmin = () => {
     const navigate = useNavigate();
     const auth = getAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [openMenuId, setOpenMenuId] = useState(null);
     const [userInfo, setUserInfo] = useState({ name: '', email: '' });
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const auth = getAuth();
@@ -33,15 +33,15 @@ const SidebarAdmin = () => {
                 console.log('No user logged in');
             }
         });
-    
-        return () => unsubscribe(); 
+
+        return () => unsubscribe();
     }, []);
 
     const handleLogout = () => {
         signOut(auth)
             .then(() => {
                 console.log("Sesión cerrada exitosamente");
-                navigate('/Login'); // Redirige a la página de Login después de cerrar sesión
+                navigate('/Login');
             })
             .catch((error) => {
                 console.error("Error al cerrar sesión: ", error);
@@ -61,20 +61,65 @@ const SidebarAdmin = () => {
         e.currentTarget.style.backgroundColor = '#151718';
     };
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value.toLowerCase());
+    };
+
+    // Options of the sidebar
+    const menuItems = [
+        {
+            id: 'collapseCompany',
+            icon: 'bi-building',
+            label: 'Company',
+            submenus: ['View companies'],
+            paths: ['/TableCompany']
+        },
+        {
+            id: 'collapseEmails',
+            icon: 'bi-envelope', label: 'Emails', submenus: ['New mail', 'Mails sent'], paths: ['/CreateEmail', '/MailList']
+        },
+        {
+            id: 'collapseCampaigns',
+            icon: 'bi-pencil-square',
+            label: 'Campaigns',
+            submenus: ['Add campaigns', 'View campaigns'], paths: ['/CreateCampaign', '/TableCampaign']
+        },
+        {
+            id: 'collapseClients',
+            icon: 'bi-person-lines-fill',
+            label: 'Clients',
+            submenus: ['New client email', 'Clients mails'], paths: ['/CreateClientMail', '/TableClientMail']
+        },
+        {
+            id: 'collapseMailingGroups',
+            icon: 'bi-inboxes',
+            label: 'Mailing groups',
+            submenus: ['New mailing group', 'View mailing groups'], paths: ['/CreateMailGroup', '/TableMailGroup']
+        },
+        {
+            id: 'collapseReports',
+            icon: 'bi-bar-chart-line',
+            label: 'Reports',
+            submenus: ['New report'], paths: ['/AdministratorReport']
+        }
+    ];
+
+    // Filtrar las opciones según el término de búsqueda
+    const filteredMenuItems = menuItems.filter(item =>
+        item.label.toLowerCase().includes(searchTerm) ||
+        item.submenus.some(sub => sub.toLowerCase().includes(searchTerm))
+    );
 
     return (
         <div className="sidebar">
-            {/* To open Sidebar */}
             <button className="btn btn-dark btn-sidebar" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
                 <i className="bi bi-list" style={{ fontSize: '30px' }}></i>
             </button>
 
-            {/* Sidebar */}
             <div className="offcanvas offcanvas-start" tabIndex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel" data-bs-scroll="true" style={{ backgroundColor: '#151718', width: '370px' }}>
-                {/* Sidebar top */}
                 <div className="offcanvas-header text-white" style={{ backgroundColor: '#222527', height: '85px' }}>
                     <div className="sidebar-infoAdmin" style={{ display: 'flex', justifyContent: 'center', alignItems: 'Center' }}>
-                        <i class="bi bi-person-circle" alt="User Icon" style={{ fontSize: '38px', color: 'white', marginLeft: '12px' }}></i>
+                        <i className="bi bi-person-circle" alt="User Icon" style={{ fontSize: '38px', color: 'white', marginLeft: '12px' }}></i>
                         <div style={{ marginLeft: '19px' }}>
                             <div><strong>{userInfo.name}</strong></div>
                             <div>{userInfo.email}</div>
@@ -83,161 +128,37 @@ const SidebarAdmin = () => {
                     <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" style={{ marginRight: '5px' }}></button>
                 </div>
 
-                <div className="search-box" style={{ marginTop: '30px' }}>
-                    <i class="bi bi-search" alt="Search Icon" style={{ fontSize: '17px', marginRight: '10px', color: 'white' }}></i>
-                    <input type="text" placeholder="Search" />
+                {/* SearchBox */}
+                <div className="search-box" style={{ marginTop: '28px' }}>
+                    <i className="bi bi-search" alt="Search Icon" style={{ fontSize: '17px', marginRight: '10px', color: 'white' }}></i>
+                    <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange}/>
                 </div>
 
                 {/* Sidebar content */}
-                <div className="offcanvas-body text-white" style={{ backgroundColor: '#151718', marginTop: '5px' }}>
-                    {/* First Option */}
-                    <div className="p-2 sidebar-menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={() => toggleCollapse('collapseCompany')}>
-                        <i class="bi bi-building icons-size"></i>
-                        <span>{sidebarAdmin.company}</span>
-                        <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseCompany' ? 'rotate' : ''}`} />
-                    </div>
-                    {/* First Submenu */}
-                    <div className={`collapse ${openMenuId === 'collapseCompany' ? 'show' : ''}`} id="collapseCompany">
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/CreateCompany')}>
-                            {sidebarAdmin.addCompany}
+                <div className="offcanvas-body text-white" style={{ backgroundColor: '#151718' }}>
+                    {/* Renderizar opciones filtradas */}
+                    {filteredMenuItems.map(item => (
+                        <div key={item.id}>
+                            <div className="p-2 mt-2 sidebar-menu"
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                                onClick={() => toggleCollapse(item.id)}>
+                                <i className={`bi ${item.icon} icons-size`}></i>
+                                <span>{item.label}</span>
+                                <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === item.id ? 'rotate' : ''}`} />
+                            </div>
+                            <div className={`collapse ${openMenuId === item.id ? 'show' : ''}`} id={item.id}>
+                                {item.submenus.map((submenu, index) => (
+                                    <div key={index} className="p-2 menu-item"
+                                        onMouseEnter={handleMouseEnter}
+                                        onMouseLeave={handleMouseLeave}
+                                        onClick={() => navigate(item.paths[index])}>
+                                        {submenu}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/TableCompany')}>
-                            {sidebarAdmin.companies}
-                        </div>
-                    </div>
-
-                    {/* Second Option */}
-                    <div className="p-2 sidebar-menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={() => toggleCollapse('collapseEmails')}
-                        style={{ marginTop: '9px' }}>
-                        <i class="bi bi-envelope icons-size"></i>
-                        <span>{sidebarAdmin.emails}</span>
-                        <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseEmails' ? 'rotate' : ''}`} />
-                    </div>
-                    {/* Second Submenu */}
-                    <div className={`collapse ${openMenuId === 'collapseEmails' ? 'show' : ''}`} id="collapseEmails">
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/CreateEmail')}>
-                            {sidebarAdmin.newMail}
-                        </div>
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/MailList')}>
-                            {sidebarAdmin.clientsMails}
-                        </div>
-                    </div>
-
-                    {/* Third Option */}
-                    <div className="p-2 sidebar-menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={() => toggleCollapse('collapseCampaigns')}
-                        style={{ marginTop: '9px' }}>
-                        <i class="bi bi-pencil-square icons-size"></i>
-                        <span>{sidebarAdmin.campaign}</span>
-                        <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseCampaigns' ? 'rotate' : ''}`} />
-                    </div>
-                    {/* Third Submenu */}
-                    <div className={`collapse ${openMenuId === 'collapseCampaigns' ? 'show' : ''}`} id="collapseCampaigns">
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/CreateCampaign')}>
-                            {sidebarAdmin.addCampaign}
-                        </div>
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/TableCampaign')}>
-                            {sidebarAdmin.viewCampaign}
-                        </div>
-                    </div>
-
-                    {/* Fourth Option */}
-                    <div className="p-2 sidebar-menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={() => toggleCollapse('collapseClients')}
-                        style={{ marginTop: '9px' }}>
-                        <i class="bi bi-person-lines-fill icons-size"></i>
-                        <span>{sidebarAdmin.clients}</span>
-                        <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseClients' ? 'rotate' : ''}`} />
-                    </div>
-                    {/* Fourth Submenu */}
-                    <div className={`collapse ${openMenuId === 'collapseClients' ? 'show' : ''}`} id="collapseClients">
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/CreateClientMail')}>
-                            {sidebarAdmin.newClient}
-                        </div>
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/TableClientMail')}>
-                            {sidebarAdmin.clientsMails}
-                        </div>
-                    </div>
-
-                    {/* Fifth Option */}
-                    <div className="p-2 sidebar-menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={() => toggleCollapse('collapseMailingGroups')}
-                        style={{ marginTop: '9px' }}>
-                        <i class="bi bi-inboxes icons-size"></i>
-                        <span>{sidebarAdmin.mailingGroups}</span>
-                        <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseMailingGroups' ? 'rotate' : ''}`} />
-                    </div>
-                    {/* Fifth Submenu */}
-                    <div className={`collapse ${openMenuId === 'collapseMailingGroups' ? 'show' : ''}`} id="collapseMailingGroups">
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/CreateMailGroup')}>
-                                {sidebarAdmin.mailiGroups}
-                        </div>
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/TableMailGroup')}>
-                            {sidebarAdmin.viewGroups}
-                        </div>
-                    </div>
-
-                    {/* Sixth Option */}
-                    <div className="p-2 sidebar-menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={() => toggleCollapse('collapseReports')}
-                        style={{ marginTop: '9px' }}>
-                        <i class="bi bi-bar-chart-line icons-size"></i>
-                        <span>{sidebarAdmin.report}</span>
-                        <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseReports' ? 'rotate' : ''}`} />
-                    </div>
-                    {/* Sixth Submenu */}
-                    <div className={`collapse ${openMenuId === 'collapseReports' ? 'show' : ''}`} id="collapseReports">
-                        <div className="p-2 menu-item"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={() => navigate('/AdministratorReport')}>
-                            {sidebarAdmin.newreport}
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 {/* Log Out */}

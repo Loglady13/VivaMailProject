@@ -3,14 +3,13 @@ import '../Styles/Sidebar.css';
 import React, { useState } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
-import { getUserInfo } from '../services/provider';
-import { generalSideBar, sideBarMaster } from './WordsBank';
 
 const SidebarMaster = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleLogout = () => {
     signOut(auth)
@@ -36,6 +35,43 @@ const SidebarMaster = () => {
     e.currentTarget.style.backgroundColor = '#151718';
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  // Options of the sidebar
+  const menuItems = [
+    {
+      id: 'collapseAdministrators',
+      icon: 'bi-person-circle',
+      label: 'Administrators',
+      submenus: ['Add new administrator', 'View administrators'], paths: ['/CreateAdministrator', '/TableAdministrator']
+    },
+    {
+      id: 'collapseReports',
+      icon: 'bi-bar-chart-line',
+      label: 'Reports',
+      submenus: ['New Report'], paths: ['/MasterReport']
+    },
+    {
+      id: 'collapsePlans',
+      icon: 'bi-card-checklist',
+      label: 'Plans',
+      submenus: ['Add new plan', 'View plans'], paths: ['/CreatePlan', '/PlanManagement']
+    },
+    {
+      id: 'masterConfiguration',
+      icon: 'bi-person-gear',
+      label: 'Configurations',
+      submenus: [], paths: []
+    }
+  ];
+
+  const filteredMenuItems = menuItems.filter(item =>
+    item.label.toLowerCase().includes(searchTerm) ||
+    item.submenus.some(sub => sub.toLowerCase().includes(searchTerm))
+  );
+
   return (
     <div className="sidebar">
       {/* To open Sidebar */}
@@ -48,104 +84,48 @@ const SidebarMaster = () => {
         {/* Sidebar top */}
         <div className="offcanvas-header text-white" style={{ backgroundColor: '#222527', height: '85px' }}>
           <div className="sidebar-logo" style={{ display: 'flex', justifyContent: 'center', alignItems: 'Center' }}>
-            <img className='img-logo' style={{ width: '185px', marginLeft: '10px' }} src={require('../images/logo.png')} />
+            <img className='img-logo' alt='logo' style={{ width: '185px', marginLeft: '10px' }} src={require('../images/logo.png')} />
           </div>
           <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" style={{ marginRight: '5px' }}></button>
         </div>
 
-        <div className="search-box" style={{ marginTop: '35px' }}>
+        {/* SearchBox */}
+        <div className="search-box" style={{ marginTop: '30px' }}>
           <i class="bi bi-search" alt="Search Icon" style={{ fontSize: '17px', marginRight: '10px', color: 'white' }}></i>
-          <input type="text" placeholder="Search" />
+          <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} />
         </div>
 
         {/* Sidebar content */}
-        <div className="offcanvas-body text-white" style={{ backgroundColor: '#151718', marginTop: '10px' }}>
-          {/* First Option */}
-          <div className="p-2 sidebar-menu"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => toggleCollapse('collapseAdministrators')}>
-            <i class="bi bi-person-circle icons-size"></i>
-            <span>{sideBarMaster.admConfig}</span>
-            <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseAdministrators' ? 'rotate' : ''}`} />
-          </div>
-          {/* First Submenu */}
-          <div className={`collapse ${openMenuId === 'collapseAdministrators' ? 'show' : ''}`} id="collapseAdministrators">
-            <div className="p-2 menu-item"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/CreateAdministrator')}>
-              {sideBarMaster.newAdmin}
+        <div className="offcanvas-body text-white" style={{ backgroundColor: '#151718' }}>
+          {/* Renderizar opciones filtradas */}
+          {filteredMenuItems.map(item => (
+            <div key={item.id}>
+              <div className="p-2 mt-2 sidebar-menu"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => toggleCollapse(item.id)}>
+                <i className={`bi ${item.icon} icons-size`}></i>
+                <span>{item.label}</span>
+                {item.submenus.length > 0 && (
+                  <img
+                    src={require('../images/arrow-icon.png')}
+                    alt="Arrow"
+                    className={`arrow-icon ${openMenuId === item.id ? 'rotate' : ''}`}
+                  />
+                )}
+              </div>
+              <div className={`collapse ${openMenuId === item.id ? 'show' : ''}`} id={item.id}>
+                {item.submenus.map((submenu, index) => (
+                  <div key={index} className="p-2 menu-item"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onClick={() => navigate(item.paths[index])}>
+                    {submenu}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="p-2 menu-item"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/TableAdministrator')}>
-              {sideBarMaster.viewAdmin}
-            </div>
-          </div>
-
-          {/* Second Option */}
-          <div className="p-2 sidebar-menu"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => toggleCollapse('collapseReports')}
-            style={{ marginTop: '10px' }}>
-            <i class="bi bi-bar-chart-line icons-size"></i>
-            <span>{sideBarMaster.reports}</span>
-            <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapseReports' ? 'rotate' : ''}`} />
-          </div>
-          {/* Second Submenu */}
-          <div className={`collapse ${openMenuId === 'collapseReports' ? 'show' : ''}`} id="collapseReports">
-            <div className="p-2 menu-item"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/MasterReport')}>
-              {sideBarMaster.newreport}
-            </div>
-          </div>
-
-          {/* Third Option */}
-          <div className="p-2 sidebar-menu"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={() => toggleCollapse('collapsePlans')}
-            style={{ marginTop: '10px' }}>
-            <i class="bi bi-card-checklist icons-size"></i>
-            <span>{sideBarMaster.plans}</span>
-            <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === 'collapsePlans' ? 'rotate' : ''}`} />
-          </div>
-          {/* Third Submenu */}
-          <div className={`collapse ${openMenuId === 'collapsePlans' ? 'show' : ''}`} id="collapsePlans">
-            <div className="p-2 menu-item"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/PlanManagement')}>
-              {sideBarMaster.viewPlan}
-            </div>
-            <div className="p-2 menu-item"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/CreatePlan')}>
-              {sideBarMaster.addPlan}
-            </div>
-            <div className="p-2 menu-item"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={() => navigate('/TableSubscriber')}>
-              {sideBarMaster.subscribers}
-            </div>
-          </div>
-
-          {/* Fourth Option */}
-          <div className="p-2 sidebar-menu"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            style={{ marginTop: '10px' }}
-            onClick={() => navigate('/MasterConfiguration')}>
-            <i class="bi bi-person-gear" style={{ fontSize: '31px' }}></i>
-            <span>{sideBarMaster.config}</span>
-          </div>
+          ))}
         </div>
 
         {/* Log Out */}
