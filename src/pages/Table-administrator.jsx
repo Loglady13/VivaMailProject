@@ -5,9 +5,8 @@ import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
-import { collection, getDocs, query, doc, updateDoc, where } from 'firebase/firestore';
-import { db } from '../services/credentials.js';
 import { useNavigate } from 'react-router-dom';
+import { fetchPlans, checkEmailExists, updateAdmin } from '../services/provider.js';
 
 const TableAdministrator = () => {
     const navigate = useNavigate();
@@ -30,21 +29,20 @@ const TableAdministrator = () => {
     };
 
     const handleEditClick = async (item) => {
-            // Fetch the available plans from the database
+        const handleEditClick = async (item) => {
+            // Obtener planes desde Provider.js
             let plans = [];
             try {
-                const plansRef = collection(db, "Plan");
-                const plansSnapshot = await getDocs(plansRef);
-                plans = plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                plans = await fetchPlans();
             } catch (error) {
                 console.error("Error fetching plans: ", error);
             }
-
-            // Step 2: Build the options for the drop-down
+        
+            // Construir las opciones para el drop-down
             const planOptions = plans.map(plan => 
                 `<option value="${plan.namePlan}" ${plan.id === item.planId ? 'selected' : ''}>${plan.namePlan}</option>`
             ).join('');
-
+        
             const { value: formValues } = await Swal.fire({
                 html: `
                     <div style="text-align: left; margin-left: 38px; margin-top: 30px;">
@@ -83,62 +81,51 @@ const TableAdministrator = () => {
                     const name = Swal.getPopup().querySelector('#swal-input1').value;
                     const email = Swal.getPopup().querySelector('#swal-input2').value;
                     const planName = Swal.getPopup().querySelector('#swal-select').value;
-
-                if (!name || !email) {
-                    Swal.showValidationMessage('Please enter both fields');
-                    return false;
-                }
-
-                try {
-                    const companiesRef = collection(db, "User");
-                    const q = query(companiesRef, where("emailAdmin", "==", email));
-                    const querySnapshot = await getDocs(q);
-
-                    const emailExists = querySnapshot.docs.some(doc => doc.id !== item.id);
-
-                    if (emailExists) {
-                        Swal.showValidationMessage('This email is already used by another administrator.');
+        
+                    if (!name || !email) {
+                        Swal.showValidationMessage('Please enter both fields');
                         return false;
                     }
-
-                    return { name, email, planName };
+        
+                    try {
+                        const emailExists = await checkEmailExists(email, item.id);
+        
+                        if (emailExists) {
+                            Swal.showValidationMessage('This email is already used by another administrator.');
+                            return false;
+                        }
+        
+                        return { name, email, planName };
+                    } catch (error) {
+                        Swal.showValidationMessage('Error checking data. Please try again later.');
+                        return false;
+                    }
+                }
+            });
+        
+            if (formValues) {
+                const { name, email, planName } = formValues;
+                try {
+                    // Actualizar administrador desde Provider.js
+                    await updateAdmin(item.id, { nameAdmin: name, email, plan: planName });
+        
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        text: 'Administrator update done!',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        toast: true,
+                    });
                 } catch (error) {
-                    Swal.showValidationMessage('Error checking data. Please try again later.');
-                    return false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: 'There was an error updating the administrator. Please try again later.',
+                    });
                 }
             }
-        });
-
-        if (formValues) {
-            // Step 2: Update the company data if no conflicts
-            const { name, email, planName } = formValues;
-            try {
-                const docRef = doc(db, "User", item.id); // Reference to the document to update
-                await updateDoc(docRef, {
-                    nameAdmin: name,
-                    email: email,
-                    plan: planName,
-                    lastUpdate: new Date(),
-                });
-
-                // Show success message after updating
-                Swal.fire({
-                    position: 'top-end', // Position in the top right corner
-                    icon: 'success',
-                    text: 'Administrator update done!',
-                    showConfirmButton: false, // Remove the confirm button
-                    timer: 5000, // Message will disappear after 5 seconds
-                    toast: true, // Convert the alert into a toast notification
-                });
-            } catch (error) {
-                // Handle any errors during the update
-                await Swal.fire({
-                    icon: 'error',
-                    title: 'Update Failed',
-                    text: 'There was an error updating the administrator. Please try again later.',
-                });
-            }
-        }
+        };
     };
 
     const handleCreateClick = () =>{

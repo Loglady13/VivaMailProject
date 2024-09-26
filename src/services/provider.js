@@ -363,11 +363,35 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 /* ------------------------------------------------------------ ADMINISTRATOR -----------------------------------------------------------*/
-async function deleteAdminAuthentication(uid) {
+/*async function deleteAdminAuthentication(uid) {
+     // Sin terminar 
     try {
-      await admin.auth().deleteUser(uid);
-      console.log(`Usuario con UID: ${uid} eliminado de Firebase Authentication`);
+
+        await admin.auth().deleteUser(uid);
+        console.log(`Usuario con UID: ${uid} eliminado de Firebase Authentication`);
     } catch (error) {
       console.error("Error al eliminar usuario:", error);
     }
-  }
+};*/
+
+// Function for obtain plans
+export const fetchPlans = async () => {
+    const plansRef = collection(db, "Plan");
+    const plansSnapshot = await getDocs(plansRef);
+    return plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+// Function that verify the email
+export const checkEmailExists = async (email, excludeId) => {
+    const companiesRef = collection(db, "User");
+    const q = query(companiesRef, where("emailAdmin", "==", email));
+    const querySnapshot = await getDocs(q);
+
+    return querySnapshot.docs.some(doc => doc.id !== excludeId);
+};
+
+// Function for update Admin info. 
+export const updateAdmin = async (id, updatedData) => {
+    const docRef = doc(db, "User", id);
+    await updateDoc(docRef, { ...updatedData, lastUpdate: new Date() });
+};
