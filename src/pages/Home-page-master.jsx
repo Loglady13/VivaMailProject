@@ -46,7 +46,7 @@ const HomeMaster = () => {
             }}>
           <br />
           <br />
-          <div className style={{backgroundColor: 'rgba(0, 0, 0, 0.5)', width: '250px'}}>
+          <div className style={{backgroundColor: 'rgba(0, 0, 0, 0.5)', width: '300px', float: 'right', marginRight: '40px'}}>
             <h2 style={{color: 'white', padding: '30px'}}>{homeMaster.welcome}</h2>
           </div>     
       </div>
