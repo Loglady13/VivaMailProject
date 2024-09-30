@@ -1,5 +1,6 @@
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc,setDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Function to obtain the current authenticated user ID
 export const getCurrentUserId = () => {
@@ -80,9 +81,6 @@ export const verifyUserRole = async (userId) => {
         return null;
     }
 };
-
-
-
 
 /* ------------------------------------------------------------- ONLY FOR COMPANY -----------------------------------------------------*/
 // Function to add a company
@@ -361,16 +359,6 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 /* ------------------------------------------------------------ ADMINISTRATOR -----------------------------------------------------------*/
-// Function that delete information in Firebase Authentication. 
-/*export const deleteUserFromAuth = async (uid) => {
-    try {
-      await admin.auth().deleteUser(uid);
-      console.log('Usuario eliminado de la autenticación');
-    } catch (error) {
-      console.error('Error al eliminar el usuario de la autenticación:', error);
-    }
-  }*/
-
 // Function for obtain plans
 export const fetchPlans = async () => {
     const plansRef = collection(db, "Plan");
@@ -391,4 +379,42 @@ export const checkEmailExists = async (email, excludeId) => {
 export const updateAdmin = async (id, updatedData) => {
     const docRef = doc(db, "User", id);
     await updateDoc(docRef, { ...updatedData, lastUpdate: new Date() });
+};
+
+export const subscribeToPlans = (setPlans) => {
+    const unsubscribe = onSnapshot(collection(db, 'Plan'), (snapshot) => {
+        const updatedPlans = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setPlans(updatedPlans);
+    });
+
+    return unsubscribe;
+};
+
+export const checkIfEmailExists = async (email) => {
+    const q = query(collection(db, 'User'), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+export const createAdministrator = async (administrator) => {
+    const {adminName, email, password, planAdmin} = administrator;
+    // Create an user in Firebase
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user; // The credencials of the new user
+    const currentDate = new Date(); // Capture the current date and time
+    const role = 'Administrator'
+    const companyIDs = []
+    
+    await setDoc(doc(db, 'User', user.uid), {
+        role: role,
+        companyIDs, 
+        nameAdmin: adminName,
+        email: email,
+        creationDate: currentDate,
+        lastUpdate: currentDate, // Both dates are current at the time of creation
+        plan: planAdmin
+    });
 };

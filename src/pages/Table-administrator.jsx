@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import TableComponent from '../shared-components/Table-component';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
+import ModalCreateAdministrator from '../components/Modal-create-administrator.jsx';
 import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
@@ -10,12 +11,21 @@ import { fetchPlans, checkEmailExists, updateAdmin } from '../services/provider.
 
 const TableAdministrator = () => {
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
     // To format the date to show it
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return '';
         const date = new Date(timestamp.seconds * 1000);
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    };
+    
+    const handleCreateClick = () => {
+        setIsModalOpen(true); // Opens the modal
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false); // Closes the modal
     };
 
     const handleViewClick = (item) => {
@@ -26,7 +36,6 @@ const TableAdministrator = () => {
     const handleDeleteClick = (item) => {
         // Calls the modal removal function from the TableComponent
         showModal('delete', item);
-        //deleteUserFromAuth(item.uid);
     };
 
     const handleEditClick = async (item) => {
@@ -129,10 +138,6 @@ const TableAdministrator = () => {
         };
     };
 
-    const handleCreateClick = () =>{
-        navigate('/CreateAdministrator');
-    };
-
     const showModal = (modalType, item) => {
         switch (modalType) {
             case 'view':
@@ -175,6 +180,7 @@ const TableAdministrator = () => {
                 handleDeleteClick={handleDeleteClick}  
                 handleCreateClick={handleCreateClick}
             />
+            <ModalCreateAdministrator isOpen={isModalOpen} onClose={handleModalClose} />
         </div>
     );
 };
