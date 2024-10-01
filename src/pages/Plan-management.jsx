@@ -144,6 +144,12 @@ const PlanManagement = () => {
   return (
       <div className="plan-management">
           <div><SidebarMaster /></div>
+          <div className="mb-3 d-flex align-items-center justify-content-end">
+            <button type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '17vw'}}>
+            <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
+            {/*<i style={{margin:'1vw'}}>New plan</i>*/}
+            </button>
+          </div>
           <div className="container-md" style={{ width: '82%', marginTop: '2%' }}>
             <div id="planCarousel" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
@@ -162,16 +168,24 @@ const PlanManagement = () => {
                                             <p className="card-text" style={{ marginTop: '15px' }}>
                                                 {`${currencySymbol}${list.price} per ${list.paymentFrecuency}`}
                                             </p>
-                                            <div style={{ marginTop: '15px', display: 'flex', flexWrap: 'wrap' }}>
-                                                {list.description.split(',').map((desc, index) => (
-                                                    <span key={index} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
-                                                        <i className="bi bi-check" style={{ marginRight: '8px', color: cardStyle.backgroundColor, fontSize: '1.7rem', verticalAlign: 'middle' }}></i>
-                                                        {desc.trim()}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                            <div>
+                                              {list.description.split(',').map((desc, index) => (
+                                                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                                                      <i className="bi bi-check" style={{ color: cardStyle.backgroundColor, fontSize: '1.7rem', marginRight: '0.5rem' }}></i>
+                                                      <span style={{ 
+                                                          flex: '1', 
+                                                          wordWrap: 'break-word', 
+                                                          whiteSpace: 'normal', 
+                                                          wordBreak: 'break-word', 
+                                                          maxWidth: '100%' 
+                                                      }}>
+                                                          {desc.trim()}
+                                                      </span>
+                                                  </div>
+                                              ))}
                                         </div>
-                                        <div className="d-flex flex-column align-items-center" style={{ marginBottom: '10px' }}>
+                                        </div>
+                                        <div className="d-flex flex-column align-items-center" style={{ marginBottom: '10px', marginTop: 'auto'  }}>
                                             <button onClick={() => handleEditClick(list)} className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
                                                 {tableComponent.edit}
                                             </button>

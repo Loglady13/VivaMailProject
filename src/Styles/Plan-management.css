@@ -63,8 +63,12 @@
 .carousel-item {
     overflow: visible; /* Allows cards to expand on hover */
 }
-
-
-
-
-
+.card {
+    height: 390px; 
+    display: flex;
+    flex-direction: column;
+    
+}
+.card-body {
+    flex-grow: 1;
+}
