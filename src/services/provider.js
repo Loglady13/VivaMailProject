@@ -27,7 +27,6 @@ export const checkIfEmailCompanyExists = async (email, currentCompanyId = null) 
 };
 
 
-
 // Function to delete an item from a specified collection
 export const deleteItem = async (collectionName, itemId) => {
     try {
@@ -418,3 +417,14 @@ export const createAdministrator = async (administrator) => {
         plan: planAdmin
     });
 };
+
+/* --------------------------------------------------------------------------------------------------------------------------------------*/
+/* ------------------------------------------------------------ CLIENT MAIL -----------------------------------------------------------*/
+
+export const checkIfClientEmailExists = async (emailClient) => {
+    const q = query(collection(db, 'EmailClient'), where('emailClient', '==', emailClient));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+
