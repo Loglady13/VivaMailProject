@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Swal from 'sweetalert2';
-import { checkIfClientEmailExists } from '../services/provider';
+import { checkIfClientEmailExists, createClientMail } from '../services/provider';
 import {createClient, create} from '../shared-components/WordsBank';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../services/credentials';
 import * as XLSX from 'xlsx';
 const ModalCreateClientMail = ({isOpen, onClose}) =>{
 
@@ -114,14 +112,7 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
                     }
     
                     try {
-                        // Intentar agregar un nuevo documento en la colección 'EmailClient' en la base de datos.
-                        await addDoc(collection(db, 'EmailClient'), {
-                            nameClient, // Nombre del cliente.
-                            emailClient, // Email del cliente.
-                            creationDate: currentDate, // Fecha de creación.
-                            lastUpdate: currentDate, // Última fecha de actualización.
-                            state: false, // Estado inicial del cliente.
-                        });
+                        createClientMail(entry);
                         setIsSuccess(true); // Activate success alert
                         onClose();
                         console.log(`Client ${nameClient} added successfully.`);
@@ -145,13 +136,7 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
             }
     
             try {
-                const currentDate = new Date(); // Obtener la fecha y hora actuales.
-                await addDoc(collection(db, 'EmailClient'), {
-                    ...clientEmail, // Agregar los datos del cliente manual.
-                    creationDate: currentDate, // Fecha de creación.
-                    lastUpdate: currentDate, // Última fecha de actualización.
-                    state: false, // Estado inicial del cliente.
-                });
+                createClientMail(clientEmail);
                 setIsSuccess(true); // Activate success alert
                 onClose();
                 setErrors({ nameClient: '', emailClient: ''});

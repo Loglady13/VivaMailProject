@@ -427,4 +427,14 @@ export const checkIfClientEmailExists = async (emailClient) => {
     return !querySnapshot.empty;
 };
 
+export const createClientMail = async (client) =>{
+    const currentDate = new Date(); // Obtener la fecha y hora actuales.
+                await addDoc(collection(db, 'EmailClient'), {
+                    ...client, // Agregar los datos del cliente manual.
+                    creationDate: currentDate, // Fecha de creación.
+                    lastUpdate: currentDate, // Última fecha de actualización.
+                    state: false, // Estado inicial del cliente.
+                });
+}
+
 
