@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
 import '../Styles/Create-plan.css';
 import {useNavigate } from 'react-router-dom';
-import { db } from '../services/credentials';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import { createPlan, planManagement, create } from '../shared-components/WordsBank';
+import {checkPlanExists, addPlan} from '../services/provider'
 
 const CreatePlan=()=>{
 
@@ -30,39 +29,24 @@ const CreatePlan=()=>{
         e.preventDefault();
         if (await validate()) {
             try {
-                await addDoc(collection(db, 'Plan'), {...formData});
-                setIsSuccess(true); // Activate success alert
+                await addPlan(formData);
+                setIsSuccess(true);
             } catch (error) {
-                setErrors({...errors, global: 'An error occurred while saving the company'})
+                setErrors({ ...errors, global: error.message });
             }
-
-            console.log(formData)
-            setFormData({
-                namePlan: '',
-                description: '',
-                numberCompany:'',
-                price: '',
-                paymentFrecuency: 'year' //Reset to default value
-            });
         }
     }
 
-    const checkNameExists = async (name) => {
-        const plansRef = collection(db, "Plan");
-        const q = query(plansRef, where("namePlan", "==", name));
-        const querySnapshot = await getDocs(q);
-        return !querySnapshot.empty;
-      };
+
 
     const  validate = async () => {
         let errors = {};
         let valid = true;
-    
          /* Verify the field is not empty */
         if (!formData.namePlan.trim()) {
           errors.namePlan = 'The plan name is required.';
           valid = false;
-        } else if (await checkNameExists(formData.namePlan)) { //validate if the name of plan exist
+        } else if (await checkPlanExists(formData.namePlan)) { //validate if the name of plan exist
             errors.namePlan = 'The plan name already exists.';
             valid = false;
         }
@@ -70,6 +54,9 @@ const CreatePlan=()=>{
         if (!formData.description.trim()) {
           errors.description = 'The description is required.';
           valid = false;
+        }else if(formData.description.length>100){
+            errors.description='Description must be 100 characters or less.'
+            valid=false;
         }
 
         if (!formData.numberCompany.trim()) {

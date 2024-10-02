@@ -93,7 +93,7 @@ export const login ={
 export const planManagement ={
     namePLan: 'Enter the name of the plan',
     editPlan: 'Edit Plan',
-    descriptionPlan: 'Enter the description',
+    descriptionPlan: 'Enter descriptions separated by commas',
     numberCompanies: 'Enter the number of companies for the plan',
     price: 'Enter the price',
     payment: 'Select the payment frequency',
@@ -111,7 +111,7 @@ export const masterConfiguration ={
 export const createPlan ={
     newPlan: 'New Plan',
     namePlan: 'Enter the name of the plan',
-    planDesc: 'Enter the description',
+    planDesc: 'Enter descriptions separated by commas',
     numberOfCompanies: 'Enter the number of companies for the plan',
     planPrice: 'Enter the price',
     paymentFrequency: 'Select the payment frequency'
