@@ -93,7 +93,7 @@ export const login ={
 export const planManagement ={
     namePLan: 'Enter the name of the plan',
     editPlan: 'Edit Plan',
-    descriptionPlan: 'Enter the description',
+    descriptionPlan: 'Enter descriptions separated by commas',
     numberCompanies: 'Enter the number of companies for the plan',
     price: 'Enter the price',
     payment: 'Select the payment frequency',

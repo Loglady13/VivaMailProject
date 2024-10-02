@@ -1,30 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import SidebarMaster from '../shared-components/Sidebar-master';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../services/credentials.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../Styles/Plan-management.css';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
 import Swal from 'sweetalert2';
 import { planManagement, tableComponent } from '../shared-components/WordsBank.js';
+import {fetchPlans, updatePlan} from '../services/provider.js';
 
 const PlanManagement = () => {
   const [dataCollection, setDataCollection] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      const getData = async () => {
-          try {
-              const querySnapshot = await getDocs(collection(db, 'Plan'));
-              const docs = [];
-              querySnapshot.forEach((doc) => {
-                  docs.push({ ...doc.data(), id: doc.id });
-              });
-              setDataCollection(docs);
-          } catch (error) {
-              console.log(error);
-          }
-      };
-      getData();
+    const fetchData = async () => {
+      setLoading(true);
+        const data = await fetchPlans();
+        setDataCollection(data);
+        setLoading(false);
+    };
+    fetchData();
   }, []);
 
   const handleEditClick = async (item) => {
@@ -78,6 +72,15 @@ const PlanManagement = () => {
         if (!namePlan || !description || !numberCompany || !price || !paymentFrecuency) {
           Swal.showValidationMessage('Please fill out all fields');
           return false;
+        }else if (description.length>100){ 
+          Swal.showValidationMessage('Description must be 100 characters or less');
+          return false;
+        } else if (!/^\d+$/.test(numberCompany)) { 
+          Swal.showValidationMessage('Number of companies must be a number');
+          return false;
+        } else if (!/^\d+(\.\d+)?$/.test(price)) { 
+          Swal.showValidationMessage('Price must be a number');
+          return false;
         }
   
         return { namePlan, description, numberCompany, price, paymentFrecuency };
@@ -85,17 +88,8 @@ const PlanManagement = () => {
     });
   
     if (formValues) {
-      const { namePlan, description, numberCompany, price, paymentFrecuency } = formValues;
       try {
-        const docRef = doc(db, 'Plan', item.id);
-        await updateDoc(docRef, {
-          namePlan,
-          description,
-          numberCompany,
-          price,
-          paymentFrecuency
-        });
-  
+        await updatePlan(item.id, formValues);
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -104,6 +98,12 @@ const PlanManagement = () => {
           timer: 5000,
           toast: true
         });
+
+      // Update status without reloading the page
+      setDataCollection((prevData) =>
+        prevData.map((plan) => (plan.id === item.id ? { ...plan, ...formValues } : plan))
+      );
+
       } catch (error) {
         Swal.fire({
           icon: 'error',
@@ -145,12 +145,18 @@ const PlanManagement = () => {
       <div className="plan-management">
           <div><SidebarMaster /></div>
           <div className="mb-3 d-flex align-items-center justify-content-end">
-            <button type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '17vw'}}>
+            <button type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '21vw'}}>
             <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
-            {/*<i style={{margin:'1vw'}}>New plan</i>*/}
             </button>
           </div>
-          <div className="container-md" style={{ width: '82%', marginTop: '2%' }}>
+          {loading ? (
+                <div className="d-flex justify-content-center">
+                    <div className="spinner-border text-light" role="status">
+                        <span className="visually-hidden">{tableComponent.loading}</span>
+                    </div>
+                </div>
+            ) : (
+              <div className="container-md" style={{ width: '82%', marginTop: '2%' }}>
             <div id="planCarousel" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   {groupedPlans.map((group, idx) => (
@@ -161,9 +167,9 @@ const PlanManagement = () => {
                             const cardStyle = colors[colorIndex];
                             return (
                               <div className="col-xs-12 col-sm-6 col-md-4 col-lg-3" key={list.id}>
-                                  <div className="card mb-4 mx-2 card-hover-effect" style={{ backgroundColor: '#151718', borderColor: cardStyle.backgroundColor, borderRadius: '10px', color: '#F5F5F5', minHeight: '370px', maxHeight: '500px' }}>
+                                  <div className="card mb-4 mx-2 card-hover-effect" style={{ backgroundColor: '#151718', borderColor: cardStyle.backgroundColor, borderRadius: '10px', color: '#F5F5F5', minHeight: '370px', maxHeight: '600px' }}>
                                       <div className="card-body d-flex flex-column" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                                        <div className="flex-grow-1" style={{ marginLeft: '3px' }}>
+                                        <div className="flex-grow-1" style={{ marginLeft: '3px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                                             <h5 className="card-title" style={{ color: cardStyle.backgroundColor, marginTop: '25px' }}>{list.namePlan}</h5>
                                             <p className="card-text" style={{ marginTop: '15px' }}>
                                                 {`${currencySymbol}${list.price} per ${list.paymentFrecuency}`}
@@ -172,13 +178,7 @@ const PlanManagement = () => {
                                               {list.description.split(',').map((desc, index) => (
                                                   <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                                                       <i className="bi bi-check" style={{ color: cardStyle.backgroundColor, fontSize: '1.7rem', marginRight: '0.5rem' }}></i>
-                                                      <span style={{ 
-                                                          flex: '1', 
-                                                          wordWrap: 'break-word', 
-                                                          whiteSpace: 'normal', 
-                                                          wordBreak: 'break-word', 
-                                                          maxWidth: '100%' 
-                                                      }}>
+                                                      <span style={{ flex: '1', wordWrap: 'break-word', whiteSpace: 'normal', wordBreak: 'break-word', maxWidth: '100%' }}>
                                                           {desc.trim()}
                                                       </span>
                                                   </div>
@@ -212,6 +212,9 @@ const PlanManagement = () => {
                 </button>
             </div>
           </div>
+              
+            )}
+          
       </div>
   );
 };

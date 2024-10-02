@@ -359,13 +359,6 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 /* ------------------------------------------------------------ ADMINISTRATOR -----------------------------------------------------------*/
-// Function for obtain plans
-export const fetchPlans = async () => {
-    const plansRef = collection(db, "Plan");
-    const plansSnapshot = await getDocs(plansRef);
-    return plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-};
-
 // Function that verify the email
 export const checkEmailExists = async (email, excludeId) => {
     const companiesRef = collection(db, "User");
@@ -418,3 +411,33 @@ export const createAdministrator = async (administrator) => {
         plan: planAdmin
     });
 };
+
+/* --------------------------------------------------------------------------------------------------------------------------------------*/
+/* ------------------------------------------------------------ PLANS -----------------------------------------------------------*/
+// Function for obtain plans
+export const fetchPlans = async () => {
+    const plansRef = collection(db, "Plan");
+    const plansSnapshot = await getDocs(plansRef);
+    return plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+export const updatePlan=async(idPlan,updatedDataPlan)=>{
+    try {
+        const planRef = doc(db, 'Plan', idPlan); 
+        await updateDoc(planRef, updatedDataPlan); 
+        return true; 
+    } catch (error) {
+        console.error(error);
+        return false; 
+    }
+}
+export const checkPlanExists = async (name) => {
+    const plansRef = collection(db, "Plan");
+    const q = query(plansRef, where("namePlan", "==", name));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+export const createPlan=async(dataPlan)=>{
+
+}
