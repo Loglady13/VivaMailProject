@@ -42,7 +42,6 @@ const CreatePlan=()=>{
     const  validate = async () => {
         let errors = {};
         let valid = true;
-    //AGREGAR VALIDACIÓN DE MAXIMO 100 CARACTERES, (NO INCLUYE COMAS)
          /* Verify the field is not empty */
         if (!formData.namePlan.trim()) {
           errors.namePlan = 'The plan name is required.';

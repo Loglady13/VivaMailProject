@@ -21,7 +21,7 @@ const PlanManagement = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Llama a fetchData una vez al montar el componente
+    fetchData();
   }, []);
 
   const handleEditClick = async (item) => {
