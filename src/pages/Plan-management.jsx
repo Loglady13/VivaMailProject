@@ -6,10 +6,12 @@ import ModalDelete from '../shared-components/Modal-delete.jsx';
 import Swal from 'sweetalert2';
 import { planManagement, tableComponent } from '../shared-components/WordsBank.js';
 import {fetchPlans, updatePlan} from '../services/provider.js';
+import ModalCreatePlan from '../components/Modal-create-plan.jsx';
 
 const PlanManagement = () => {
   const [dataCollection, setDataCollection] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -124,6 +126,15 @@ const PlanManagement = () => {
       });
   };
 
+  const handleCreateClick = () => {
+    setIsModalOpen(true); // Abre el modal
+  };
+
+  const handleCloseModal = () => {
+      setIsModalOpen(false); // Cierra el modal
+     
+  };
+
   const groupCards = (array, size) => {
       const result = [];
       for (let i = 0; i < array.length; i += size) {
@@ -145,14 +156,15 @@ const PlanManagement = () => {
       <div className="plan-management">
           <div><SidebarMaster /></div>
           <div className="mb-3 d-flex align-items-center justify-content-end">
-            <button type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '21vw'}}>
+            <button onClick={handleCreateClick} type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '21vw'}}>
             <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
             </button>
+            <ModalCreatePlan isOpen={isModalOpen} onClose={handleCloseModal} />
           </div>
           {loading ? (
                 <div className="d-flex justify-content-center">
                     <div className="spinner-border text-light" role="status">
-                        <span className="visually-hidden">{tableComponent.loading}</span>
+                        <span className="visually-hidden"></span>
                     </div>
                 </div>
             ) : (

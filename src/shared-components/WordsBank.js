@@ -111,7 +111,7 @@ export const masterConfiguration ={
 export const createPlan ={
     newPlan: 'New Plan',
     namePlan: 'Enter the name of the plan',
-    planDesc: 'Enter the description',
+    planDesc: 'Enter descriptions separated by commas',
     numberOfCompanies: 'Enter the number of companies for the plan',
     planPrice: 'Enter the price',
     paymentFrequency: 'Select the payment frequency'

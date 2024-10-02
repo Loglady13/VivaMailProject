@@ -430,7 +430,7 @@ export const updatePlan=async(idPlan,updatedDataPlan)=>{
         console.error(error);
         return false; 
     }
-}
+};
 export const checkPlanExists = async (name) => {
     const plansRef = collection(db, "Plan");
     const q = query(plansRef, where("namePlan", "==", name));
@@ -438,6 +438,11 @@ export const checkPlanExists = async (name) => {
     return !querySnapshot.empty;
 };
 
-export const createPlan=async(dataPlan)=>{
-
-}
+export const addPlan=async (dataPlan)=>{
+    try {
+        await addDoc(collection(db, 'Plan'), {...dataPlan});
+        return true;
+    } catch (error) {
+        throw new Error('An error occurred while saving the plan');
+    }
+};
