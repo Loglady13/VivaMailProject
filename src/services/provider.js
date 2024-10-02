@@ -27,7 +27,6 @@ export const checkIfEmailCompanyExists = async (email, currentCompanyId = null) 
 };
 
 
-
 // Function to delete an item from a specified collection
 export const deleteItem = async (collectionName, itemId) => {
     try {
@@ -446,3 +445,20 @@ export const addPlan=async (dataPlan)=>{
         throw new Error('An error occurred while saving the plan');
     }
 };
+/* ------------------------------------------------------------ CLIENT MAIL -----------------------------------------------------------*/
+
+export const checkIfClientEmailExists = async (emailClient) => {
+    const q = query(collection(db, 'EmailClient'), where('emailClient', '==', emailClient));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+export const createClientMail = async (client) =>{
+    const currentDate = new Date(); // Obtener la fecha y hora actuales.
+                await addDoc(collection(db, 'EmailClient'), {
+                    ...client, // Agregar los datos del cliente manual.
+                    creationDate: currentDate, // Fecha de creación.
+                    lastUpdate: currentDate, // Última fecha de actualización.
+                    state: false, // Estado inicial del cliente.
+                });
+}

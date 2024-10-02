@@ -5,12 +5,15 @@ import SidebarAdmin from '../shared-components/Sidebar-admin';
 import TableComponent from '../shared-components/Table-component';
 import ModalViewMore from '../shared-components/Modal-view-more.jsx';
 import ModalDelete from '../shared-components/Modal-delete.jsx';
+import ModalCreateClientMail from '../components/Modal-create-client-mail.jsx';
 import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
 import CreateClientMail from './Create-client-mail.jsx';
 import { useNavigate } from 'react-router-dom';
 
 const TableClientMail=()=>{
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     // To format the date to show it
     const formatTimestamp = (timestamp) => {
@@ -29,8 +32,12 @@ const TableClientMail=()=>{
         showModal('delete', item);
     };
 
-    const handleCreateClick = () =>{
-        navigate('/CreateClientMail');
+    const handleModalClose = () => {
+        setIsModalOpen(false); // Closes the modal
+    };
+
+    const handleCreateClick = () => {
+        setIsModalOpen(true); // Opens the modal
     };
 
     const handleEditClick = async (item) => {
@@ -169,6 +176,7 @@ const TableClientMail=()=>{
                 handleDeleteClick={handleDeleteClick}
                 handleCreateClick={handleCreateClick}  
             />
+            <ModalCreateClientMail isOpen={isModalOpen} onClose={handleModalClose}/>
         </div>
     );
 
