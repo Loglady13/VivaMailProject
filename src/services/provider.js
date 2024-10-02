@@ -27,7 +27,6 @@ export const checkIfEmailCompanyExists = async (email, currentCompanyId = null) 
 };
 
 
-
 // Function to delete an item from a specified collection
 export const deleteItem = async (collectionName, itemId) => {
     try {
@@ -359,13 +358,6 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
 /* ------------------------------------------------------------ ADMINISTRATOR -----------------------------------------------------------*/
-// Function for obtain plans
-export const fetchPlans = async () => {
-    const plansRef = collection(db, "Plan");
-    const plansSnapshot = await getDocs(plansRef);
-    return plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-};
-
 // Function that verify the email
 export const checkEmailExists = async (email, excludeId) => {
     const companiesRef = collection(db, "User");
@@ -418,3 +410,55 @@ export const createAdministrator = async (administrator) => {
         plan: planAdmin
     });
 };
+
+/* --------------------------------------------------------------------------------------------------------------------------------------*/
+/* ------------------------------------------------------------ PLANS -----------------------------------------------------------*/
+// Function for obtain plans
+export const fetchPlans = async () => {
+    const plansRef = collection(db, "Plan");
+    const plansSnapshot = await getDocs(plansRef);
+    return plansSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+export const updatePlan=async(idPlan,updatedDataPlan)=>{
+    try {
+        const planRef = doc(db, 'Plan', idPlan); 
+        await updateDoc(planRef, updatedDataPlan); 
+        return true; 
+    } catch (error) {
+        console.error(error);
+        return false; 
+    }
+};
+export const checkPlanExists = async (name) => {
+    const plansRef = collection(db, "Plan");
+    const q = query(plansRef, where("namePlan", "==", name));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+export const addPlan=async (dataPlan)=>{
+    try {
+        await addDoc(collection(db, 'Plan'), {...dataPlan});
+        return true;
+    } catch (error) {
+        throw new Error('An error occurred while saving the plan');
+    }
+};
+/* ------------------------------------------------------------ CLIENT MAIL -----------------------------------------------------------*/
+
+export const checkIfClientEmailExists = async (emailClient) => {
+    const q = query(collection(db, 'EmailClient'), where('emailClient', '==', emailClient));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+export const createClientMail = async (client) =>{
+    const currentDate = new Date(); // Obtener la fecha y hora actuales.
+                await addDoc(collection(db, 'EmailClient'), {
+                    ...client, // Agregar los datos del cliente manual.
+                    creationDate: currentDate, // Fecha de creación.
+                    lastUpdate: currentDate, // Última fecha de actualización.
+                    state: false, // Estado inicial del cliente.
+                });
+}
