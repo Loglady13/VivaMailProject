@@ -1,0 +1,35 @@
+.NewEmail {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden; 
+}
+
+.NewEmail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/vivamail-d987d.appspot.com/o/background-new-email.jpg?alt=media&token=ca8cba2b-133f-4c68-841a-f2ee7ac4baf6');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(50%); 
+    z-index: -1; 
+}
+
+.NewEmail .content {
+    position: relative;
+    z-index: 1; 
+    padding: 20px;
+    width: 100%;
+}
+
+
+
+.ql-container{
+    height: 0;
+    
+}

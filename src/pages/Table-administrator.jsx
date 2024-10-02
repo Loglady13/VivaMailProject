@@ -39,7 +39,6 @@ const TableAdministrator = () => {
     };
 
     const handleEditClick = async (item) => {
-        const handleEditClick = async (item) => {
             // Obtener planes desde Provider.js
             let plans = [];
             try {
@@ -135,7 +134,6 @@ const TableAdministrator = () => {
                     });
                 }
             }
-        };
     };
 
     const showModal = (modalType, item) => {
