@@ -68,39 +68,38 @@ const SidebarAdmin = () => {
     // Options of the sidebar
     const menuItems = [
         {
-            id: 'collapseCompany',
+            id: 'Companies',
             icon: 'bi-building',
-            label: 'Company',
-            submenus: ['View companies'],
-            paths: ['/TableCompany']
-        },
+            label: 'Companies',
+            submenus: [], paths: ['/TableCompany']
+        }, 
         {
             id: 'collapseEmails',
             icon: 'bi-envelope', label: 'Emails', submenus: ['New mail', 'Mails sent'], paths: ['/CreateEmail', '/MailList']
         },
         {
-            id: 'collapseCampaigns',
+            id: 'Campaigns',
             icon: 'bi-pencil-square',
             label: 'Campaigns',
-            submenus: ['Add campaigns', 'View campaigns'], paths: ['/CreateCampaign', '/TableCampaign']
+            submenus: [], paths: ['/TableCampaign']
         },
         {
-            id: 'collapseClients',
+            id: 'Clients',
             icon: 'bi-person-lines-fill',
             label: 'Clients',
-            submenus: ['New client email', 'Clients mails'], paths: ['/CreateClientMail', '/TableClientMail']
+            submenus: [], paths: ['/TableClientMail']
         },
         {
-            id: 'collapseMailingGroups',
+            id: 'MailingGroups',
             icon: 'bi-inboxes',
             label: 'Mailing groups',
-            submenus: ['New mailing group', 'View mailing groups'], paths: ['/CreateMailGroup', '/TableMailGroup']
+            submenus: [], paths: ['/TableMailGroup']
         },
         {
-            id: 'collapseReports',
+            id: 'Reports',
             icon: 'bi-bar-chart-line',
             label: 'Reports',
-            submenus: ['New report'], paths: ['/AdministratorReport']
+            submenus: [], paths: ['/AdministratorReport']
         }
     ];
 
@@ -109,6 +108,15 @@ const SidebarAdmin = () => {
         item.label.toLowerCase().includes(searchTerm) ||
         item.submenus.some(sub => sub.toLowerCase().includes(searchTerm))
     );
+
+    const handleMenuClick = (item) => {
+        if (item.submenus.length === 0 && item.paths.length > 0) {
+          // Si no tiene submenús, redirigir a la ruta especificada
+          navigate(item.paths[0]);
+        } else {
+          toggleCollapse(item.id); // Si tiene submenús, abre/cierra el dropdown
+        }
+      };  
 
     return (
         <div className="sidebar">
@@ -142,10 +150,12 @@ const SidebarAdmin = () => {
                             <div className="p-2 mt-2 sidebar-menu"
                                 onMouseEnter={handleMouseEnter}
                                 onMouseLeave={handleMouseLeave}
-                                onClick={() => toggleCollapse(item.id)}>
+                                onClick={() => handleMenuClick(item)}>
                                 <i className={`bi ${item.icon} icons-size`}></i>
                                 <span>{item.label}</span>
-                                <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === item.id ? 'rotate' : ''}`} />
+                                {item.submenus.length > 0 &&(
+                                    <img src={require('../images/arrow-icon.png')} alt="Arrow" className={`arrow-icon ${openMenuId === item.id ? 'rotate' : ''}`} />
+                                )}     
                             </div>
                             <div className={`collapse ${openMenuId === item.id ? 'show' : ''}`} id={item.id}>
                                 {item.submenus.map((submenu, index) => (

@@ -9,22 +9,17 @@ import Home from './pages/Principal';
 import Login from './pages/Login';
 import TableCompany from './pages/Table-company';
 import HomeAdmin from './pages/Home-page-admin';
-import CreateAdministrator from './pages/Create-administrator';
-import CreateCampaign from './pages/Create-campaign';
 import CreateEmail from './pages/Create-email';
-import CreateMailGroup from './pages/Create-mail-group';
 import CreatePlan from './pages/Create-plan';
 import TableCampaign from './pages/Table-campaign';
 import TableClientMail from './pages/Table-client-mail';
 import TableMailGroup from './pages/Table-mail-group';
-import TableSubscriber from './pages/Table-subscriber';
 import MailList from './pages/Mail-list';
 import AdministratorReport from './pages/Administrator-report';
 import MasterReport from './pages/Master-report';
 import MasterConfiguration from './pages/Master-configuration';
 import PlanManagement from './pages/Plan-management';
 import ViewPlan from './pages/View-plan';
-import CreateClientMail from './pages/Create-client-mail';
 import TableAdministrator from './pages/Table-administrator'
 
 const router = createBrowserRouter([
@@ -55,14 +50,6 @@ const router = createBrowserRouter([
     element:<HomeAdmin/>
   },
   {
-    path: "CreateAdministrator",
-    element: <CreateAdministrator/>
-  },
-  {
-    path: "CreateCampaign",
-    element: <CreateCampaign/>
-  },
-  {
     path: "TableCompany",
     element: <TableCompany/>
   },
@@ -71,16 +58,8 @@ const router = createBrowserRouter([
     element:<CreateEmail/>
   },
   {
-    path:"CreateMailGroup",
-    element:<CreateMailGroup/>
-  },
-  {
     path:"CreatePlan",
     element:<CreatePlan/>
-  },
-  {
-    path:"CreateClientMail",
-    element:<CreateClientMail/>
   },
   {
     path:"TableCampaign",
@@ -97,10 +76,6 @@ const router = createBrowserRouter([
   {
     path:"TableMailGroup",
     element:<TableMailGroup/>
-  },
-  {
-    path:"TableSubscriber",
-    element:<TableSubscriber/>
   },
   {
     path:"TableAdministrator",

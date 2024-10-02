@@ -43,28 +43,28 @@ const SidebarMaster = () => {
   // Options of the sidebar
   const menuItems = [
     {
-      id: 'collapseAdministrators',
+      id: 'viewAdministrators',
       icon: 'bi-person-circle',
       label: 'Administrators',
-      submenus: ['Add new administrator', 'View administrators'], paths: ['/CreateAdministrator', '/TableAdministrator']
+      submenus: [], paths: ['/TableAdministrator']
     },
     {
-      id: 'collapseReports',
+      id: 'Reports',
       icon: 'bi-bar-chart-line',
       label: 'Reports',
-      submenus: ['New Report'], paths: ['/MasterReport']
+      submenus: [], paths: ['/MasterReport']
     },
     {
-      id: 'collapsePlans',
+      id: 'Plans',
       icon: 'bi-card-checklist',
       label: 'Plans',
-      submenus: ['Add new plan', 'View plans'], paths: ['/CreatePlan', '/PlanManagement']
+      submenus: [], paths: ['/PlanManagement']
     },
     {
       id: 'masterConfiguration',
       icon: 'bi-person-gear',
       label: 'Configurations',
-      submenus: [], paths: []
+      submenus: [], paths: ['/MasterConfiguration']
     }
   ];
 
@@ -72,6 +72,15 @@ const SidebarMaster = () => {
     item.label.toLowerCase().includes(searchTerm) ||
     item.submenus.some(sub => sub.toLowerCase().includes(searchTerm))
   );
+
+  const handleMenuClick = (item) => {
+    if (item.submenus.length === 0 && item.paths.length > 0) {
+      // Si no tiene submenús, redirigir a la ruta especificada
+      navigate(item.paths[0]);
+    } else {
+      toggleCollapse(item.id); // Si tiene submenús, abre/cierra el dropdown
+    }
+  };  
 
   return (
     <div className="sidebar">
@@ -104,7 +113,7 @@ const SidebarMaster = () => {
               <div className="p-2 mt-2 sidebar-menu"
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onClick={() => toggleCollapse(item.id)}>
+                onClick={() => handleMenuClick(item)}>
                 <i className={`bi ${item.icon} icons-size`}></i>
                 <span>{item.label}</span>
                 {item.submenus.length > 0 && (

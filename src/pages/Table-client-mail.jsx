@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs, query, limit, startAfter, startAt, doc, updateDoc, where, deleteDoc } from 'firebase/firestore';
+import React, { useState } from 'react';
+import { collection, getDocs, query, doc, updateDoc, where } from 'firebase/firestore';
 import { db } from '../services/credentials.js';
 import SidebarAdmin from '../shared-components/Sidebar-admin';
 import TableComponent from '../shared-components/Table-component';
@@ -8,13 +8,11 @@ import ModalDelete from '../shared-components/Modal-delete.jsx';
 import ModalCreateClientMail from '../components/Modal-create-client-mail.jsx';
 import '../Styles/Background-Table.css'
 import Swal from 'sweetalert2';
-import CreateClientMail from './Create-client-mail.jsx';
-import { useNavigate } from 'react-router-dom';
 
 const TableClientMail=()=>{
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const navigate = useNavigate();
+
     // To format the date to show it
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return '';
@@ -153,6 +151,7 @@ const TableClientMail=()=>{
             case 'delete':
                 ModalDelete({
                     item,
+                    title: 'Client Email',
                     collectionName: 'EmailClient',
                     warningMessage: 'You will lose it forever',
                     onSuccessMessage: 'The client has been deleted!',

@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc,setDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc, setDoc, limit, startAfter, startAt, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../services/credentials';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -6,24 +6,6 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 export const getCurrentUserId = () => {
     const user = auth.currentUser;
     return user ? user.uid : null;
-};
-
-
-// Function to check if an email already exists
-export const checkIfEmailCompanyExists = async (email, currentCompanyId = null) => {
-    const q = query(collection(db, 'Company'), where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-    // If there are no results, the email is not in use
-    if (querySnapshot.empty) return false;
-    // If there are results, we need to check if the email belongs to another company
-    for (const doc of querySnapshot.docs) {
-        if (doc.id !== currentCompanyId) {
-            // If the email is used by a different company, return true
-            return true;
-        }
-    }
-    // If no other companies are using the email, return false
-    return false;
 };
 
 
@@ -81,7 +63,7 @@ export const verifyUserRole = async (userId) => {
     }
 };
 
-/* ------------------------------------------------------------- ONLY FOR COMPANY -----------------------------------------------------*/
+/* ------------------------------------------------------------- COMPANY -----------------------------------------------------*/
 // Function to add a company
 export const addCompany = async (companyData) => {
     const userId = getCurrentUserId(); // Get the ID of the authenticated user
@@ -107,6 +89,23 @@ export const addCompany = async (companyData) => {
     await updateDoc(userRef, {
         companyIDs: [...(await getUserCompanyIDs(userId)), companyRef.id]
     });
+};
+
+// Function to check if an email already exists
+export const checkIfEmailCompanyExists = async (email, currentCompanyId = null) => {
+    const q = query(collection(db, 'Company'), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    // If there are no results, the email is not in use
+    if (querySnapshot.empty) return false;
+    // If there are results, we need to check if the email belongs to another company
+    for (const doc of querySnapshot.docs) {
+        if (doc.id !== currentCompanyId) {
+            // If the email is used by a different company, return true
+            return true;
+        }
+    }
+    // If no other companies are using the email, return false
+    return false;
 };
 
 
@@ -256,7 +255,7 @@ export const getUserCompanyCount = async () => {
 
     const companyIDs = userDoc.data().companyIDs || [];
     return companyIDs.length;  // Returns directly the number of companies
-    
+
 };
 
 
@@ -287,7 +286,7 @@ export const fetchData = async ({ collectionName, searchTerm = '', columnsToShow
     const queryCollection = collection(db, collectionName);
     let queryC;
 
-    if ( collectionName === 'User'){
+    if (collectionName === 'User') {
         const queryUser = query(queryCollection, where('role', '==', 'Administrator'));
         if (searchTerm) {
             const regex = /^[a-zA-Z0-9._%+-]+@$/;
@@ -353,7 +352,7 @@ export const subscribeToCollection = (collectionName, setData, loadData) => {
         setData(documents);
     });
     loadData();  // Fetches data when component mounts or when collectionName or pageSize changes
-    return () => unsubscribe(); 
+    return () => unsubscribe();
 };
 
 /* --------------------------------------------------------------------------------------------------------------------------------------*/
@@ -399,17 +398,17 @@ export const checkIfEmailExists = async (email) => {
 };
 
 export const createAdministrator = async (administrator) => {
-    const {adminName, email, password, planAdmin} = administrator;
+    const { adminName, email, password, planAdmin } = administrator;
     // Create an user in Firebase
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user; // The credencials of the new user
     const currentDate = new Date(); // Capture the current date and time
     const role = 'Administrator'
     const companyIDs = []
-    
+
     await setDoc(doc(db, 'User', user.uid), {
         role: role,
-        companyIDs, 
+        companyIDs,
         nameAdmin: adminName,
         email: email,
         creationDate: currentDate,
@@ -427,14 +426,52 @@ export const checkIfClientEmailExists = async (emailClient) => {
     return !querySnapshot.empty;
 };
 
-export const createClientMail = async (client) =>{
+export const createClientMail = async (client) => {
     const currentDate = new Date(); // Obtener la fecha y hora actuales.
-                await addDoc(collection(db, 'EmailClient'), {
-                    ...client, // Agregar los datos del cliente manual.
-                    creationDate: currentDate, // Fecha de creación.
-                    lastUpdate: currentDate, // Última fecha de actualización.
-                    state: false, // Estado inicial del cliente.
-                });
+    await addDoc(collection(db, 'EmailClient'), {
+        ...client, // Agregar los datos del cliente manual.
+        creationDate: currentDate, // Fecha de creación.
+        lastUpdate: currentDate, // Última fecha de actualización.
+        state: false, // Estado inicial del cliente.
+    });
 }
 
+/* --------------------------------------------------------------------------------------------------------------------------------------*/
+
+/* ------------------------------------------------------- MAILING GROUP   ------------------------------------------------------------*/
+
+// Function to add an email group
+export const createEmailGroup = async (emailGroupData) => {
+    const userId = getCurrentUserId(); 
+    if (!userId) {
+        throw new Error('No authenticated user found');
+    }
+
+    const currentDate = new Date();
+    
+    await addDoc(collection(db, 'EmailGroup'), {
+        ...emailGroupData,
+        adminID: userId,
+        creationDate: currentDate,
+        lastUpdate: currentDate,
+    });
+};
+
+export const checkIfMailingGroupExists = async (groupName) => {
+    const q = query(collection(db, 'EmailGroup'), where('nameEmailGroup', '==', groupName));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+};
+
+// Function to update a MailingGroup 
+export const updateMailingGroup = async (groupID, updatedData) => {
+    try {
+        const companyRef = doc(db, 'EmailGroup', groupID); // Get a reference to the company document
+        await updateDoc(companyRef, updatedData); // Update the document with the new data
+        return true; // Return true on success
+    } catch (error) {
+        console.error('Error updating Email Group: ', error);
+        return false; // Return false on failure
+    }
+};
 

@@ -4,16 +4,22 @@ import { addCompany, checkIfEmailCompanyExists, getNumberCompaniesAllowedByPlanF
 
 const ModalCreateCompany = ({ isOpen, onClose }) => {
 
-    /* To set inputs as empty after a creation */
+    /* To set inputs as empty */
     const defaultEntry = {
         companyName: '',
         legalID: '',
         email: ''
     };
 
+    const defaultErrors = { companyName: '', legalID: '', email: '', global: '' };
     const [company, setCompany] = useState(defaultEntry);
-    const [errors, setErrors] = useState({ companyName: '', legalID: '', email: '' });
+    const [errors, setErrors] = useState(defaultErrors);
     const [isSuccess, setIsSuccess] = useState(false);
+
+    const resetForm = () => {
+        setCompany(defaultEntry);
+        setErrors(defaultErrors);
+    };
 
     const captureInputs = (e) => {
         const { name, value } = e.target;
@@ -22,7 +28,7 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
     };
 
     const validateInputs = () => {
-        const newErrors = { companyName: '', legalID: '', email: '' };
+        const newErrors = { ...defaultErrors };
         let isValid = true;
 
         /* Verify the field is not empty */
@@ -53,19 +59,6 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
         return isValid;
     };
 
-    useEffect(() => {
-        if (isSuccess) {
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                text: 'The company has been successfully created',
-                showConfirmButton: false,
-                timer: 5000,
-                toast: true,
-            }).then(() => setIsSuccess(false)); // Reset the success status
-        }
-    }, [isSuccess]);
-
     const saveCompany = async (e) => {
         e.preventDefault();
 
@@ -93,21 +86,27 @@ const ModalCreateCompany = ({ isOpen, onClose }) => {
 
             /* Saves the company and reset the inputs */
             await addCompany(company);
-            setErrors({ companyName: '', legalID: '', email: '' });
-            setCompany(defaultEntry);
-            setIsSuccess(true);
+            resetForm();
             onClose(); // Close the modal on success
+
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                text: 'The company has been successfully created',
+                showConfirmButton: false,
+                timer: 5000,
+                toast: true,
+            });
+
         } catch (error) {
             console.log(error);
             setErrors({ ...errors, global: 'An error occurred while saving the company' });
         }
     };
 
-    // Reset inputs when modal closes
     const handleClose = () => {
-        setCompany(defaultEntry); // Reset the form fields
-        setErrors({ companyName: '', legalID: '', email: '' }); // Clear errors
-        onClose(); // Trigger the close passed down as a prop
+        resetForm();
+        onClose();
     };
 
     return (

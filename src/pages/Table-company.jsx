@@ -216,6 +216,7 @@ const TableCompany = () => {
     const handleDeleteClick = async (item) => {
         const result = await ModalDelete({
             item,
+            title: 'Company',
             collectionName: 'Company',
             warningMessage: 'You will lose everything',
             onSuccessMessage: 'The company has been deleted!',
