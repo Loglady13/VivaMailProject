@@ -13,14 +13,15 @@ const PlanManagement = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const fetchData = async () => {
+    setLoading(true);
+    const data = await fetchPlans();
+    setDataCollection(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-        const data = await fetchPlans();
-        setDataCollection(data);
-        setLoading(false);
-    };
-    fetchData();
+    fetchData(); // Llama a fetchData una vez al montar el componente
   }, []);
 
   const handleEditClick = async (item) => {
@@ -117,22 +118,26 @@ const PlanManagement = () => {
   };
 
 
-  const handleDeleteClick = (item) => {
-      ModalDelete({
-          item,
-          collectionName: 'Plan', 
-          warningMessage: 'You will lose it forever',
-          onSuccessMessage: 'The plan has been deleted, refresh to see the changes!',
-      });
+  const handleDeleteClick = async(item) => {
+    const isConfirmed = await ModalDelete({
+      item,
+      collectionName: 'Plan',
+      warningMessage: 'You will lose it forever',
+      onSuccessMessage: 'The plan has been deleted, refresh to see the changes!',
+   });
+  
+    if (isConfirmed) {
+        await fetchData(); 
+    }
   };
 
   const handleCreateClick = () => {
-    setIsModalOpen(true); // Abre el modal
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-      setIsModalOpen(false); // Cierra el modal
-     
+      setIsModalOpen(false); 
+      fetchData(); 
   };
 
   const groupCards = (array, size) => {
