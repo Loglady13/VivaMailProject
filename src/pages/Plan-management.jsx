@@ -162,7 +162,8 @@ const PlanManagement = () => {
           <div><SidebarMaster /></div>
           <div className="mb-3 d-flex align-items-center justify-content-end">
             <button onClick={handleCreateClick} type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '21vw'}}>
-            <i className="bi bi-plus-square" style={{ color: 'white' }}></i>
+            <i className="bi bi-plus-square" style={{ color: 'white',marginRight:'5px' }}></i>
+              New plan
             </button>
             <ModalCreatePlan isOpen={isModalOpen} onClose={handleCloseModal} />
           </div>
