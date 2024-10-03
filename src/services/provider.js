@@ -288,7 +288,7 @@ export const fetchData = async ({ collectionName, searchTerm = '', columnsToShow
     let queryC;
 
     if ( collectionName === 'User'){
-        const queryUser = query(queryCollection, where('role', '==', 'Administrator'));
+        const queryUser = query(queryCollection, where('role', '==', 'Administrat'));
         if (searchTerm) {
             const regex = /^[a-zA-Z0-9._%+-]+@$/;
             if (regex.test(searchTerm)) {

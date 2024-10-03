@@ -71,11 +71,13 @@ const ModalCreateAdministrator = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (isSuccess) {
             Swal.fire({
+                position: 'top-end',
                 icon: 'success',
-                title: 'Success',
-                showCloseButton: true,
-                html: 'The Adminitrator has been successfully created',
-            }).then(() => setIsSuccess(false)); // Resetting the status after displaying the alert
+                text: 'The administrator has been successfully created',
+                showConfirmButton: false,
+                timer: 5000,
+                toast: true,
+            }).then(() => setIsSuccess(false)); // Reset the success status
         }
     }, [isSuccess]);
 

@@ -17,7 +17,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
     const loadData = async (isNextPage = false, isPrevPage = false) => {
         setLoading(true);
         try {
-            const result = await fetchData({ collectionName, searchTerm,columnsToShow, lastVisible,isNextPage,isPrevPage, firstVisiblePages, pageSize });
+            const result = await fetchData({ collectionName, searchTerm, columnsToShow, lastVisible,isNextPage,isPrevPage, firstVisiblePages, pageSize });
             setData(result.documents);
             setLastVisible(result.lastVisible);
 
@@ -37,6 +37,7 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
 
     useEffect(() => {
         subscribeToCollection(collectionName, setData, loadData);
+        loadData();
     }, [collectionName, pageSize]);
 
     const loadNext = () => {
@@ -98,8 +99,8 @@ function TableComponent({ tittle, collectionName, columnName, columnsToShow, han
 
                 <div className="input-group" style={{ maxWidth: '300px' }}>
                     <input type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} className="form-control" />
-                    <button className="input-group-text">
-                        <i className="bi bi-search"></i>
+                    <button className="input-group-text" onChange={handleSearchChange} >
+                        <i className="bi bi-search" ></i>
                     </button>
                 </div>
             </form>
