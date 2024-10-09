@@ -161,8 +161,8 @@ const PlanManagement = () => {
       <div className="plan-management">
           <div><SidebarMaster /></div>
           <div className="mb-3 d-flex align-items-center justify-content-end">
-            <button onClick={handleCreateClick} type="button" className="btn btn-success" style={{ fontSize: '18px', marginRight: '21vw'}}>
-            <i className="bi bi-plus-square" style={{ color: 'white',marginRight:'5px' }}></i>
+            <button onClick={handleCreateClick} type="button" className="btn btn-success" style={{ fontSize: '15px', marginRight: '21vw'}}>
+            <i className="bi bi-plus-square" style={{ color: 'white',marginRight:'8px' }}></i>
               New plan
             </button>
             <ModalCreatePlan isOpen={isModalOpen} onClose={handleCloseModal} />
@@ -174,7 +174,7 @@ const PlanManagement = () => {
                     </div>
                 </div>
             ) : (
-              <div className="container-md" style={{ width: '82%', marginTop: '2%' }}>
+            <div className="container-md" style={{ width: '82%', marginTop: '2%' }}>
             <div id="planCarousel" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   {groupedPlans.map((group, idx) => (
@@ -201,7 +201,7 @@ const PlanManagement = () => {
                                                       </span>
                                                   </div>
                                               ))}
-                                        </div>
+                                            </div>
                                         </div>
                                         <div className="d-flex flex-column align-items-center" style={{ marginBottom: '10px', marginTop: 'auto'  }}>
                                             <button onClick={() => handleEditClick(list)} className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
