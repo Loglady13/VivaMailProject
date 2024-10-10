@@ -47,11 +47,11 @@ const TableClientMail=()=>{
                     <h4 style="margin-bottom: 45px; font-weight: bold;">Edit Client</h4>
                     <div style="margin-bottom: 25px;">
                         <label for="swal-input1" style="display: block; margin-bottom: 5px;">New client name</label>
-                        <input id="swal-input1" class="swal2-input" style="width: 92%; margin: 0; background: #FFFFFF;" value="${item.nameClient}">
+                        <input id="swal-input1" class="swal2-input" style="width: 92%; margin: 0; background: #FFFFFF;" value="${item.name}">
                     </div>
                     <div style="margin-bottom: 25px;">
                         <label for="swal-input2" style="display: block; margin-bottom: 5px;">New client email</label>
-                        <input id="swal-input2" class="swal2-input" style="width: 92%; margin: 0; background: #FFFFFF;" value="${item.emailClient}">
+                        <input id="swal-input2" class="swal2-input" style="width: 92%; margin: 0; background: #FFFFFF;" value="${item.email}">
                     </div>
                 </div>
             `,
@@ -83,7 +83,7 @@ const TableClientMail=()=>{
                 try {
                     // Step 1: Check if the email is already used by another company
                     const emailClientRef = collection(db, "EmailClient");
-                    const q = query(emailClientRef, where("emailClient", "==", emailClient));
+                    const q = query(emailClientRef, where("email", "==", emailClient));
                     const querySnapshot = await getDocs(q);
 
                     // Check if the email belongs to a different company
@@ -142,8 +142,8 @@ const TableClientMail=()=>{
                 ModalViewMore({
                     title: 'Client Email Details',
                     fields: [
-                        { label: 'Client name', key: 'nameClient' },
-                        { label: 'Email client', key: 'emailClient' },
+                        { label: 'Client name', key: 'name' },
+                        { label: 'Email client', key: 'email' },
                         { label: 'Creation date', key: 'creationDate', format: formatTimestamp },
                         { label: 'Last update date', key: 'lastUpdate', format: formatTimestamp },
                     ],
@@ -170,7 +170,7 @@ const TableClientMail=()=>{
                 tittle={'Clients'}
                 collectionName="EmailClient" //Name of the Collection
                 columnName={['Name', 'Email']} //Name to show y in table
-                columnsToShow={['nameClient', 'emailClient']} //Name of the fields in firebase
+                columnsToShow={['name', 'email']} //Name of the fields in firebase
                 handleViewClick={handleViewClick}  
                 handleEditClick={handleEditClick}
                 handleDeleteClick={handleDeleteClick}

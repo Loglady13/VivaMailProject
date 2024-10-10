@@ -7,12 +7,12 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
 
      /* To set inputs as empty after a creation */
      const defaultEntry = {
-        nameClient: '',
-        emailClient: ''
+        name: '',
+        email: ''
     };
 
     const [clientEmail, setClientEmail] = useState(defaultEntry);
-    const [errors, setErrors] = useState({ nameClient: '', emailClient: '' });
+    const [errors, setErrors] = useState({ name: '', email: '' });
     const [isSuccess, setIsSuccess] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedFile, setUploadedFile] = useState(null);
@@ -24,25 +24,25 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
     };
 
     const ValidateInputs = (isFileUpload = false) => {
-        const newErrors = { nameClient: '', emailClient: ''};
+        const newErrors = { name: '', email: ''};
         let isValid = true;
         const noNumbers = /^\D{3,}/;
         const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!isFileUpload) {
-            if (!clientEmail.nameClient) {
-                newErrors.nameClient = 'Name client is required.';
+            if (!clientEmail.name) {
+                newErrors.name = 'Name client is required.';
                 isValid = false;
-            } else if (!noNumbers.test(clientEmail.nameClient)) {
-                newErrors.nameClient = 'The field name client must have only letters';
+            } else if (!noNumbers.test(clientEmail.name)) {
+                newErrors.name = 'The field name client must have only letters';
                 isValid = false;
             }
 
-            if (!clientEmail.emailClient) {
-                newErrors.emailClient = 'Email client is required.';
+            if (!clientEmail.email) {
+                newErrors.email = 'Email client is required.';
                 isValid = false;
-            } else if (!emailFormat.test(clientEmail.emailClient)) {
-                newErrors.emailClient = 'Please enter a valid email format including @ and .example.';
+            } else if (!emailFormat.test(clientEmail.email)) {
+                newErrors.email = 'Please enter a valid email format including @ and .example.';
                 isValid = false;
             }
         }
@@ -54,10 +54,12 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
     useEffect(() => {
         if (isSuccess) {
             Swal.fire({
+                position: 'top-end', // Position in the top right corner
                 icon: 'success',
-                title: 'Success',
-                showCloseButton: true,
-                html: 'The client has been successfully created',
+                text: 'Client has been sucsessfully created!',
+                showConfirmButton: false, // Remove the confirm button
+                timer: 5000, // Message will disappear after 5 seconds
+                toast: true, // Convert the alert into a toast notification
             }).then(() => setIsSuccess(false)); // Resetting the status after displaying the alert
         }
     }, [isSuccess]);
@@ -65,7 +67,7 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
     // Reset inputs when modal closes
     const handleClose = () => {
         setClientEmail(defaultEntry); // Reset the form fields
-        setErrors({ nameClient:'', emailClient:''}); // Clear errors
+        setErrors({ name:'', email:''}); // Clear errors
         onClose(); // Trigger the close passed down as a prop
     };
 
@@ -92,9 +94,9 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
                 const currentDate = new Date(); // Obtener la fecha y hora actuales.
     
                 for (const entry of jsonData) { // Iterar sobre cada entrada en el JSON.
-                    const { nameClient, emailClient} = entry; // Extraer `nameClient`, `emailClient` y `idAdmin` de cada entrada.
+                    const { name, email} = entry; // Extraer `nameClient`, `emailClient` y `idAdmin` de cada entrada.
     
-                    if (!nameClient || !emailClient) {
+                    if (!name || !email) {
                         // Verificar si alguno de los campos es nulo o está vacío.
                         console.warn(`Incomplete entry in the Excel file, will be ignored: ${JSON.stringify(entry)}`);
                         // Mostrar una advertencia en la consola si la entrada está incompleta y continuar con la siguiente entrada.
@@ -102,10 +104,10 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
                         continue;
                     }
     
-                    const emailExists = await checkIfClientEmailExists(clientEmail.emailClient);
+                    const emailExists = await checkIfClientEmailExists(clientEmail.email);
                     // Verificar si el email ya existe en la base de datos.
                     if (emailExists) {
-                        console.warn(`The email ${clientEmail.emailClient} already exists, will be ignored.`);
+                        console.warn(`The email ${clientEmail.email} already exists, will be ignored.`);
                         // Mostrar una advertencia en la consola si el email ya existe y continuar con la siguiente entrada.
                         success = false; // Marcar el éxito como `false` porque hay un error.
                         continue;
@@ -115,10 +117,10 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
                         createClientMail(entry);
                         setIsSuccess(true); // Activate success alert
                         onClose();
-                        console.log(`Client ${nameClient} added successfully.`);
+                        console.log(`Client ${name} added successfully.`);
                         // Mostrar un mensaje de éxito en la consola si se agrega correctamente.
                     } catch (error) {
-                        console.error(`Error adding client ${nameClient}:`, error);
+                        console.error(`Error adding client ${name}:`, error);
                         // Mostrar un mensaje de error en la consola si ocurre un problema al agregar.
                         success = false; // Marcar el éxito como `false` debido al error.
                     }
@@ -127,10 +129,10 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
             };
             reader.readAsArrayBuffer(selectedFile); // Leer el archivo como un ArrayBuffer.
         } else { // Si no se seleccionó un archivo, manejar la entrada manual.
-            const emailExists = await checkIfClientEmailExists(clientEmail.emailClient);
+            const emailExists = await checkIfClientEmailExists(clientEmail.email);
             // Verificar si el email del cliente ya existe.
             if (emailExists) {
-                setErrors({ ...errors, emailClient: 'A client with this email already exists.' });
+                setErrors({ ...errors, email: 'A client with this email already exists.' });
                 // Establecer un mensaje de error si el email ya existe.
                 return;
             }
@@ -139,7 +141,7 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
                 createClientMail(clientEmail);
                 setIsSuccess(true); // Activate success alert
                 onClose();
-                setErrors({ nameClient: '', emailClient: ''});
+                setErrors({ name: '', email: ''});
                 // Limpiar los errores después de agregar exitosamente.
                 setClientEmail(defaultEntry); // Restablecer los datos del cliente.
             } catch (error) {
@@ -174,13 +176,13 @@ const ModalCreateClientMail = ({isOpen, onClose}) =>{
                         <form onSubmit={saveClientEmail}>
                             <div className="mb-3">
                                 <label className="form-label text-white">{createClient.nameClient}</label>
-                                <input onChange={captureInputs} value={clientEmail.nameClient} type="text" name='nameClient' className="form-control" />
-                                {errors.nameClient && <div className='text-danger'>{errors.nameClient}</div>}
+                                <input onChange={captureInputs} value={clientEmail.name} type="text" name='name' className="form-control" />
+                                {errors.name && <div className='text-danger'>{errors.nameClient}</div>}
                             </div>
                             <div className="mb-3">
                                 <label className="form-label text-white">{createClient.emailClient}</label>
-                                <input onChange={captureInputs} value={clientEmail.emailClient} type="text" name='emailClient' className="form-control" />
-                                {errors.emailClient && <div className='text-danger'>{errors.emailClient}</div>}
+                                <input onChange={captureInputs} value={clientEmail.email} type="text" name='email' className="form-control" />
+                                {errors.email && <div className='text-danger'>{errors.emailClient}</div>}
                             </div>
                             <div className="mb-3" style={{ width: '100%', maxWidth: '800px' }}>
                                 <label htmlFor="excelFile" className="form-label fs-6 text-white" style={{ textAlign: 'center' }}>{createClient.excelFile}</label>
