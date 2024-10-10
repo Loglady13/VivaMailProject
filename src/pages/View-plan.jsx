@@ -34,21 +34,30 @@ const ViewPlan=()=>{
         { backgroundColor: '#7839CD', color: '#fff' }
     ];
 
-    const handleContactClick = (planName) => {
+    const handleContactClick = (planName, colorPlan) => {
         Swal.fire({
-            title: `Contact Us about ${planName}`,
             html:
-            `<form id="contactForm">
-                <label for="name">Name:</label>
-                <input type="text" name="name" class="swal2-input" placeholder="Your Name" required><br/>
-                <label for="email">Email:</label>
-                <input type="email" name="email" class="swal2-input" placeholder="Your Email" required><br/>
-                <label for="message">Message:</label>
-                <textarea name="message" class="swal2-textarea" placeholder="Your Message" required></textarea>
+            `<form id="contactForm" style="text-align: left;">
+                <p style="font-size: 1.5rem; color: ${colorPlan}; margin-bottom: 20px; text-align: left;">Contact Us about ${planName}</p>
+                <div class="mb-3" style="width: 100%; max-width: 800px; margin-bottom: 15px;">
+                    <label for="exampleFormControlInput1" class="form-label">Your Name</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="" required>
+                </div>
+                <div class="mb-3" style="width: 100%; max-width: 800px; margin-bottom: 15px;">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="" required>
+                </div>
+                <div class="mb-3"> 
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" rows="3" required></textarea>
+                </div>
                 <input type="hidden" name="plan" value="${planName}">
-                <button type="submit" class="swal2-confirm swal2-styled">Send</button>
+                <div style="text-align: center;"> 
+                    <button type="submit" class="btn btn-custom" style="background-color: ${colorPlan}; color: white; width: 160px; height: 40px;">Send</button> 
+                </div>
             </form>`,
-            showConfirmButton: false // Oculta el botón por defecto, ya que el formulario tiene el suyo
+            showConfirmButton: false, // Oculta el botón por defecto, ya que el formulario tiene el suyo
+            background: '#000',
         });
 
         // Manejar el envío del formulario usando fetch
@@ -130,7 +139,7 @@ const ViewPlan=()=>{
                                                     </div>
                                                 </div>
                                                 <div className="d-flex flex-column align-items-center" style={{ marginBottom: '10px' }}>
-                                                    <button onClick={() => handleContactClick(list.namePlan)} className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
+                                                    <button onClick={() => handleContactClick(list.namePlan,cardStyle.backgroundColor)} className="btn btn-primary w-100" style={{ backgroundColor: cardStyle.backgroundColor, border: 'none', margin: '5px', height: '32px', maxWidth: '215px' }}>
                                                         {principal.contact}
                                                     </button>
                                                 </div>
